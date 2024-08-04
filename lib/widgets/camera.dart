@@ -1,15 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CameraApp extends StatefulWidget {
   final List<CameraDescription> cameras;
-  final BuildContext context;
-  const CameraApp({super.key, required this.cameras, required this.context});
+  final Function alert;
+  const CameraApp({super.key, required this.cameras, required this.alert});
 
   @override
   State<CameraApp> createState() => CameraAppState();
@@ -65,7 +63,8 @@ class CameraAppState extends State<CameraApp> {
       controller!.dispose();
       controller = null;
     } catch (e) {
-      ZshowDialogs.alert(context, 'A aplicação apresentou erro');
+      // ZshowDialogs.alert(context, 'A aplicação apresentou erro');
+      widget.alert();
     }
   }
 

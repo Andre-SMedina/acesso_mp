@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:validatorless/validatorless.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   final List<CameraDescription> cameras;
   HomePage({super.key, required this.cameras});
@@ -111,6 +112,21 @@ class _HomePageState extends State<HomePage> {
     widget.rgField.clearData();
     widget.phoneField.clearData();
     widget.jobField.clearData();
+  }
+
+  alertCamera() {
+    ZshowDialogs.alert(context, 'A aplicação apresentou erro');
+  }
+
+  alertAuth() {
+    ZshowDialogs.alert(context, 'Autorização registrada!');
+  }
+
+  alertVisited() async {
+    String visited = '';
+    await ZshowDialogs.visited(context).then((v) => visited = v);
+
+    return visited;
   }
 
   @override
@@ -308,8 +324,8 @@ class _HomePageState extends State<HomePage> {
                                     : (cameras.isEmpty)
                                         ? const Text('Câmera não encontrada!')
                                         : CameraApp(
-                                            context: context,
                                             cameras: cameras,
+                                            alert: alertCamera,
                                           ),
                               ),
                             ),
@@ -319,7 +335,12 @@ class _HomePageState extends State<HomePage> {
                           ),
                           ElevatedButton(
                               onPressed: () {
-                                ManageData.authorized(context);
+                                ManageData manageDat = ManageData(
+                                  alert: alertAuth,
+                                  alertVisited: alertVisited,
+                                );
+
+                                manageDat.authorized();
                                 clearFields();
                               },
                               child: const Text('Autorizar'))
