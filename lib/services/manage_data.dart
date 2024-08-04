@@ -18,7 +18,7 @@ class ManageData {
         String dateNow =
             DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
 
-        checked['visit'].add('$dateNow $visited');
+        checked['visit'].add('$dateNow|$visited');
 
         box.put(Convert.removeAccent(checked['name'].toLowerCase()), checked);
 

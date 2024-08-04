@@ -27,7 +27,7 @@ class Database {
       if (visited == '') return 'empty';
 
       String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
-      visitor['visit'] = ['$dateNow $visited'];
+      visitor['visit'] = ['$dateNow|$visited'];
 
       box.put(Convert.removeAccent(data.name.toLowerCase()), visitor);
 
