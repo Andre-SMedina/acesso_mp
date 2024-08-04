@@ -25,8 +25,10 @@ class HomePage extends StatefulWidget {
     text: 'Nome',
     listInputFormat: const [],
     listValidator: [
-      Validatorless.min(10, 'O nome deve possuir no mínimo 10 letras!'),
-      Validatorless.required('Campo obrigatório!')
+      Validatorless.required('Campo obrigatório!'),
+      (v) => v!.split(' ').length >= 2
+          ? null
+          : 'O nome deve ter nome e sobrenome!',
     ],
   );
   ModelHomeFields cpfField = ModelHomeFields(
@@ -66,7 +68,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Database db = Database();
   List<String> visitor = [];
 
   bool loadImage = false;
@@ -74,7 +75,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<String>> getDataVisitor() async {
     var box = Hive.box('db');
-    String img = box.get('image');
+    String img = cameras.isEmpty
+        ? 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+        : box.get('image');
 
     return [
       widget.nameField.fieldController.text,
@@ -186,6 +189,9 @@ class _HomePageState extends State<HomePage> {
                                       if (_formKey.currentState!.validate()) {
                                         getDataVisitor().then((e) {
                                           if (e[5] != '') {
+                                            final Database db = Database(
+                                                alertVisited: alertVisited);
+
                                             db
                                                 .register(
                                                     ModelVisitors(
@@ -196,15 +202,18 @@ class _HomePageState extends State<HomePage> {
                                                       job: e[4],
                                                       image: e[5],
                                                     ),
-                                                    context,
                                                     'save')
                                                 .then((v) {
                                               if (v == 'saved') {
                                                 ZshowDialogs.alert(context,
                                                     'Cadastro realizado com sucesso!');
-                                              } else {
+                                                clearFields();
+                                              } else if (v == 'exist') {
                                                 ZshowDialogs.alert(context,
                                                     'Pessoa já cadastrada!');
+                                              } else if (v == 'empty') {
+                                                ZshowDialogs.alert(context,
+                                                    'Quem visitar, não preenchido!');
                                               }
                                             });
                                           } else {
@@ -220,6 +229,8 @@ class _HomePageState extends State<HomePage> {
                                       if (_formKey.currentState!.validate()) {
                                         getDataVisitor().then((e) {
                                           if (e[5] != '') {
+                                            final Database db = Database(
+                                                alertVisited: alertVisited);
                                             db
                                                 .register(
                                                     ModelVisitors(
@@ -230,7 +241,6 @@ class _HomePageState extends State<HomePage> {
                                                       job: e[4],
                                                       image: e[5],
                                                     ),
-                                                    context,
                                                     'update')
                                                 .then((v) {
                                               if (v == 'updated') {
@@ -334,14 +344,20 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                           ),
                           ElevatedButton(
-                              onPressed: () {
-                                ManageData manageDat = ManageData(
+                              onPressed: () async {
+                                ManageData manageDate = ManageData(
                                   alert: alertAuth,
                                   alertVisited: alertVisited,
                                 );
 
-                                manageDat.authorized();
-                                clearFields();
+                                bool success = false;
+                                await manageDate
+                                    .authorized()
+                                    .then((v) => success = v);
+
+                                if (success) {
+                                  clearFields();
+                                }
                               },
                               child: const Text('Autorizar'))
                         ],

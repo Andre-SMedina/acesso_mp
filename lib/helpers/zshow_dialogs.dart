@@ -86,6 +86,11 @@ class ZshowDialogs {
             });
 
             return TextField(
+              onSubmitted: (v) {
+                if (textController.text != '') {
+                  Navigator.of(context).pop();
+                }
+              },
               focusNode: focusNode,
               controller: textController,
             );
@@ -95,7 +100,9 @@ class ZshowDialogs {
               child: ElevatedButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (textController.text != '') {
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ),

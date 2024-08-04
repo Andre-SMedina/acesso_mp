@@ -1,13 +1,13 @@
-import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 class Database {
-  Future<String> register(
-      ModelVisitors data, BuildContext context, String type) async {
+  final Function alertVisited;
+  Database({required this.alertVisited});
+
+  Future<String> register(ModelVisitors data, String type) async {
     Box<dynamic> box = Hive.box('db');
     Map visitor = {
       'name': data.name.toLowerCase(),
@@ -22,8 +22,9 @@ class Database {
         box.get(Convert.removeAccent(data.name).toLowerCase()) ?? 'notFound';
 
     if (type == 'save' && check == 'notFound') {
-      String visited = '';
-      await ZshowDialogs.visited(context).then((v) => visited = v);
+      String visited = await alertVisited();
+
+      if (visited == '') return 'empty';
 
       String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
       visitor['visit'] = ['$dateNow $visited'];
