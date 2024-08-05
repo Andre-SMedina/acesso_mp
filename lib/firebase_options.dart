@@ -61,4 +61,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'acesso-mp.appspot.com',
     measurementId: 'G-QSJ2B92X47',
   );
+
 }

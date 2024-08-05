@@ -1,5 +1,7 @@
 import 'package:acesso_mp/pages/home_page.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +24,24 @@ Future<void> main() async {
   } catch (e) {
     debugPrint('Erro ao acessar câmera! $e');
   }
+  DocumentReference doc =
+      FirebaseFirestore.instance.collection('teste').doc('mydoc');
+  try {
+    DocumentSnapshot data = await doc.get();
+    Map<String, dynamic> maps = data.data() as Map<String, dynamic>;
+    List<dynamic> list = maps.values.toList();
+
+    var box = Hive.box('db');
+
+    for (var e in list) {
+      box.put(Convert.removeAccent(e['name']).toLowerCase(), e);
+    }
+
+    //   var user = data.get('andre2');
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+
   runApp(const MyApp());
 }
 
