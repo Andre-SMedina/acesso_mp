@@ -28,6 +28,7 @@ Future<void> main() async {
       FirebaseFirestore.instance.collection('teste').doc('mydoc');
   try {
     DocumentSnapshot data = await doc.get();
+    print(data.get('andre luis silva medina'));
     Map<String, dynamic> maps = data.data() as Map<String, dynamic>;
     List<dynamic> list = maps.values.toList();
 

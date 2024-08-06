@@ -66,12 +66,25 @@ class ZshowDialogs {
     }
   }
 
-  static Future<void> alert(BuildContext context, String titleMsg) async {
+  static Future<void> alert(BuildContext context, String titleMsg,
+      {String subTitle = ''}) async {
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(titleMsg),
+          title: Text(
+            titleMsg,
+            textAlign: TextAlign.center,
+          ),
+          content: (subTitle != '')
+              ? Text(
+                  subTitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red),
+                )
+              : null,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           actions: [
             Center(
               child: ElevatedButton(

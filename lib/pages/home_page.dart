@@ -100,6 +100,7 @@ class _HomePageState extends State<HomePage> {
     widget.image = visitor['image'];
     box.put('image', visitor['image']);
     setState(() {});
+    _formKey.currentState!.reset();
     widget.nameField.loadData(Convert.firstUpper(visitor['name']));
     widget.cpfField.loadData(visitor['cpf']);
     widget.rgField.loadData(visitor['rg']);
@@ -113,11 +114,7 @@ class _HomePageState extends State<HomePage> {
     loadImage = true;
     widget.image = '';
     setState(() {});
-    widget.nameField.clearData();
-    widget.cpfField.clearData();
-    widget.rgField.clearData();
-    widget.phoneField.clearData();
-    widget.jobField.clearData();
+    _formKey.currentState!.reset();
   }
 
   alertCamera() {
@@ -222,7 +219,9 @@ class _HomePageState extends State<HomePage> {
                                                   clearFields();
                                                 } else if (v == 'exist') {
                                                   ZshowDialogs.alert(context,
-                                                      'Pessoa já cadastrada!');
+                                                      'Pessoa já cadastrada!',
+                                                      subTitle:
+                                                          'Selecione "Limpar" para depois cadastrar.');
                                                 } else if (v == 'empty') {
                                                   ZshowDialogs.alert(context,
                                                       'Quem visitar, não preenchido!');
@@ -235,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                                           });
                                         }
                                       },
-                                      child: const Text('Novo Cadastro')),
+                                      child: const Text('Cadastrar')),
                                   ElevatedButton(
                                       onPressed: () {
                                         if (_formKey.currentState!.validate()) {
