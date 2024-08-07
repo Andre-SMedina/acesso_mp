@@ -1,5 +1,4 @@
 import 'package:acesso_mp/services/convert.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -16,8 +15,8 @@ class ManageData {
       var visited = await alertVisited();
 
       if (visited != '') {
-        DocumentReference doc =
-            FirebaseFirestore.instance.collection('teste').doc('mydoc');
+        // DocumentReference doc =
+        //     FirebaseFirestore.instance.collection('teste').doc('mydoc');
         String dateNow =
             DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
 
@@ -26,7 +25,7 @@ class ManageData {
         String name = Convert.removeAccent(checked['name'].toLowerCase());
 
         box.put(name, checked);
-        await doc.update({name: checked});
+        // await doc.update({name: checked});
 
         alert();
 
