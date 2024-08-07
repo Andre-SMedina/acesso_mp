@@ -7,10 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbManage {
   static final supabase = Supabase.instance.client;
 
-  static String dateNow =
-      DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
-
   static save(ModelVisitors data, String goal) async {
+    String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+
     await supabase.from('visitors').insert({
       'name': data.name,
       'consult': Convert.removeAccent(data.name).toLowerCase(),
@@ -25,5 +24,12 @@ class DbManage {
 
     await supabase.from('visits').insert(
         {'goal': goal, 'date': dateNow, 'id_visitor': visitor[0]['id']});
+  }
+
+  static Future<List> get(String name) async {
+    var response =
+        await supabase.from('visitors').select().ilike('consult', '%$name%');
+
+    return response;
   }
 }

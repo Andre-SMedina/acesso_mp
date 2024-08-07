@@ -1,8 +1,10 @@
 import 'package:acesso_mp/helpers/search_db.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyDropdown extends StatefulWidget {
   final VoidCallback loadData;
@@ -28,11 +30,16 @@ class MyDropdownState extends State<MyDropdown> {
     var box = Hive.box('db');
 
     List<String> listDropdown = [];
-    List<dynamic> items = searchDb(query);
-    for (var name in items) {
-      var dataVisitor = box.get(name);
-      listDropdown.add(Convert.firstUpper(dataVisitor['name']));
-    }
+    await DbManage.get('sam').then((e) {
+      for (var v in e) {
+        listDropdown.add(Convert.firstUpper(v['name']));
+      }
+    });
+    // List<dynamic> items = searchDb(query);
+    // for (var name in items) {
+    //   var dataVisitor = box.get(name);
+    //   listDropdown.add(Convert.firstUpper(dataVisitor['name']));
+    // }
 
     return listDropdown;
   }
