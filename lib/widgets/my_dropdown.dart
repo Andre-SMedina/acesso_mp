@@ -61,7 +61,15 @@ class MyDropdownState extends State<MyDropdown> {
             focusNode: focusNode,
             autofocus: true,
             decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: 'Pesquisar'),
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'Pesquisar'),
           );
         },
         itemBuilder: (context, suggestion) {

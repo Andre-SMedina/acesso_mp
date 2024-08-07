@@ -75,9 +75,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<String>> getDataVisitor() async {
     var box = Hive.box('db');
+
     String img = cameras.isEmpty
         ? 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
-        : box.get('image');
+        : (box.get('image') == null)
+            ? ''
+            : box.get('image');
 
     return [
       widget.nameField.fieldController.text,
@@ -97,6 +100,7 @@ class _HomePageState extends State<HomePage> {
     widget.image = visitor['image'];
     box.put('image', visitor['image']);
     setState(() {});
+    _formKey.currentState!.reset();
     widget.nameField.loadData(Convert.firstUpper(visitor['name']));
     widget.cpfField.loadData(visitor['cpf']);
     widget.rgField.loadData(visitor['rg']);
@@ -110,11 +114,7 @@ class _HomePageState extends State<HomePage> {
     loadImage = true;
     widget.image = '';
     setState(() {});
-    widget.nameField.clearData();
-    widget.cpfField.clearData();
-    widget.rgField.clearData();
-    widget.phoneField.clearData();
-    widget.jobField.clearData();
+    _formKey.currentState!.reset();
   }
 
   alertCamera() {
@@ -137,236 +137,252 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Controle de Visitantes'),
+        title: const Text('Controle de Acesso ao Ministério Público'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: MyDropdown(
-                  loadData: () {
-                    loadData();
-                  },
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/mp.jpg'),
+              fit: BoxFit.cover,
+              opacity: 0.2),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: MyDropdown(
+                    loadData: () {
+                      loadData();
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              const SizedBox(
-                height: 60,
-                child: Divider(),
-              ),
-              Text(
-                'Informações do Visitante',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 26),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            widget.nameField,
-                            widget.cpfField,
-                            widget.rgField,
-                            widget.phoneField,
-                            widget.jobField,
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        getDataVisitor().then((e) {
-                                          if (e[5] != '') {
-                                            final Database db = Database(
-                                                alertVisited: alertVisited);
+                const SizedBox(
+                  height: 40,
+                  child: Divider(
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  'Informações do Visitante',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 26),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 900),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              widget.nameField,
+                              widget.cpfField,
+                              widget.rgField,
+                              widget.phoneField,
+                              widget.jobField,
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          getDataVisitor().then((e) {
+                                            if (e[5] != '') {
+                                              final Database db = Database(
+                                                  alertVisited: alertVisited);
 
-                                            db
-                                                .register(
-                                                    ModelVisitors(
-                                                      name: e[0],
-                                                      cpf: e[1],
-                                                      rg: e[2],
-                                                      phone: e[3],
-                                                      job: e[4],
-                                                      image: e[5],
-                                                    ),
-                                                    'save')
-                                                .then((v) {
-                                              if (v == 'saved') {
-                                                ZshowDialogs.alert(context,
-                                                    'Cadastro realizado com sucesso!');
-                                                clearFields();
-                                              } else if (v == 'exist') {
-                                                ZshowDialogs.alert(context,
-                                                    'Pessoa já cadastrada!');
-                                              } else if (v == 'empty') {
-                                                ZshowDialogs.alert(context,
-                                                    'Quem visitar, não preenchido!');
-                                              }
-                                            });
-                                          } else {
-                                            ZshowDialogs.alert(context,
-                                                'Imagem não capturada!');
-                                          }
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Novo Cadastro')),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        getDataVisitor().then((e) {
-                                          if (e[5] != '') {
-                                            final Database db = Database(
-                                                alertVisited: alertVisited);
-                                            db
-                                                .register(
-                                                    ModelVisitors(
-                                                      name: e[0],
-                                                      cpf: e[1],
-                                                      rg: e[2],
-                                                      phone: e[3],
-                                                      job: e[4],
-                                                      image: e[5],
-                                                    ),
-                                                    'update')
-                                                .then((v) {
-                                              if (v == 'updated') {
-                                                ZshowDialogs.alert(context,
-                                                    'Registro atualizado!');
-                                              } else {
-                                                ZshowDialogs.alert(context,
-                                                    'Registro não encontrado!');
-                                              }
-                                            });
-                                          } else {
-                                            ZshowDialogs.alert(context,
-                                                'Imagem não capturada!');
-                                          }
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Atualizar')),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color.fromARGB(255, 254, 3, 3)),
-                                  onPressed: () {
-                                    clearFields();
-                                  },
-                                  child: const Text(
-                                    'Limpar',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                ElevatedButton(
+                                              db
+                                                  .register(
+                                                      ModelVisitors(
+                                                        name: e[0],
+                                                        cpf: e[1],
+                                                        rg: e[2],
+                                                        phone: e[3],
+                                                        job: e[4],
+                                                        image: e[5],
+                                                      ),
+                                                      'save')
+                                                  .then((v) {
+                                                if (v == 'saved') {
+                                                  ZshowDialogs.alert(context,
+                                                      'Cadastro realizado com sucesso!');
+                                                  clearFields();
+                                                } else if (v == 'exist') {
+                                                  ZshowDialogs.alert(context,
+                                                      'Pessoa já cadastrada!',
+                                                      subTitle:
+                                                          'Selecione "Limpar" para depois cadastrar.');
+                                                } else if (v == 'empty') {
+                                                  ZshowDialogs.alert(context,
+                                                      'Quem visitar, não preenchido!');
+                                                }
+                                              });
+                                            } else {
+                                              ZshowDialogs.alert(context,
+                                                  'Imagem não capturada!');
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Cadastrar')),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          getDataVisitor().then((e) {
+                                            if (e[5] != '') {
+                                              final Database db = Database(
+                                                  alertVisited: alertVisited);
+                                              db
+                                                  .register(
+                                                      ModelVisitors(
+                                                        name: e[0],
+                                                        cpf: e[1],
+                                                        rg: e[2],
+                                                        phone: e[3],
+                                                        job: e[4],
+                                                        image: e[5],
+                                                      ),
+                                                      'update')
+                                                  .then((v) {
+                                                if (v == 'updated') {
+                                                  ZshowDialogs.alert(context,
+                                                      'Registro atualizado!');
+                                                } else {
+                                                  ZshowDialogs.alert(context,
+                                                      'Registro não encontrado!');
+                                                }
+                                              });
+                                            } else {
+                                              ZshowDialogs.alert(context,
+                                                  'Imagem não capturada!');
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Atualizar')),
+                                  ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color.fromARGB(
-                                            255, 10, 1, 194)),
+                                            255, 254, 3, 3)),
                                     onPressed: () {
-                                      ZshowDialogs.historic(context, visitor);
+                                      clearFields();
                                     },
                                     child: const Text(
-                                      'Histórico',
+                                      'Limpar',
                                       style: TextStyle(color: Colors.white),
-                                    ))
-                              ],
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 10, 1, 194)),
+                                      onPressed: () {
+                                        ZshowDialogs.historic(context, visitor);
+                                      },
+                                      child: const Text(
+                                        'Histórico',
+                                        style: TextStyle(color: Colors.white),
+                                      ))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                height: 350,
+                                width: 320,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(width: 2),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Center(
+                                  child: (loadImage)
+                                      ? Column(
+                                          children: [
+                                            Expanded(
+                                              child: (widget.image == '')
+                                                  ? const Icon(
+                                                      Icons
+                                                          .image_not_supported_outlined,
+                                                      size: 200,
+                                                    )
+                                                  : Image.memory(
+                                                      base64Decode(
+                                                          widget.image),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      loadImage = false;
+                                                    });
+                                                  },
+                                                  child:
+                                                      const Text('Capturar')),
+                                            )
+                                          ],
+                                        )
+                                      : (cameras.isEmpty)
+                                          ? const Text('Câmera não encontrada!')
+                                          : CameraApp(
+                                              cameras: cameras,
+                                              alert: alertCamera,
+                                            ),
+                                ),
+                              ),
                             ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  ManageData manageDate = ManageData(
+                                    alert: alertAuth,
+                                    alertVisited: alertVisited,
+                                  );
+
+                                  bool success = false;
+                                  await manageDate
+                                      .authorized()
+                                      .then((v) => success = v);
+
+                                  if (success) {
+                                    clearFields();
+                                  }
+                                },
+                                child: const Text('Autorizar'))
                           ],
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              height: 350,
-                              width: 320,
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                child: (loadImage)
-                                    ? Column(
-                                        children: [
-                                          Expanded(
-                                            child: (widget.image == '')
-                                                ? const Icon(
-                                                    Icons
-                                                        .image_not_supported_outlined,
-                                                    size: 200,
-                                                  )
-                                                : Image.memory(
-                                                    base64Decode(widget.image),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: ElevatedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    loadImage = false;
-                                                  });
-                                                },
-                                                child: const Text('Capturar')),
-                                          )
-                                        ],
-                                      )
-                                    : (cameras.isEmpty)
-                                        ? const Text('Câmera não encontrada!')
-                                        : CameraApp(
-                                            cameras: cameras,
-                                            alert: alertCamera,
-                                          ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                ManageData manageDate = ManageData(
-                                  alert: alertAuth,
-                                  alertVisited: alertVisited,
-                                );
-
-                                bool success = false;
-                                await manageDate
-                                    .authorized()
-                                    .then((v) => success = v);
-
-                                if (success) {
-                                  clearFields();
-                                }
-                              },
-                              child: const Text('Autorizar'))
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

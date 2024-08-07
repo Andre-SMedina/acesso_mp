@@ -23,6 +23,8 @@ class ModelHomeFields extends StatelessWidget {
         controller: fieldController,
         inputFormatters: listInputFormat,
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
           labelText: text,
           helperText: '',
         ),

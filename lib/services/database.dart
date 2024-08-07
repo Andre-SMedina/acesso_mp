@@ -1,5 +1,6 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -17,6 +18,8 @@ class Database {
       'job': data.job,
       'image': data.image,
     };
+    DocumentReference doc =
+        FirebaseFirestore.instance.collection('teste').doc('mydoc');
 
     var check =
         box.get(Convert.removeAccent(data.name).toLowerCase()) ?? 'notFound';
@@ -27,15 +30,21 @@ class Database {
       if (visited == '') return 'empty';
 
       String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
-      visitor['visit'] = ['$dateNow $visited'];
+      visitor['visit'] = ['$dateNow|$visited'];
 
-      box.put(Convert.removeAccent(data.name.toLowerCase()), visitor);
+      String name = Convert.removeAccent(data.name.toLowerCase());
+
+      box.put(name, visitor);
+      await doc.update({name: visitor});
 
       return 'saved';
     }
     if (type == 'update' && check != 'notFound') {
       visitor['visit'] = check['visit'];
-      box.put(Convert.removeAccent(data.name.toLowerCase()), visitor);
+      String name = Convert.removeAccent(data.name.toLowerCase());
+      box.put(name, visitor);
+      await doc.update({name: visitor});
+
       return 'updated';
     }
 
