@@ -21,6 +21,7 @@ class MyDropdownState extends State<MyDropdown> {
   TextEditingController searchController = TextEditingController();
   List<String> filterList = [];
   List<String> visitedList = [];
+  List listVisitor = [];
 
   Future<List<dynamic>> _getSuggestions(String query) async {
     if (query.length < 3) {
@@ -30,9 +31,10 @@ class MyDropdownState extends State<MyDropdown> {
     var box = Hive.box('db');
 
     List<String> listDropdown = [];
-    await DbManage.get('sam').then((e) {
+    await DbManage.get(query).then((e) {
       for (var v in e) {
         listDropdown.add(Convert.firstUpper(v['name']));
+        listVisitor.add(v);
       }
     });
     // List<dynamic> items = searchDb(query);
@@ -46,10 +48,13 @@ class MyDropdownState extends State<MyDropdown> {
 
   void foundVisitor(String suggestion) async {
     var box = Hive.box('db');
-    var dataVisitor = box.get(Convert.removeAccent(suggestion).toLowerCase());
-    await box.put('visitor', dataVisitor);
-    searchController.text = '';
-    widget.loadData();
+    var visitor = listVisitor.where((e) {
+      return e['name'] == suggestion.toLowerCase();
+    });
+    // var visitor = box.get(Convert.removeAccent(suggestion).toLowerCase());
+    // await box.put('visitor', visitor);
+    // searchController.text = '';
+    // widget.loadData();
   }
 
   @override

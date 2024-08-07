@@ -26,10 +26,39 @@ class DbManage {
         {'goal': goal, 'date': dateNow, 'id_visitor': visitor[0]['id']});
   }
 
-  static Future<List> get(String name) async {
-    var response =
+  static Future<dynamic> get(String name) async {
+    List<Map> response =
         await supabase.from('visitors').select().ilike('consult', '%$name%');
 
-    return response;
+    List<Map> visits = [];
+
+    for (var v in response) {
+      var visit =
+          await supabase.from('visits').select().eq('id_visitor', v['id']);
+
+      for (var e in visit) {
+        visits.add(e);
+      }
+    }
+
+    print(visits);
+
+    // var visitors = response.map((e) async {
+    //   var listVisits =
+    //       await supabase.from('visits').select().eq('id_visitor', e['id']).th;
+    // visitor['visit'] = ['$dateNow|$visited'];
+
+    //   for (var v in listVisits) {
+    //     print(v);
+    //     visits.add('${v['date']}|${v['goal']}');
+    //   }
+    //   e['visits'] = visits;
+
+    //   return e;
+    // });
+
+    // print(visitors);
+
+    return [];
   }
 }

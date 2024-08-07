@@ -94,6 +94,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadData() {
+    // DbManage.get();
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -157,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: MyDropdown(
                     loadData: () {
-                      loadData();
+                      loadData;
                     },
                   ),
                 ),
