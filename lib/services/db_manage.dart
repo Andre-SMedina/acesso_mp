@@ -27,21 +27,24 @@ class DbManage {
   }
 
   static Future<dynamic> get(String name) async {
-    List<Map> response =
-        await supabase.from('visitors').select().ilike('consult', '%$name%');
+    List<Map> visitors = await supabase
+        .from('visitors')
+        .select('*, visits(*)')
+        .ilike('consult', '%$name%');
+    // await supabase.from('visitors').select().ilike('consult', '%$name%');
 
-    List<Map> visits = [];
+    // List<Map> visits = [];
 
-    for (var v in response) {
-      var visit =
-          await supabase.from('visits').select().eq('id_visitor', v['id']);
+    // for (var v in response) {
+    //   var visit =
+    //       await supabase.from('visits').select().eq('id_visitor', v['id']);
 
-      for (var e in visit) {
-        visits.add(e);
-      }
-    }
+    //   for (var e in visit) {
+    //     visits.add(e);
+    //   }
+    // }
 
-    print(visits);
+    // print(response);
 
     // var visitors = response.map((e) async {
     //   var listVisits =
@@ -59,6 +62,6 @@ class DbManage {
 
     // print(visitors);
 
-    return [];
+    return visitors;
   }
 }

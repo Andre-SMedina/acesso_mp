@@ -47,10 +47,11 @@ class MyDropdownState extends State<MyDropdown> {
   }
 
   void foundVisitor(String suggestion) async {
-    var box = Hive.box('db');
+    // var box = Hive.box('db');
     var visitor = listVisitor.where((e) {
       return e['name'] == suggestion.toLowerCase();
-    });
+    }).toList();
+    // print(visitor['name']);
     // var visitor = box.get(Convert.removeAccent(suggestion).toLowerCase());
     // await box.put('visitor', visitor);
     // searchController.text = '';
