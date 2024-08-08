@@ -1,3 +1,4 @@
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -7,8 +8,15 @@ class ZshowDialogs {
     var box = Hive.box('db');
     var checked = box.get('visitor');
 
+    var check = null;
+    DbManage.get('fff').then((e) {
+      print(e);
+    });
+
+    return;
+
     if (checked != null && checked != '') {
-      var visitorHistoric = checked['visit'];
+      var visitorHistoric = checked['visits'];
 
       await showDialog(
         context: context,
@@ -32,13 +40,12 @@ class ZshowDialogs {
                             children: [
                               const TextSpan(text: 'Registro de entrada: '),
                               TextSpan(
-                                text: '${visitorHistoric[index].split('|')[0]}',
+                                text: '${visitorHistoric[index]['date']}',
                                 style: const TextStyle(
                                     color: Color.fromARGB(255, 119, 0, 152)),
                               ),
                               TextSpan(
-                                text:
-                                    ' - ${visitorHistoric[index].split('|')[1]}',
+                                text: ' - ${visitorHistoric[index]['goal']}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 21, 0, 209)),

@@ -28,8 +28,6 @@ class MyDropdownState extends State<MyDropdown> {
       return [];
     }
 
-    var box = Hive.box('db');
-
     List<String> listDropdown = [];
     await DbManage.get(query).then((e) {
       for (var v in e) {
@@ -37,25 +35,19 @@ class MyDropdownState extends State<MyDropdown> {
         listVisitor.add(v);
       }
     });
-    // List<dynamic> items = searchDb(query);
-    // for (var name in items) {
-    //   var dataVisitor = box.get(name);
-    //   listDropdown.add(Convert.firstUpper(dataVisitor['name']));
-    // }
 
     return listDropdown;
   }
 
   void foundVisitor(String suggestion) async {
-    // var box = Hive.box('db');
+    var box = Hive.box('db');
     var visitor = listVisitor.where((e) {
-      return e['name'] == suggestion.toLowerCase();
-    }).toList();
-    // print(visitor['name']);
-    // var visitor = box.get(Convert.removeAccent(suggestion).toLowerCase());
-    // await box.put('visitor', visitor);
-    // searchController.text = '';
-    // widget.loadData();
+      return e['name'].toLowerCase() == suggestion.toLowerCase();
+    }).toList()[0];
+
+    await box.put('visitor', visitor);
+    searchController.text = '';
+    widget.loadData();
   }
 
   @override

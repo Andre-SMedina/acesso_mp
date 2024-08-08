@@ -1,6 +1,5 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,6 +19,7 @@ class DbManage {
       'image': data.image
     });
 
+    //pega o registro atual no banco para ter acesso ao id e criar a foreng key
     var visitor = await supabase.from('visitors').select().eq('cpf', data.cpf);
 
     await supabase.from('visits').insert(
@@ -31,37 +31,21 @@ class DbManage {
         .from('visitors')
         .select('*, visits(*)')
         .ilike('consult', '%$name%');
-    // await supabase.from('visitors').select().ilike('consult', '%$name%');
-
-    // List<Map> visits = [];
-
-    // for (var v in response) {
-    //   var visit =
-    //       await supabase.from('visits').select().eq('id_visitor', v['id']);
-
-    //   for (var e in visit) {
-    //     visits.add(e);
-    //   }
-    // }
-
-    // print(response);
-
-    // var visitors = response.map((e) async {
-    //   var listVisits =
-    //       await supabase.from('visits').select().eq('id_visitor', e['id']).th;
-    // visitor['visit'] = ['$dateNow|$visited'];
-
-    //   for (var v in listVisits) {
-    //     print(v);
-    //     visits.add('${v['date']}|${v['goal']}');
-    //   }
-    //   e['visits'] = visits;
-
-    //   return e;
-    // });
-
-    // print(visitors);
 
     return visitors;
+  }
+
+  static update(ModelVisitors data) {
+    print(data.cpf);
+    print(data.rg);
+    supabase.from('visitors').update({
+      // 'name': data.name,
+      // 'consult': Convert.removeAccent(data.name).toLowerCase(),
+      // 'cpf': data.cpf,
+      'rg': data.rg,
+      // 'phone': data.phone,
+      // 'job': data.job,
+      // 'image': data.image
+    }).eq('cpf', data.cpf);
   }
 }

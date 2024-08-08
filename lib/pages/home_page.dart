@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: MyDropdown(
                     loadData: () {
-                      loadData;
+                      loadData();
                     },
                   ),
                 ),
