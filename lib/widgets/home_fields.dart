@@ -19,9 +19,9 @@ class ModelHomeFields extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 3.0),
       child: TextFormField(
-        validator: Validatorless.multiple([]),
+        validator: Validatorless.multiple(listValidator),
         controller: fieldController,
-        inputFormatters: [],
+        inputFormatters: listInputFormat,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,

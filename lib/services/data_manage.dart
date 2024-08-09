@@ -1,6 +1,6 @@
-import 'package:acesso_mp/services/convert.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ManageData {
   final Function alertVisited;
@@ -12,20 +12,16 @@ class ManageData {
     var checked = box.get('visitor');
 
     if (checked != null && checked != '') {
-      var visited = await alertVisited();
+      var goal = await alertVisited();
 
-      if (visited != '') {
-        // DocumentReference doc =
-        //     FirebaseFirestore.instance.collection('teste').doc('mydoc');
+      if (goal != '') {
         String dateNow =
             DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
 
-        checked['visit'].add('$dateNow|$visited');
+        SupabaseClient supabase = Supabase.instance.client;
 
-        String name = Convert.removeAccent(checked['name'].toLowerCase());
-
-        box.put(name, checked);
-        // await doc.update({name: checked});
+        await supabase.from('visits').insert(
+            {'goal': goal, 'date': dateNow, 'id_visitor': checked['id']});
 
         alert();
 

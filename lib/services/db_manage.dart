@@ -4,26 +4,38 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DbManage {
-  static final supabase = Supabase.instance.client;
+  static final SupabaseClient supabase = Supabase.instance.client;
 
-  static save(ModelVisitors data, String goal) async {
+  static Future<bool> save(ModelVisitors data, String goal) async {
     String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+    bool response = false;
 
-    await supabase.from('visitors').insert({
-      'name': data.name,
-      'consult': Convert.removeAccent(data.name).toLowerCase(),
-      'cpf': data.cpf,
-      'rg': data.rg,
-      'phone': data.phone,
-      'job': data.job,
-      'image': data.image
-    });
+    try {
+      await supabase.from('visitors').insert({
+        'name': data.name,
+        'consult': Convert.removeAccent(data.name).toLowerCase(),
+        'cpf': data.cpf,
+        'rg': data.rg,
+        'phone': data.phone,
+        'job': data.job,
+        'image': data.image
+      });
 
-    //pega o registro atual no banco para ter acesso ao id e criar a foreng key
-    var visitor = await supabase.from('visitors').select().eq('cpf', data.cpf);
+      response = true;
+    } catch (err) {
+      response = false;
+    }
 
-    await supabase.from('visits').insert(
-        {'goal': goal, 'date': dateNow, 'id_visitor': visitor[0]['id']});
+    if (response) {
+      //pega o registro atual no banco para ter acesso ao id e criar a foreng key
+      var visitor =
+          await supabase.from('visitors').select().eq('cpf', data.cpf);
+
+      await supabase.from('visits').insert(
+          {'goal': goal, 'date': dateNow, 'id_visitor': visitor[0]['id']});
+    }
+
+    return response;
   }
 
   static Future<dynamic> get(String name) async {
@@ -35,17 +47,15 @@ class DbManage {
     return visitors;
   }
 
-  static update(ModelVisitors data) {
-    print(data.cpf);
-    print(data.rg);
-    supabase.from('visitors').update({
-      // 'name': data.name,
-      // 'consult': Convert.removeAccent(data.name).toLowerCase(),
-      // 'cpf': data.cpf,
+  static update(ModelVisitors data) async {
+    await supabase.from('visitors').update({
+      'name': data.name,
+      'consult': Convert.removeAccent(data.name).toLowerCase(),
+      'cpf': data.cpf,
       'rg': data.rg,
-      // 'phone': data.phone,
-      // 'job': data.job,
-      // 'image': data.image
+      'phone': data.phone,
+      'job': data.job,
+      'image': data.image
     }).eq('cpf', data.cpf);
   }
 }

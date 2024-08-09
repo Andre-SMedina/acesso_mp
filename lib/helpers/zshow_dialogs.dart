@@ -1,4 +1,3 @@
-import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -7,13 +6,6 @@ class ZshowDialogs {
       BuildContext context, List<String> visitor) async {
     var box = Hive.box('db');
     var checked = box.get('visitor');
-
-    var check = null;
-    DbManage.get('fff').then((e) {
-      print(e);
-    });
-
-    return;
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];

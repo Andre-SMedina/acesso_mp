@@ -1,10 +1,8 @@
-import 'package:acesso_mp/helpers/search_db.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyDropdown extends StatefulWidget {
   final VoidCallback loadData;
@@ -27,6 +25,7 @@ class MyDropdownState extends State<MyDropdown> {
     if (query.length < 3) {
       return [];
     }
+    listVisitor = [];
 
     List<String> listDropdown = [];
     await DbManage.get(query).then((e) {
