@@ -1,6 +1,7 @@
 import 'package:acesso_mp/pages/home_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,15 +10,15 @@ List<CameraDescription> cameras = [];
 Future<void> main() async {
   //garante que o binding do Flutter esteja inicializado antes de executar qualquer código que dependa dele. No Flutter, o binding é a ponte entre o código Dart e a plataforma subjacente (Android ou iOS). Ele é responsável por fornecer acesso a recursos do sistema, como a câmera, armazenamento, rede, etc.
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '../../.env');
 
   await Supabase.initialize(
-    url: 'https://volhccyinzyybaunrryp.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvbGhjY3lpbnp5eWJhdW5ycnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI5NzY3MDIsImV4cCI6MjAzODU1MjcwMn0.sgT59XcSgDosrQ1Q8XgFHMhDH5fKhz0UEQFkrOLl6v0',
+    url: dotenv.env['URL_SUPABASE']!,
+    anonKey: dotenv.env['ANONKEY']!,
   );
 
-  await Supabase.instance.client.auth
-      .signInWithPassword(email: 'admin@acessomp.com', password: '123');
+  await Supabase.instance.client.auth.signInWithPassword(
+      email: dotenv.env['EMAIL'], password: dotenv.env['SENHA']!);
 
   await Hive.openBox('db');
 
