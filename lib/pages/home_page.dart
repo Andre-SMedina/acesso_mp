@@ -7,7 +7,7 @@ import 'package:acesso_mp/widgets/home_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/database.dart';
-import 'package:acesso_mp/services/manage_data.dart';
+import 'package:acesso_mp/services/data_manage.dart';
 import 'package:acesso_mp/widgets/camera.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:camera/camera.dart';
@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadData() {
+    // DbManage.get();
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -225,6 +226,9 @@ class _HomePageState extends State<HomePage> {
                                                 } else if (v == 'empty') {
                                                   ZshowDialogs.alert(context,
                                                       'Quem visitar, não preenchido!');
+                                                } else if (v == 'cpfExist') {
+                                                  ZshowDialogs.alert(context,
+                                                      'CPF já cadastrado!');
                                                 }
                                               });
                                             } else {

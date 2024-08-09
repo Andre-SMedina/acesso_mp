@@ -1,5 +1,5 @@
-import 'package:acesso_mp/helpers/search_db.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
@@ -19,28 +19,32 @@ class MyDropdownState extends State<MyDropdown> {
   TextEditingController searchController = TextEditingController();
   List<String> filterList = [];
   List<String> visitedList = [];
+  List listVisitor = [];
 
   Future<List<dynamic>> _getSuggestions(String query) async {
     if (query.length < 3) {
       return [];
     }
-
-    var box = Hive.box('db');
+    listVisitor = [];
 
     List<String> listDropdown = [];
-    List<dynamic> items = searchDb(query);
-    for (var name in items) {
-      var dataVisitor = box.get(name);
-      listDropdown.add(Convert.firstUpper(dataVisitor['name']));
-    }
+    await DbManage.get(query).then((e) {
+      for (var v in e) {
+        listDropdown.add(Convert.firstUpper(v['name']));
+        listVisitor.add(v);
+      }
+    });
 
     return listDropdown;
   }
 
   void foundVisitor(String suggestion) async {
     var box = Hive.box('db');
-    var dataVisitor = box.get(Convert.removeAccent(suggestion).toLowerCase());
-    await box.put('visitor', dataVisitor);
+    var visitor = listVisitor.where((e) {
+      return e['name'].toLowerCase() == suggestion.toLowerCase();
+    }).toList()[0];
+
+    await box.put('visitor', visitor);
     searchController.text = '';
     widget.loadData();
   }
