@@ -1,4 +1,5 @@
 import 'package:acesso_mp/pages/home_page.dart';
+import 'package:acesso_mp/pages/login_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,10 +18,8 @@ Future<void> main() async {
     anonKey: dotenv.env['ANONKEY']!,
   );
 
-  await Supabase.instance.client.auth.signInWithPassword(
-      email: dotenv.env['EMAIL'], password: dotenv.env['SENHA']!);
-
   await Hive.openBox('db');
+  await Hive.box('db').putAll({'visitor': '', 'image': ''});
 
   try {
     cameras = await availableCameras();
@@ -40,31 +39,36 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Acesso MP',
       theme: ThemeData(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                  side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
-                  elevation: 3,
-                  textStyle: const TextStyle(color: Colors.black))),
-          appBarTheme: const AppBarTheme(
-            titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
-            backgroundColor: Color.fromARGB(255, 14, 0, 167),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+                side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+                elevation: 3,
+                textStyle: const TextStyle(color: Colors.black))),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
+          backgroundColor: Color.fromARGB(255, 14, 0, 167),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(borderSide: BorderSide()),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(),
           ),
-          inputDecorationTheme: const InputDecorationTheme(
-            border: OutlineInputBorder(borderSide: BorderSide()),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
-            ),
+          focusedBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
           ),
-          textTheme: const TextTheme(
-              headlineLarge:
-                  TextStyle(fontSize: 30, fontWeight: FontWeight.bold))),
-      home: HomePage(
-        cameras: cameras,
+        ),
+        textTheme: const TextTheme(
+            headlineLarge:
+                TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
       ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginPage(),
+        '/home': (context) => HomePage(
+              cameras: cameras,
+            ),
+      },
     );
   }
 }

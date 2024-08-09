@@ -14,6 +14,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
@@ -93,7 +94,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadData() {
-    // DbManage.get();
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -139,6 +139,27 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Controle de Acesso ao Ministério Público'),
+        actions: [
+          Row(
+            children: [
+              const Text(
+                'Sair',
+                style: TextStyle(color: Colors.white),
+              ),
+              IconButton(
+                  padding: const EdgeInsets.only(right: 30, left: 10),
+                  onPressed: () async {
+                    var supabase = Supabase.instance.client;
+                    await supabase.auth.signOut();
+                    Navigator.pushReplacementNamed(context, '/');
+                  },
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                  ))
+            ],
+          )
+        ],
       ),
       body: Container(
         height: double.infinity,
