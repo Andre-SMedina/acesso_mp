@@ -11,12 +11,20 @@ List<CameraDescription> cameras = [];
 Future<void> main() async {
   //garante que o binding do Flutter esteja inicializado antes de executar qualquer código que dependa dele. No Flutter, o binding é a ponte entre o código Dart e a plataforma subjacente (Android ou iOS). Ele é responsável por fornecer acesso a recursos do sistema, como a câmera, armazenamento, rede, etc.
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '../../.env');
+  // await dotenv.load(fileName: '../../.env');
+  // String apiUrl =
+  //     const String.fromEnvironment('URL_SUPABASE', defaultValue: 'default_key');
+  // String apiKey =
+  //     const String.fromEnvironment('ANONKEY', defaultValue: 'default_key');
 
   await Supabase.initialize(
-    url: dotenv.env['URL_SUPABASE']!,
-    anonKey: dotenv.env['ANONKEY']!,
-  );
+      // url: dotenv.env['URL_SUPABASE']!,
+      // anonKey: dotenv.env['ANONKEY']!,
+      // url: apiUrl,
+      // anonKey: apiKey,
+      url: 'https://volhccyinzyybaunrryp.supabase.co',
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvbGhjY3lpbnp5eWJhdW5ycnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI5NzY3MDIsImV4cCI6MjAzODU1MjcwMn0.sgT59XcSgDosrQ1Q8XgFHMhDH5fKhz0UEQFkrOLl6v0');
 
   await Hive.openBox('db');
   await Hive.box('db').putAll({'visitor': '', 'image': ''});
