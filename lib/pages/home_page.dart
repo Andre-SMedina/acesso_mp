@@ -261,8 +261,17 @@ class _HomePageState extends State<HomePage> {
                                       },
                                       child: const Text('Cadastrar')),
                                   ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
+                                          bool validate = false;
+
+                                          await ZshowDialogs.update(context)
+                                              .then((e) {
+                                            validate = e;
+                                          });
+
+                                          if (!validate) return;
+
                                           getDataVisitor().then((e) {
                                             if (e[5] != '') {
                                               final Database db = Database(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 
 class ZshowDialogs {
@@ -140,5 +141,38 @@ class ZshowDialogs {
     );
 
     return textController.text;
+  }
+
+  static Future<bool> update(BuildContext context) async {
+    bool validate = false;
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Deseja atualizar os dados?'),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      validate = true;
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Sim')),
+                const SizedBox(
+                  width: 30,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Não'))
+              ],
+            ),
+          );
+        });
+
+    return validate;
   }
 }

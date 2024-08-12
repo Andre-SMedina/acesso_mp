@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -30,6 +31,8 @@ class LoginPageState extends State<LoginPage> {
       if (auth == 'success') {
         Navigator.pushReplacementNamed(context, '/home');
         _formKey.currentState!.reset();
+      } else {
+        ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
     }
   }
