@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,6 +24,7 @@ class LoginPageState extends State<LoginPage> {
 
         auth = 'success';
       } catch (err) {
+        ZshowDialogs.alert(context, 'Usuário ou senha incorreto!');
         debugPrint(err.toString());
         auth = 'failed';
       }
@@ -75,7 +77,9 @@ class LoginPageState extends State<LoginPage> {
                         color: Colors.teal[700],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(
+                      height: 16,
+                    ),
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(
