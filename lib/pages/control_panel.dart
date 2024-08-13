@@ -1,5 +1,7 @@
-import 'package:acesso_mp/widgets/item_control_panel.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
+import 'package:acesso_mp/models/counter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ControlPanel extends StatefulWidget {
   const ControlPanel({super.key});
@@ -35,8 +37,15 @@ class _ControlPanelState extends State<ControlPanel> {
             padding: const EdgeInsets.only(top: 25),
             child: Column(
               children: [
+                // Consumer<Counter>(builder: (context, counter, child) {
+                //   return Text('${counter.count}');
+                // }),
                 ElevatedButton(
-                    onPressed: () {}, child: const Text('Cadastrar operador')),
+                    onPressed: () async {
+                      context.read<Counter>().alert(context, 'Agora sim');
+                    },
+                    child: const Text('Cadastrar operador',
+                        style: TextStyle(fontSize: 16))),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -60,7 +69,9 @@ class _ControlPanelState extends State<ControlPanel> {
                                 child: Text(
                                   'Operador',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
                                 ),
                               ),
                               Padding(
@@ -105,7 +116,7 @@ class _ControlPanelState extends State<ControlPanel> {
                                                 fontSize: 16,
                                                 color: _isHovered[index]
                                                     ? const Color.fromARGB(
-                                                        255, 164, 13, 194)
+                                                        255, 125, 0, 150)
                                                     : Colors.black,
                                               ),
                                             ),
