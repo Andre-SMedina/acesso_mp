@@ -9,6 +9,20 @@ class ControlPanel extends StatefulWidget {
 }
 
 class _ControlPanelState extends State<ControlPanel> {
+  final List<List<String>> data = [
+    ['Alice Maria das Graças', 'Formoso do Araguaia'],
+    ['Bob Burnquist do Skate', 'Araguaína'],
+    ['Charlie Bonovitch Garcia', 'Tocantinópolis'],
+  ];
+
+  final List<bool> _isHovered = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _isHovered.addAll(List.generate(data.length, (index) => false));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,41 +37,93 @@ class _ControlPanelState extends State<ControlPanel> {
               children: [
                 ElevatedButton(
                     onPressed: () {}, child: const Text('Cadastrar operador')),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.only(top: 30),
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    border: Border.all(width: 1),
-                  ),
-                  // ignore: prefer_const_constructors
-                  child: Column(
-                    children: const [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: Table(
+                        border: TableBorder
+                            .all(), // Adiciona bordas às células da tabela
+                        columnWidths: const {
+                          0: FlexColumnWidth(
+                              2), // Define a largura da primeira coluna
+                          1: FlexColumnWidth(
+                              1), // Define a largura da segunda coluna
+                        },
                         children: [
-                          Text('OPERADOR',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text('SETOR',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          const TableRow(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Operador',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Lotação',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ],
+                          ),
+                          ...data.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            List<String> row = entry.value;
+                            return TableRow(
+                              children: row.asMap().entries.map((cellEntry) {
+                                int cellIndex = cellEntry.key;
+                                String cell = cellEntry.value;
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: cellIndex == 0
+                                      ? MouseRegion(
+                                          onEnter: (event) {
+                                            setState(() {
+                                              _isHovered[index] = true;
+                                            });
+                                          },
+                                          onExit: (event) {
+                                            setState(() {
+                                              _isHovered[index] = false;
+                                            });
+                                          },
+                                          cursor: SystemMouseCursors.click,
+                                          child: GestureDetector(
+                                            onTap: () => print('oi'),
+                                            child: Text(
+                                              cell,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: _isHovered[index]
+                                                    ? const Color.fromARGB(
+                                                        255, 164, 13, 194)
+                                                    : Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Text(
+                                          cell,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                );
+                              }).toList(),
+                            );
+                          }),
                         ],
                       ),
-                      Divider(
-                        thickness: 1.5,
-                        color: Colors.black,
-                      ),
-                      ItemControlPanel(
-                          operator: 'Maria Clara das Neves',
-                          sector: 'Formoso do Araguaia'),
-                      ItemControlPanel(
-                          operator: 'Maria Clara', sector: 'Gurupi'),
-                      ItemControlPanel(
-                          operator: 'José Roberto dos Santos',
-                          sector: 'Babaçulândia'),
-                    ],
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
