@@ -1,5 +1,5 @@
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
-import 'package:acesso_mp/models/counter.dart';
+import 'package:acesso_mp/models/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +42,7 @@ class _ControlPanelState extends State<ControlPanel> {
                 // }),
                 ElevatedButton(
                     onPressed: () async {
-                      context.read<Counter>().alert(context, 'Agora sim');
+                      context.read<XProvider>().alert(context, 'Agora sim');
                     },
                     child: const Text('Cadastrar operador',
                         style: TextStyle(fontSize: 16))),

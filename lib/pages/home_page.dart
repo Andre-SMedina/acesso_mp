@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
+import 'package:acesso_mp/models/x_provider.dart';
+import 'package:acesso_mp/pages/control_panel.dart';
 import 'package:acesso_mp/widgets/home_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
@@ -14,6 +16,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -236,24 +239,30 @@ class _HomePageState extends State<HomePage> {
                                                       'save')
                                                   .then((v) {
                                                 if (v == 'saved') {
-                                                  ZshowDialogs.alert(context,
+                                                  context.read<XProvider>().alert(
+                                                      context,
                                                       'Cadastro realizado com sucesso!');
                                                   clearFields();
                                                 } else if (v == 'exist') {
-                                                  ZshowDialogs.alert(context,
+                                                  context.read<XProvider>().alert(
+                                                      context,
                                                       'Pessoa já cadastrada!',
                                                       subTitle:
                                                           'Selecione "Limpar" para depois cadastrar.');
                                                 } else if (v == 'empty') {
-                                                  ZshowDialogs.alert(context,
+                                                  context.read<XProvider>().alert(
+                                                      context,
                                                       'Quem visitar, não preenchido!');
                                                 } else if (v == 'cpfExist') {
-                                                  ZshowDialogs.alert(context,
-                                                      'CPF já cadastrado!');
+                                                  context
+                                                      .read<XProvider>()
+                                                      .alert(context,
+                                                          'CPF já cadastrado!');
                                                 }
                                               });
                                             } else {
-                                              ZshowDialogs.alert(context,
+                                              context.read<XProvider>().alert(
+                                                  context,
                                                   'Imagem não capturada!');
                                             }
                                           });
