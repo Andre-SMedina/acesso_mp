@@ -1,4 +1,5 @@
-// import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
@@ -78,12 +79,15 @@ class _HomePageState extends State<HomePage> {
 
   List<String> getDataVisitor() {
     var box = Hive.box('db');
+    print(box.get('image') == '');
 
-    String img = cameras.isEmpty
+    String img = (cameras.isEmpty && box.get('image') == '')
         ? 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
         : (box.get('image') == null)
             ? ''
             : box.get('image');
+
+    print('------------------------------------$img');
 
     return [
       widget.nameField.fieldController.text,
@@ -279,7 +283,6 @@ class _HomePageState extends State<HomePage> {
 
                                           if (!validate) return;
                                           List dataVisitor = getDataVisitor();
-
                                           if (dataVisitor[5] != '') {
                                             final Database db = Database(
                                                 alertVisited: alertVisited);
@@ -297,15 +300,18 @@ class _HomePageState extends State<HomePage> {
                                                     'update')
                                                 .then((v) {
                                               if (v == 'updated') {
-                                                ZshowDialogs.alert(context,
+                                                context.read<XProvider>().alert(
+                                                    context,
                                                     'Registro atualizado!');
                                               } else {
-                                                ZshowDialogs.alert(context,
+                                                context.read<XProvider>().alert(
+                                                    context,
                                                     'Registro não encontrado!');
                                               }
                                             });
                                           } else {
-                                            ZshowDialogs.alert(context,
+                                            context.read<XProvider>().alert(
+                                                context,
                                                 'Imagem não capturada!');
                                           }
                                         }

@@ -23,6 +23,7 @@ class DbManage {
 
       response = true;
     } catch (err) {
+      print(err);
       response = false;
     }
 

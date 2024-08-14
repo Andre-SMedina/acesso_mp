@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class XProvider with ChangeNotifier {
-  String text1 = 'Valeu boi!!';
+  String text1 = '0';
 
   String get text => text1;
 
   void changeText() {
-    text1 = 'Nova mensagem!!';
+    text1 = '1';
     notifyListeners();
   }
 
