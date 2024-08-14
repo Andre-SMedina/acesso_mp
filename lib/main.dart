@@ -1,7 +1,5 @@
 import 'package:acesso_mp/models/x_provider.dart';
-import 'package:acesso_mp/pages/control_panel.dart';
 import 'package:acesso_mp/pages/home_page.dart';
-// import 'package:acesso_mp/pages/login_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -79,7 +77,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => ControlPanel(),
+        '/': (context) => HomePage(
+              cameras: cameras,
+            ),
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
