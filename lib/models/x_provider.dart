@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
 class XProvider with ChangeNotifier {
+  String text1 = 'Valeu boi!!';
+
+  String get text => text1;
+
+  void changeText() {
+    text1 = 'Nova mensagem!!';
+    notifyListeners();
+  }
+
   Future<void> alert(BuildContext context, String titleMsg,
       {String subTitle = ''}) async {
     await showDialog(

@@ -1,4 +1,3 @@
-import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/models/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,12 +36,9 @@ class _ControlPanelState extends State<ControlPanel> {
             padding: const EdgeInsets.only(top: 25),
             child: Column(
               children: [
-                // Consumer<Counter>(builder: (context, counter, child) {
-                //   return Text('${counter.count}');
-                // }),
                 ElevatedButton(
-                    onPressed: () async {
-                      context.read<XProvider>().alert(context, 'Agora sim');
+                    onPressed: () {
+                      context.read<XProvider>().changeText();
                     },
                     child: const Text('Cadastrar operador',
                         style: TextStyle(fontSize: 16))),
@@ -94,39 +90,40 @@ class _ControlPanelState extends State<ControlPanel> {
                                 int cellIndex = cellEntry.key;
                                 String cell = cellEntry.value;
                                 return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: cellIndex == 0
-                                      ? MouseRegion(
-                                          onEnter: (event) {
-                                            setState(() {
-                                              _isHovered[index] = true;
-                                            });
-                                          },
-                                          onExit: (event) {
-                                            setState(() {
-                                              _isHovered[index] = false;
-                                            });
-                                          },
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            onTap: () => print('oi'),
-                                            child: Text(
-                                              cell,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: _isHovered[index]
-                                                    ? const Color.fromARGB(
-                                                        255, 125, 0, 150)
-                                                    : Colors.black,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: cellIndex == 0
+                                        ? MouseRegion(
+                                            onEnter: (event) {
+                                              setState(() {
+                                                _isHovered[index] = true;
+                                              });
+                                            },
+                                            onExit: (event) {
+                                              setState(() {
+                                                _isHovered[index] = false;
+                                              });
+                                            },
+                                            cursor: SystemMouseCursors.click,
+                                            child: GestureDetector(
+                                              onTap: () => print('oi'),
+                                              child: Text(
+                                                cell,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _isHovered[index]
+                                                      ? const Color.fromARGB(
+                                                          255, 0, 2, 150)
+                                                      : Colors.black,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      : Text(
-                                          cell,
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                );
+                                          )
+                                        : Consumer<XProvider>(builder:
+                                            (context, xProvider, child) {
+                                            return Text(xProvider.text,
+                                                style: const TextStyle(
+                                                    fontSize: 16));
+                                          }));
                               }).toList(),
                             );
                           }),
