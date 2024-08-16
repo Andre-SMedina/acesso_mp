@@ -30,12 +30,22 @@ class _ControlPanelState extends State<ControlPanel> {
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: const Drawer(
-          child: Column(
-            children: [
-              MyListTile(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: [
+                MyListTile(
+                  icon: Icons.person,
                   title: 'Controle de operadores',
-                  hoverColor: Color.fromARGB(255, 97, 6, 182))
-            ],
+                  hoverColor: Color.fromARGB(255, 97, 6, 182),
+                ),
+                MyListTile(
+                  icon: Icons.location_city,
+                  title: 'Controle de lotação',
+                  hoverColor: Color.fromARGB(255, 97, 6, 182),
+                )
+              ],
+            ),
           ),
         ),
         appBar: AppBar(

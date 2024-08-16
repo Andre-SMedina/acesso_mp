@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class MyListTile extends StatefulWidget {
   final String title;
   final Color hoverColor;
+  final IconData icon;
   const MyListTile({
     super.key,
     required this.title,
     required this.hoverColor,
+    required this.icon,
   });
 
   @override
@@ -18,7 +20,9 @@ class _MyListTileState extends State<MyListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
+    return ListTile(
+      leading: Icon(widget.icon),
+      title: MouseRegion(
         onEnter: (event) {
           setState(() {
             isHover = true;
@@ -30,9 +34,21 @@ class _MyListTileState extends State<MyListTile> {
           });
         },
         cursor: SystemMouseCursors.click,
-        child: ListTile(
-          title: Text(widget.title),
-          hoverColor: isHover ? widget.hoverColor : Colors.transparent,
-        ));
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: isHover ? const Color.fromARGB(255, 148, 198, 240) : null),
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
