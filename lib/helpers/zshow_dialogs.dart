@@ -1,9 +1,6 @@
-import 'package:acesso_mp/widgets/home_fields.dart';
+import 'package:acesso_mp/widgets/form_operator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
-import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
   static Future<void> historic(
@@ -180,117 +177,49 @@ class ZshowDialogs {
   }
 
   static void operatorRegister(BuildContext context) async {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController searchController = TextEditingController();
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text(
+              'Cadastro de operador',
+              textAlign: TextAlign.center,
+            ),
+            content: FormOperator(),
+          );
+        });
+  }
+
+  static void locationRegister(BuildContext context) async {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController controller = TextEditingController();
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text(
-              'Cadastro de operador',
+              'Cadastro de lotação',
               textAlign: TextAlign.center,
             ),
             content: Form(
-              key: formKey,
-              child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints(maxHeight: 500, minWidth: 400),
-                child: Column(
-                  children: [
-                    ModelHomeFields(
-                      text: 'Nome',
-                      listInputFormat: const [],
-                      listValidator: [
-                        Validatorless.required('Campo obrigatório!'),
-                        (v) => v!.split(' ').length >= 2
-                            ? null
-                            : 'O nome deve ter nome e sobrenome!',
-                      ],
-                    ),
-                    ModelHomeFields(
-                      text: 'CPF',
-                      listValidator: [
-                        Validatorless.cpf('CPF inválido!'),
-                        Validatorless.required('Campo obrigatório!')
-                      ],
-                      listInputFormat: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(11)
-                      ],
-                    ),
-                    ModelHomeFields(
-                      text: 'Telefone',
-                      listInputFormat: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      listValidator: [
-                        Validatorless.required('Campo obrigatório!')
-                      ],
-                    ),
-                    TypeAheadField(
-                      controller: searchController,
-                      emptyBuilder: (context) => const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text('Nenhum resultado encontrado'),
+                key: formKey,
+                child: ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(minWidth: 400, maxHeight: 100),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: controller,
                       ),
-                      builder: (context, controller, focusNode) {
-                        return TextFormField(
-                          controller: controller,
-                          focusNode: focusNode,
-                          decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                              border: OutlineInputBorder(),
-                              labelText: 'Lotação'),
-                        );
-                      },
-                      itemBuilder: (context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion),
-                        );
-                      },
-                      suggestionsCallback: (search) {
-                        List<String> listDropdown = [];
-
-                        if (search.length > 2) {
-                          List<String> listFull = [
-                            'Araguaína',
-                            'Palmas(Sede)',
-                            'Palmas(Anexo)'
-                          ];
-
-                          listDropdown = listFull.where((e) {
-                            return e
-                                .toLowerCase()
-                                .contains(search.toLowerCase());
-                          }).toList();
-                        }
-
-                        return listDropdown;
-                      },
-                      onSelected: (suggestion) {
-                        searchController.text = suggestion;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text('Cadastrar')),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {}, child: const Text('Salvar'))
+                    ],
+                  ),
+                )),
           );
         });
   }

@@ -1,5 +1,6 @@
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/models/x_provider.dart';
+import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,17 @@ class _ControlPanelState extends State<ControlPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: const Drawer(
+          child: Column(
+            children: [
+              MyListTile(
+                  title: 'Controle de operadores',
+                  hoverColor: Color.fromARGB(255, 97, 6, 182))
+            ],
+          ),
+        ),
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Text('Painel de Controle'),
           centerTitle: true,
         ),
@@ -37,12 +48,26 @@ class _ControlPanelState extends State<ControlPanel> {
             padding: const EdgeInsets.only(top: 25),
             child: Column(
               children: [
-                ElevatedButton(
-                    onPressed: () {
-                      ZshowDialogs.operatorRegister(context);
-                    },
-                    child: const Text('Cadastrar operador',
-                        style: TextStyle(fontSize: 16))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 750.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            ZshowDialogs.operatorRegister(context);
+                          },
+                          child: const Text('Cadastrar operador',
+                              style: TextStyle(fontSize: 16))),
+                      ElevatedButton(
+                          onPressed: () {
+                            ZshowDialogs.locationRegister(context);
+                          },
+                          child: const Text('Cadastrar lotação',
+                              style: TextStyle(fontSize: 16)))
+                    ],
+                  ),
+                ),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -91,40 +116,41 @@ class _ControlPanelState extends State<ControlPanel> {
                                 int cellIndex = cellEntry.key;
                                 String cell = cellEntry.value;
                                 return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: cellIndex == 0
-                                        ? MouseRegion(
-                                            onEnter: (event) {
-                                              setState(() {
-                                                _isHovered[index] = true;
-                                              });
-                                            },
-                                            onExit: (event) {
-                                              setState(() {
-                                                _isHovered[index] = false;
-                                              });
-                                            },
-                                            cursor: SystemMouseCursors.click,
-                                            child: GestureDetector(
-                                              onTap: () => print('oi'),
-                                              child: Text(
-                                                cell,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: _isHovered[index]
-                                                      ? const Color.fromARGB(
-                                                          255, 0, 2, 150)
-                                                      : Colors.black,
-                                                ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: cellIndex == 0
+                                      ? MouseRegion(
+                                          onEnter: (event) {
+                                            setState(() {
+                                              _isHovered[index] = true;
+                                            });
+                                          },
+                                          onExit: (event) {
+                                            setState(() {
+                                              _isHovered[index] = false;
+                                            });
+                                          },
+                                          cursor: SystemMouseCursors.click,
+                                          child: GestureDetector(
+                                            onTap: () => print('oi'),
+                                            child: Text(
+                                              cell,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: _isHovered[index]
+                                                    ? const Color.fromARGB(
+                                                        255, 115, 0, 150)
+                                                    : Colors.black,
                                               ),
                                             ),
-                                          )
-                                        : Consumer<XProvider>(builder:
-                                            (context, xProvider, child) {
-                                            return Text(xProvider.text,
-                                                style: const TextStyle(
-                                                    fontSize: 16));
-                                          }));
+                                          ),
+                                        )
+                                      : Consumer<XProvider>(
+                                          builder: (context, xProvider, child) {
+                                          return Text(xProvider.text,
+                                              style: const TextStyle(
+                                                  fontSize: 16));
+                                        }),
+                                );
                               }).toList(),
                             );
                           }),
