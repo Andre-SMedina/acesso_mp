@@ -1,8 +1,10 @@
-// import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
+import 'package:acesso_mp/models/x_provider.dart';
 import 'package:acesso_mp/widgets/home_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
@@ -14,6 +16,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -74,14 +77,17 @@ class _HomePageState extends State<HomePage> {
   bool loadImage = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<List<String>> getDataVisitor() async {
+  List<String> getDataVisitor() {
     var box = Hive.box('db');
+    print(box.get('image') == '');
 
-    String img = cameras.isEmpty
+    String img = (cameras.isEmpty && box.get('image') == '')
         ? 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
         : (box.get('image') == null)
             ? ''
             : box.get('image');
+
+    print('------------------------------------$img');
 
     return [
       widget.nameField.fieldController.text,
@@ -218,45 +224,50 @@ class _HomePageState extends State<HomePage> {
                                   ElevatedButton(
                                       onPressed: () {
                                         if (_formKey.currentState!.validate()) {
-                                          getDataVisitor().then((e) {
-                                            if (e[5] != '') {
-                                              final Database db = Database(
-                                                  alertVisited: alertVisited);
+                                          List dataVisitor = getDataVisitor();
 
-                                              db
-                                                  .register(
-                                                      ModelVisitors(
-                                                        name: e[0],
-                                                        cpf: e[1],
-                                                        rg: e[2],
-                                                        phone: e[3],
-                                                        job: e[4],
-                                                        image: e[5],
-                                                      ),
-                                                      'save')
-                                                  .then((v) {
-                                                if (v == 'saved') {
-                                                  ZshowDialogs.alert(context,
-                                                      'Cadastro realizado com sucesso!');
-                                                  clearFields();
-                                                } else if (v == 'exist') {
-                                                  ZshowDialogs.alert(context,
-                                                      'Pessoa já cadastrada!',
-                                                      subTitle:
-                                                          'Selecione "Limpar" para depois cadastrar.');
-                                                } else if (v == 'empty') {
-                                                  ZshowDialogs.alert(context,
-                                                      'Quem visitar, não preenchido!');
-                                                } else if (v == 'cpfExist') {
-                                                  ZshowDialogs.alert(context,
-                                                      'CPF já cadastrado!');
-                                                }
-                                              });
-                                            } else {
-                                              ZshowDialogs.alert(context,
-                                                  'Imagem não capturada!');
-                                            }
-                                          });
+                                          if (dataVisitor[5] != '') {
+                                            final Database db = Database(
+                                                alertVisited: alertVisited);
+
+                                            db
+                                                .register(
+                                                    ModelVisitors(
+                                                      name: dataVisitor[0],
+                                                      cpf: dataVisitor[1],
+                                                      rg: dataVisitor[2],
+                                                      phone: dataVisitor[3],
+                                                      job: dataVisitor[4],
+                                                      image: dataVisitor[5],
+                                                    ),
+                                                    'save')
+                                                .then((v) {
+                                              if (v == 'saved') {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'Cadastro realizado com sucesso!');
+                                                clearFields();
+                                              } else if (v == 'exist') {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'Pessoa já cadastrada!',
+                                                    subTitle:
+                                                        'Selecione "Limpar" para depois cadastrar.');
+                                              } else if (v == 'empty') {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'Quem visitar, não preenchido!');
+                                              } else if (v == 'cpfExist') {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'CPF já cadastrado!');
+                                              }
+                                            });
+                                          } else {
+                                            context.read<XProvider>().alert(
+                                                context,
+                                                'Imagem não capturada!');
+                                          }
                                         }
                                       },
                                       child: const Text('Cadastrar')),
@@ -271,36 +282,38 @@ class _HomePageState extends State<HomePage> {
                                           });
 
                                           if (!validate) return;
+                                          List dataVisitor = getDataVisitor();
+                                          if (dataVisitor[5] != '') {
+                                            final Database db = Database(
+                                                alertVisited: alertVisited);
 
-                                          getDataVisitor().then((e) {
-                                            if (e[5] != '') {
-                                              final Database db = Database(
-                                                  alertVisited: alertVisited);
-                                              db
-                                                  .register(
-                                                      ModelVisitors(
-                                                        name: e[0],
-                                                        cpf: e[1],
-                                                        rg: e[2],
-                                                        phone: e[3],
-                                                        job: e[4],
-                                                        image: e[5],
-                                                      ),
-                                                      'update')
-                                                  .then((v) {
-                                                if (v == 'updated') {
-                                                  ZshowDialogs.alert(context,
-                                                      'Registro atualizado!');
-                                                } else {
-                                                  ZshowDialogs.alert(context,
-                                                      'Registro não encontrado!');
-                                                }
-                                              });
-                                            } else {
-                                              ZshowDialogs.alert(context,
-                                                  'Imagem não capturada!');
-                                            }
-                                          });
+                                            db
+                                                .register(
+                                                    ModelVisitors(
+                                                      name: dataVisitor[0],
+                                                      cpf: dataVisitor[1],
+                                                      rg: dataVisitor[2],
+                                                      phone: dataVisitor[3],
+                                                      job: dataVisitor[4],
+                                                      image: dataVisitor[5],
+                                                    ),
+                                                    'update')
+                                                .then((v) {
+                                              if (v == 'updated') {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'Registro atualizado!');
+                                              } else {
+                                                context.read<XProvider>().alert(
+                                                    context,
+                                                    'Registro não encontrado!');
+                                              }
+                                            });
+                                          } else {
+                                            context.read<XProvider>().alert(
+                                                context,
+                                                'Imagem não capturada!');
+                                          }
                                         }
                                       },
                                       child: const Text('Atualizar')),
