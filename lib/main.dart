@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
+        '/controlPanel': (context) => const ControlPanel(),
         '/controlLocates': (context) => const ControlLocatesPage(),
         '/controlOperators': (context) => const ControlOperatorsPage(),
       },

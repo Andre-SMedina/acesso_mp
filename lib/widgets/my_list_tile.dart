@@ -4,14 +4,15 @@ class MyListTile extends StatefulWidget {
   final String title;
   final Color hoverColor;
   final IconData icon;
+  final IconData? iconBtn;
   final VoidCallback page;
-  const MyListTile({
-    super.key,
-    required this.title,
-    required this.hoverColor,
-    required this.icon,
-    required this.page,
-  });
+  const MyListTile(
+      {super.key,
+      required this.title,
+      required this.hoverColor,
+      required this.icon,
+      required this.page,
+      this.iconBtn});
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -27,6 +28,17 @@ class _MyListTileState extends State<MyListTile> {
         widget.page();
       },
       leading: Icon(widget.icon),
+      trailing: widget.iconBtn != null
+          ? IconButton(
+              onPressed: () {
+                print('foibtn');
+              },
+              icon: Icon(
+                widget.iconBtn,
+                color: Color.fromARGB(255, 1, 15, 172),
+              ),
+            )
+          : null,
       title: MouseRegion(
         onEnter: (event) {
           setState(() {

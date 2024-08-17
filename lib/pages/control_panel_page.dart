@@ -1,9 +1,5 @@
-import 'package:acesso_mp/helpers/zshow_dialogs.dart';
-import 'package:acesso_mp/models/x_provider.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
-import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ControlPanel extends StatefulWidget {
   const ControlPanel({super.key});
@@ -41,26 +37,6 @@ class _ControlPanelState extends State<ControlPanel> {
             padding: const EdgeInsets.only(top: 25),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 500.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            ZshowDialogs.operatorRegister(context);
-                          },
-                          child: const Text('Cadastrar operador',
-                              style: TextStyle(fontSize: 16))),
-                      ElevatedButton(
-                          onPressed: () {
-                            ZshowDialogs.locationRegister(context);
-                          },
-                          child: const Text('Cadastrar lotação',
-                              style: TextStyle(fontSize: 16)))
-                    ],
-                  ),
-                ),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(

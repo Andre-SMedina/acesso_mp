@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:acesso_mp/models/x_provider.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:acesso_mp/widgets/home_fields.dart';
+import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -30,10 +30,7 @@ class _FormOperatorState extends State<FormOperator> {
           constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
           child: Column(
             children: [
-              const SizedBox(
-                height: 30,
-              ),
-              ModelHomeFields(
+              MyTextField(
                 text: 'Nome',
                 listInputFormat: const [],
                 listValidator: [
@@ -43,7 +40,7 @@ class _FormOperatorState extends State<FormOperator> {
                       : 'O nome deve ter nome e sobrenome!',
                 ],
               ),
-              ModelHomeFields(
+              MyTextField(
                 text: 'CPF',
                 listValidator: [
                   Validatorless.cpf('CPF inválido!'),
@@ -54,7 +51,7 @@ class _FormOperatorState extends State<FormOperator> {
                   LengthLimitingTextInputFormatter(11)
                 ],
               ),
-              ModelHomeFields(
+              MyTextField(
                 text: 'Telefone',
                 listInputFormat: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -72,30 +69,32 @@ class _FormOperatorState extends State<FormOperator> {
                   child: Text('Nenhum resultado encontrado'),
                 ),
                 builder: (context, controller, focusNode) {
-                  return Consumer<XProvider>(builder: (context, value, child) {
-                    return TextFormField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      validator: (e) {
-                        if (e == '') {
-                          // Timer(const Duration(seconds: 4), () {
-                          //   context.read<XProvider>().changeText();
-                          // });
-                          return 'kkk';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                          errorText: value.helperText,
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                          border: OutlineInputBorder(),
-                          labelText: 'Lotação'),
+                  return Consumer<XProvider>(
+                      builder: (context, provider, child) {
+                    return Column(
+                      children: [
+                        TextFormField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          validator: (e) {
+                            if (e == '') {
+                              context.read<XProvider>().changeText();
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              errorText: provider.errorText,
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                ),
+                              ),
+                              border: OutlineInputBorder(),
+                              labelText: 'Lotação'),
+                        ),
+                      ],
                     );
                   });
                 },
@@ -106,7 +105,7 @@ class _FormOperatorState extends State<FormOperator> {
                 },
                 suggestionsCallback: (search) {
                   List<String> listDropdown = [];
-                  context.read<XProvider>().changeText();
+                  context.read<XProvider>().cleanText();
 
                   if (search.length > 2) {
                     List<String> listFull = [
@@ -128,24 +127,18 @@ class _FormOperatorState extends State<FormOperator> {
                 },
               ),
               const SizedBox(
-                height: 15,
+                height: 25,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Timer(const Duration(seconds: 3), () {
-                          print('fala');
-                          context.read<XProvider>().changeText();
-                        });
-                        if (formKey.currentState!.validate()) {
-                          print('ok');
-                        }
-                      },
-                      child: const Text('Cadastrar')),
-                ],
-              )
+              ElevatedButton(
+                  onPressed: () {
+                    Timer(const Duration(seconds: 3), () {
+                      context.read<XProvider>().cleanText();
+                    });
+                    if (formKey.currentState!.validate()) {
+                      print('ok');
+                    }
+                  },
+                  child: const Text('Cadastrar'))
             ],
           ),
         ),

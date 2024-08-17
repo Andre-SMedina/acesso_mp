@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/models/x_provider.dart';
-import 'package:acesso_mp/widgets/home_fields.dart';
+import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/database.dart';
@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
   final List<CameraDescription> cameras;
   HomePage({super.key, required this.cameras});
 
-  ModelHomeFields nameField = ModelHomeFields(
+  MyTextField nameField = MyTextField(
     text: 'Nome',
     listInputFormat: const [],
     listValidator: [
@@ -35,7 +35,7 @@ class HomePage extends StatefulWidget {
           : 'O nome deve ter nome e sobrenome!',
     ],
   );
-  ModelHomeFields cpfField = ModelHomeFields(
+  MyTextField cpfField = MyTextField(
     text: 'CPF',
     listValidator: [
       Validatorless.cpf('CPF inválido!'),
@@ -46,21 +46,21 @@ class HomePage extends StatefulWidget {
       LengthLimitingTextInputFormatter(11)
     ],
   );
-  ModelHomeFields rgField = ModelHomeFields(
+  MyTextField rgField = MyTextField(
     text: 'RG',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
-  ModelHomeFields phoneField = ModelHomeFields(
+  MyTextField phoneField = MyTextField(
     text: 'Telefone',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
-  ModelHomeFields jobField = ModelHomeFields(
+  MyTextField jobField = MyTextField(
     text: 'Profissão',
     listValidator: [Validatorless.required('Campo obrigatório!')],
     listInputFormat: const [],

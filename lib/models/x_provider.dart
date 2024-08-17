@@ -1,12 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class XProvider with ChangeNotifier {
-  String? helperText;
+  String? errorText;
 
-  String? get text => helperText;
+  String? get errorText2 => errorText;
 
   void changeText() {
-    helperText = null;
+    errorText = 'Campo obrigatório';
+    notifyListeners();
+  }
+
+  void cleanText() {
+    errorText = null;
     notifyListeners();
   }
 

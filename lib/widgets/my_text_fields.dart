@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:validatorless/validatorless.dart';
 
-class ModelHomeFields extends StatelessWidget {
+class MyTextField extends StatelessWidget {
   final String text;
   final List<FormFieldValidator<String>> listValidator;
   final List<TextInputFormatter> listInputFormat;
-  ModelHomeFields(
+  MyTextField(
       {super.key,
       required this.text,
       required this.listValidator,

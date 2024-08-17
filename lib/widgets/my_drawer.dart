@@ -12,6 +12,13 @@ class MyDrawer extends StatelessWidget {
         child: Column(
           children: [
             MyListTile(
+              icon: Icons.home,
+              title: 'Home',
+              hoverColor: const Color.fromARGB(255, 97, 6, 182),
+              page: () =>
+                  Navigator.pushReplacementNamed(context, '/controlPanel'),
+            ),
+            MyListTile(
               icon: Icons.person,
               title: 'Controle de operadores',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
