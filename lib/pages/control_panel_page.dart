@@ -1,5 +1,6 @@
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/models/x_provider.dart';
+import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,25 +30,7 @@ class _ControlPanelState extends State<ControlPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const Drawer(
-          child: Padding(
-            padding: EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: [
-                MyListTile(
-                  icon: Icons.person,
-                  title: 'Controle de operadores',
-                  hoverColor: Color.fromARGB(255, 97, 6, 182),
-                ),
-                MyListTile(
-                  icon: Icons.location_city,
-                  title: 'Controle de lotação',
-                  hoverColor: Color.fromARGB(255, 97, 6, 182),
-                )
-              ],
-            ),
-          ),
-        ),
+        drawer: const MyDrawer(),
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           title: const Text('Painel de Controle'),
@@ -59,7 +42,7 @@ class _ControlPanelState extends State<ControlPanel> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 750.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 500.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -126,41 +109,35 @@ class _ControlPanelState extends State<ControlPanel> {
                                 int cellIndex = cellEntry.key;
                                 String cell = cellEntry.value;
                                 return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: cellIndex == 0
-                                      ? MouseRegion(
-                                          onEnter: (event) {
-                                            setState(() {
-                                              _isHovered[index] = true;
-                                            });
-                                          },
-                                          onExit: (event) {
-                                            setState(() {
-                                              _isHovered[index] = false;
-                                            });
-                                          },
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            onTap: () => print('oi'),
-                                            child: Text(
-                                              cell,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: _isHovered[index]
-                                                    ? const Color.fromARGB(
-                                                        255, 115, 0, 150)
-                                                    : Colors.black,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: cellIndex == 0
+                                        ? MouseRegion(
+                                            onEnter: (event) {
+                                              setState(() {
+                                                _isHovered[index] = true;
+                                              });
+                                            },
+                                            onExit: (event) {
+                                              setState(() {
+                                                _isHovered[index] = false;
+                                              });
+                                            },
+                                            cursor: SystemMouseCursors.click,
+                                            child: GestureDetector(
+                                              onTap: () => print('oi'),
+                                              child: Text(
+                                                cell,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _isHovered[index]
+                                                      ? const Color.fromARGB(
+                                                          255, 115, 0, 150)
+                                                      : Colors.black,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      : Consumer<XProvider>(
-                                          builder: (context, xProvider, child) {
-                                          return Text(xProvider.text,
-                                              style: const TextStyle(
-                                                  fontSize: 16));
-                                        }),
-                                );
+                                          )
+                                        : const Text('Palmas'));
                               }).toList(),
                             );
                           }),

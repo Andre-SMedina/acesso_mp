@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class XProvider with ChangeNotifier {
-  String text1 = '0';
+  String? helperText;
 
-  String get text => text1;
+  String? get text => helperText;
 
   void changeText() {
-    text1 = '1';
+    helperText = null;
     notifyListeners();
   }
 
@@ -44,3 +44,10 @@ class XProvider with ChangeNotifier {
     );
   }
 }
+
+// Consumer<XProvider>(
+//  builder: (context, xProvider, child) {
+//    return Text(xProvider.text,
+//      style: const TextStyle(
+//        fontSize: 16));
+//}),

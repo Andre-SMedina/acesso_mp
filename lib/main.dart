@@ -1,5 +1,7 @@
 import 'package:acesso_mp/models/x_provider.dart';
-import 'package:acesso_mp/pages/control_panel.dart';
+import 'package:acesso_mp/pages/control_locates_page.dart';
+import 'package:acesso_mp/pages/control_operators_page.dart';
+import 'package:acesso_mp/pages/control_panel_page.dart';
 import 'package:acesso_mp/pages/home_page.dart';
 import 'package:acesso_mp/pages/login_page.dart';
 import 'package:camera/camera.dart';
@@ -80,6 +82,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
+        '/controlLocates': (context) => const ControlLocatesPage(),
+        '/controlOperators': (context) => const ControlOperatorsPage(),
       },
     );
   }

@@ -203,23 +203,24 @@ class ZshowDialogs {
               textAlign: TextAlign.center,
             ),
             content: Form(
-                key: formKey,
-                child: ConstrainedBox(
-                  constraints:
-                      const BoxConstraints(minWidth: 400, maxHeight: 100),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: controller,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {}, child: const Text('Salvar'))
-                    ],
-                  ),
-                )),
+              key: formKey,
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(minWidth: 400, maxHeight: 100),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: controller,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {}, child: const Text('Salvar'))
+                  ],
+                ),
+              ),
+            ),
           );
         });
   }

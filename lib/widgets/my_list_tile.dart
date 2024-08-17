@@ -4,11 +4,13 @@ class MyListTile extends StatefulWidget {
   final String title;
   final Color hoverColor;
   final IconData icon;
+  final VoidCallback page;
   const MyListTile({
     super.key,
     required this.title,
     required this.hoverColor,
     required this.icon,
+    required this.page,
   });
 
   @override
@@ -21,6 +23,9 @@ class _MyListTileState extends State<MyListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        widget.page();
+      },
       leading: Icon(widget.icon),
       title: MouseRegion(
         onEnter: (event) {
