@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const ControlPanel(),
+        '/': (context) => HomePage(cameras: cameras),
         '/home': (context) => HomePage(
               cameras: cameras,
             ),

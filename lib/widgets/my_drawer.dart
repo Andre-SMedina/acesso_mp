@@ -15,21 +15,20 @@ class MyDrawer extends StatelessWidget {
               icon: Icons.home,
               title: 'Home',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
-              page: () =>
-                  Navigator.pushReplacementNamed(context, '/controlPanel'),
+              call: () => Navigator.pushReplacementNamed(context, '/home'),
             ),
             MyListTile(
               icon: Icons.person,
               title: 'Controle de operadores',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
-              page: () =>
+              call: () =>
                   Navigator.pushReplacementNamed(context, '/controlOperators'),
             ),
             MyListTile(
               icon: Icons.location_city,
               title: 'Controle de lotação',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
-              page: () =>
+              call: () =>
                   Navigator.pushReplacementNamed(context, '/controlLocates'),
             )
           ],

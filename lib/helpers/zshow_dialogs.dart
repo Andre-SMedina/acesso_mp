@@ -180,7 +180,8 @@ class ZshowDialogs {
     await showDialog(
         context: context,
         builder: (context) {
-          return const AlertDialog(
+          return AlertDialog(
+            // ignore: prefer_const_constructors
             title: Text(
               'Cadastro de operador',
               textAlign: TextAlign.center,

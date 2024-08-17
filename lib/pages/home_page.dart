@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/models/x_provider.dart';
+import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
@@ -142,7 +143,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text('Controle de Acesso ao Ministério Público'),
         actions: [

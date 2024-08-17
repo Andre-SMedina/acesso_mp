@@ -5,14 +5,16 @@ class MyListTile extends StatefulWidget {
   final Color hoverColor;
   final IconData icon;
   final IconData? iconBtn;
-  final VoidCallback page;
+  final Color? iconColor;
+  final VoidCallback call;
   const MyListTile(
       {super.key,
       required this.title,
       required this.hoverColor,
       required this.icon,
-      required this.page,
-      this.iconBtn});
+      required this.call,
+      this.iconBtn,
+      this.iconColor});
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -25,7 +27,7 @@ class _MyListTileState extends State<MyListTile> {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        widget.page();
+        widget.call();
       },
       leading: Icon(widget.icon),
       trailing: widget.iconBtn != null
@@ -35,7 +37,7 @@ class _MyListTileState extends State<MyListTile> {
               },
               icon: Icon(
                 widget.iconBtn,
-                color: Color.fromARGB(255, 1, 15, 172),
+                color: widget.iconColor,
               ),
             )
           : null,
