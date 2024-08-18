@@ -1,9 +1,9 @@
-import 'package:acesso_mp/widgets/form_operator.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ControlLocatesPage extends StatefulWidget {
@@ -21,22 +21,14 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
       listValidator: [Validatorless.required('Campo obrigatório')],
       listInputFormat: const []);
 
+  void delete(String locate) async {
+    await DbManage.deleteLocate(locate);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    List list = [
-      'Palmas(Sede)',
-      'Palmas(Anexo)',
-      'Araguaína',
-      'Porto Nacional',
-      'Formoso do Araguaia',
-      'Gurupi',
-      'Tocantinópolis',
-      'Pedro Afonso',
-      'Taguatinga',
-      'Araguatins',
-      'Colinas',
-      'Goiatins',
-    ];
+    var locations = [];
     TextStyle title =
         const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
     MyTextField locateField = MyTextField(
@@ -96,7 +88,13 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                 children: [
                                   locateField,
                                   ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        if (formKey.currentState!.validate()) {
+                                          await DbManage.saveLocate(
+                                              locateField.fieldController.text);
+                                          setState(() {});
+                                        }
+                                      },
                                       child: const Text('Cadastrar'))
                                 ],
                               )))),
@@ -108,21 +106,43 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                       child: ConstrainedBox(
                         constraints:
                             const BoxConstraints(maxHeight: 400, maxWidth: 400),
-                        child: ListView.builder(
-                            itemCount: list.length,
-                            itemBuilder: (contex, index) {
-                              return MyListTile(
-                                title: list[index],
-                                hoverColor:
-                                    const Color.fromARGB(255, 138, 199, 248),
-                                icon: Icons.location_city,
-                                iconBtn: Icons.delete_forever,
-                                iconColor: Colors.red,
-                                call: () {
-                                  print('call');
-                                },
-                              );
-                            }),
+                        child: FutureBuilder(
+                          future: DbManage.getLocations(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              locations = snapshot.data;
+                            }
+                            return ListView.builder(
+                                itemCount: locations.length,
+                                itemBuilder: (contex, index) {
+                                  return MyListTile(
+                                    title: locations[index]['name'],
+                                    hoverColor: const Color.fromARGB(
+                                        255, 138, 199, 248),
+                                    icon: Icons.location_city,
+                                    iconBtn: Icons.delete_forever,
+                                    iconColor: Colors.red,
+                                    callIcon: () {
+                                      ZshowDialogs.confirm(
+                                              contex, 'Confirma a exclusão?')
+                                          .then((e) {
+                                        if (e) {
+                                          delete(locations[index]['name']);
+                                        }
+                                      });
+                                    },
+                                    callMain: () async {
+                                      await DbManage.update(
+                                          data: {'name': 'Colinas'},
+                                          table: 'locations',
+                                          column: 'name',
+                                          value: 'ppp');
+                                      setState(() {});
+                                    },
+                                  );
+                                });
+                          },
+                        ),
                       ),
                     ),
                   )

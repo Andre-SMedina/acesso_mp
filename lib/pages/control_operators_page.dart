@@ -97,7 +97,8 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                     : Icons.assignment_ind_sharp,
                                 iconColor:
                                     const Color.fromARGB(255, 18, 0, 153),
-                                call: () {},
+                                callMain: () {},
+                                callIcon: () {},
                               );
                             }),
                       ),

@@ -2,10 +2,6 @@ import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:flutter/material.dart';
 
 class Convert {
-  static String forString(ModelVisitors list) {
-    return '${list.name.toLowerCase()},${list.cpf},${list.rg},${list.phone},${list.job},${list.image}';
-  }
-
   static List<ModelVisitors> forModel(List<String> list) {
     List<ModelVisitors> listVisitors = [];
 
@@ -22,6 +18,20 @@ class Convert {
     }
 
     return listVisitors;
+  }
+
+  static Map<dynamic, dynamic> forMap(ModelVisitors data) {
+    Map<dynamic, dynamic> map = {
+      'name': data.name,
+      'consult': removeAccent(data.name).toLowerCase(),
+      'cpf': data.cpf,
+      'rg': data.rg,
+      'phone': data.phone,
+      'job': data.job,
+      'image': data.image
+    };
+
+    return map;
   }
 
   static String firstUpper(String name) {

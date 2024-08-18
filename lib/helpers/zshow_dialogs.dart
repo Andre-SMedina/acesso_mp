@@ -143,14 +143,14 @@ class ZshowDialogs {
     return textController.text;
   }
 
-  static Future<bool> update(BuildContext context) async {
+  static Future<bool> confirm(BuildContext context, String title) async {
     bool validate = false;
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Deseja atualizar os dados?'),
+            title: Text(title),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -225,4 +225,6 @@ class ZshowDialogs {
           );
         });
   }
+
+  static updateLocate() {}
 }

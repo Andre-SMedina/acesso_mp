@@ -80,15 +80,12 @@ class _HomePageState extends State<HomePage> {
 
   List<String> getDataVisitor() {
     var box = Hive.box('db');
-    print(box.get('image') == '');
 
     String img = (cameras.isEmpty && box.get('image') == '')
         ? 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
         : (box.get('image') == null)
             ? ''
             : box.get('image');
-
-    print('------------------------------------$img');
 
     return [
       widget.nameField.fieldController.text,
@@ -279,7 +276,8 @@ class _HomePageState extends State<HomePage> {
                                         if (_formKey.currentState!.validate()) {
                                           bool validate = false;
 
-                                          await ZshowDialogs.update(context)
+                                          await ZshowDialogs.confirm(context,
+                                                  'Deseja atualizar os dados?')
                                               .then((e) {
                                             validate = e;
                                           });

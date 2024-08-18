@@ -1,5 +1,6 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,7 +28,7 @@ class DbManage {
     }
 
     if (response) {
-      //pega o registro atual no banco para ter acesso ao id e criar a foreng key
+      //pega o registro atual no banco para ter acesso ao id e criar a foreing key
       var visitor =
           await supabase.from('visitors').select().eq('cpf', data.cpf);
 
@@ -36,6 +37,41 @@ class DbManage {
     }
 
     return response;
+  }
+
+  static Future<bool> saveLocate(String locate) async {
+    bool response = false;
+
+    try {
+      await supabase.from('locations').insert({'name': locate});
+      response = true;
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+
+    return response;
+  }
+
+  static Future<dynamic> getLocations() async {
+    List<Map> locations = [];
+    try {
+      locations = await supabase
+          .from('locations')
+          .select()
+          .order('name', ascending: true);
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+
+    return locations;
+  }
+
+  static deleteLocate(String locate) async {
+    try {
+      await supabase.from('locations').delete().eq('name', locate);
+    } catch (err) {
+      debugPrint(err.toString());
+    }
   }
 
   static Future<dynamic> get(String name) async {
@@ -47,15 +83,11 @@ class DbManage {
     return visitors;
   }
 
-  static update(ModelVisitors data) async {
-    await supabase.from('visitors').update({
-      'name': data.name,
-      'consult': Convert.removeAccent(data.name).toLowerCase(),
-      'cpf': data.cpf,
-      'rg': data.rg,
-      'phone': data.phone,
-      'job': data.job,
-      'image': data.image
-    }).eq('cpf', data.cpf);
+  static update(
+      {required Map<dynamic, dynamic> data,
+      required String table,
+      required String column,
+      required String value}) async {
+    await supabase.from(table).update(data).eq(column, value);
   }
 }
