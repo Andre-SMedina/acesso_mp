@@ -93,6 +93,8 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                           await DbManage.saveLocate(
                                               locateField.fieldController.text);
                                           setState(() {});
+                                          ZshowDialogs.alert(context,
+                                              'Cadastro realizado com sucesso!');
                                         }
                                       },
                                       child: const Text('Cadastrar'))
@@ -132,12 +134,13 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                       });
                                     },
                                     callMain: () async {
-                                      await DbManage.update(
-                                          data: {'name': 'Colinas'},
-                                          table: 'locations',
-                                          column: 'name',
-                                          value: 'ppp');
-                                      setState(() {});
+                                      await ZshowDialogs.updateLocate(
+                                              contex, locations[index]['name'])
+                                          .then((v) {
+                                        if (v) {
+                                          setState(() {});
+                                        }
+                                      });
                                     },
                                   );
                                 });

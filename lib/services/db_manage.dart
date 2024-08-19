@@ -39,6 +39,31 @@ class DbManage {
     return response;
   }
 
+  static Future<bool> saveOperator(Map dataOperator, String locate) async {
+    bool response = false;
+    try {
+      List getLocate =
+          await supabase.from('locations').select().eq('name', locate);
+      int locateId = getLocate[0]['id'];
+
+      Map operator = dataOperator;
+      operator['location'] = locateId.toString();
+
+      await supabase.from('operators').insert(operator);
+      response = true;
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+
+    return response;
+  }
+
+  static Future<List> getOperators() async {
+    var operators = await supabase.from('operators').select('*, locations(*)');
+
+    return operators;
+  }
+
   static Future<bool> saveLocate(String locate) async {
     bool response = false;
 
@@ -74,20 +99,24 @@ class DbManage {
     }
   }
 
-  static Future<dynamic> get(String name) async {
-    List<Map> visitors = await supabase
-        .from('visitors')
-        .select('*, visits(*)')
-        .ilike('consult', '%$name%');
+  static Future<dynamic> getJoin(
+      {required String findTb1,
+      required String columnTb1,
+      required String table1,
+      required String table2}) async {
+    List<Map> response = await supabase
+        .from(table1)
+        .select('*, $table2(*)')
+        .ilike(columnTb1, '%$findTb1%');
 
-    return visitors;
+    return response;
   }
 
   static update(
       {required Map<dynamic, dynamic> data,
       required String table,
       required String column,
-      required String value}) async {
-    await supabase.from(table).update(data).eq(column, value);
+      required String find}) async {
+    await supabase.from(table).update(data).eq(column, find);
   }
 }

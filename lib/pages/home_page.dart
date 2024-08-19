@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
-import 'package:acesso_mp/models/x_provider.dart';
+import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
@@ -243,29 +243,24 @@ class _HomePageState extends State<HomePage> {
                                                     'save')
                                                 .then((v) {
                                               if (v == 'saved') {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'Cadastro realizado com sucesso!');
                                                 clearFields();
                                               } else if (v == 'exist') {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'Pessoa já cadastrada!',
                                                     subTitle:
                                                         'Selecione "Limpar" para depois cadastrar.');
                                               } else if (v == 'empty') {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'Quem visitar, não preenchido!');
                                               } else if (v == 'cpfExist') {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'CPF já cadastrado!');
                                               }
                                             });
                                           } else {
-                                            context.read<XProvider>().alert(
-                                                context,
+                                            ZshowDialogs.alert(context,
                                                 'Imagem não capturada!');
                                           }
                                         }
@@ -301,23 +296,20 @@ class _HomePageState extends State<HomePage> {
                                                     'update')
                                                 .then((v) {
                                               if (v == 'updated') {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'Registro atualizado!');
                                               } else {
-                                                context.read<XProvider>().alert(
-                                                    context,
+                                                ZshowDialogs.alert(context,
                                                     'Registro não encontrado!');
                                               }
                                             });
                                           } else {
-                                            context.read<XProvider>().alert(
-                                                context,
+                                            ZshowDialogs.alert(context,
                                                 'Imagem não capturada!');
                                           }
                                         }
                                       },
-                                      child: const Text('Atualizar')),
+                                      child: const Text('Salvar')),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color.fromARGB(

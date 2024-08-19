@@ -32,7 +32,7 @@ class Database {
       DbManage.update(
           data: dataMap,
           column: 'cpf',
-          value: dataMap['cpf'],
+          find: dataMap['cpf'],
           table: 'visitors');
 
       return 'updated';

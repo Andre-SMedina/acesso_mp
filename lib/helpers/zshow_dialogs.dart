@@ -1,6 +1,8 @@
-import 'package:acesso_mp/widgets/form_operator.dart';
+import 'package:acesso_mp/services/db_manage.dart';
+import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
   static Future<void> historic(
@@ -176,55 +178,49 @@ class ZshowDialogs {
     return validate;
   }
 
-  static void operatorRegister(BuildContext context) async {
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            // ignore: prefer_const_constructors
-            title: Text(
-              'Cadastro de operador',
-              textAlign: TextAlign.center,
-            ),
-            content: FormOperator(),
-          );
-        });
-  }
-
-  static void locationRegister(BuildContext context) async {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController controller = TextEditingController();
+  static Future<bool> updateLocate(BuildContext context, String oldName) async {
+    bool validate = false;
+    MyTextField nameField = MyTextField(
+        text: 'Novo nome',
+        listValidator: [Validatorless.required('Campo obrgatório!')],
+        listInputFormat: const []);
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text(
-              'Cadastro de lotação',
+              'Alterar lotação',
               textAlign: TextAlign.center,
             ),
-            content: Form(
-              key: formKey,
-              child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints(minWidth: 400, maxHeight: 100),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: controller,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {}, child: const Text('Salvar'))
-                  ],
-                ),
+            content: SizedBox(
+              height: 130,
+              width: 400,
+              child: Column(
+                children: [
+                  nameField,
+                  ElevatedButton(
+                      onPressed: () async {
+                        String newName = nameField.fieldController.text;
+
+                        if (newName.isNotEmpty) {
+                          await DbManage.update(
+                              column: 'name',
+                              data: {'name': newName},
+                              table: 'locations',
+                              find: oldName);
+                          validate = true;
+                        }
+
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Salvar alteração')),
+                ],
               ),
             ),
           );
         });
-  }
 
-  static updateLocate() {}
+    return validate;
+  }
 }
