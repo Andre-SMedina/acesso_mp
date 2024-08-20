@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:validatorless/validatorless.dart';
 
+// ignore: must_be_immutable
 class MyTextField extends StatelessWidget {
   final String text;
   final List<FormFieldValidator<String>> listValidator;
   final List<TextInputFormatter> listInputFormat;
-  MyTextField(
-      {super.key,
-      required this.text,
-      required this.listValidator,
-      required this.listInputFormat});
+  bool enableField = true;
+  MyTextField({
+    super.key,
+    required this.text,
+    required this.listValidator,
+    required this.listInputFormat,
+  });
 
   final TextEditingController fieldController = TextEditingController();
 
@@ -23,6 +26,8 @@ class MyTextField extends StatelessWidget {
         controller: fieldController,
         inputFormatters: listInputFormat,
         decoration: InputDecoration(
+          hintText: 'testando',
+          enabled: enableField,
           filled: true,
           fillColor: Colors.white,
           labelText: text,

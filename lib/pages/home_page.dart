@@ -17,7 +17,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -98,6 +97,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadData() {
+    widget.cpfField.enableField = false;
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
     _formKey.currentState!.reset();
     widget.nameField.loadData(Convert.firstUpper(visitor['name']));
-    widget.cpfField.loadData(visitor['cpf']);
+    widget.cpfField.loadData("${visitor['cpf'].substring(0, 5)}...");
     widget.rgField.loadData(visitor['rg']);
     widget.phoneField.loadData(visitor['phone']);
     widget.jobField.loadData(visitor['job']);

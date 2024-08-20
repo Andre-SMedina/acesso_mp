@@ -1,6 +1,7 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -117,6 +118,14 @@ class DbManage {
       required String table,
       required String column,
       required String find}) async {
+    var box = Hive.box('db');
+    Map visitor = box.get('visitor');
+    data['cpf'] = visitor['cpf'];
+    data['rg'] = visitor['rg'];
+    // await supabase.from(table).select().eq(column, find).then((e) {
+    // print(e);
+    // });
+
     await supabase.from(table).update(data).eq(column, find);
   }
 }
