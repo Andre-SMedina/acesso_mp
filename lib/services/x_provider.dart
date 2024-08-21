@@ -37,12 +37,13 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearVisitorsField() {
+  void clearFields() {
     name.fieldController.text = '';
     cpf.fieldController.text = '';
     rg.fieldController.text = '';
     phone.fieldController.text = '';
     job.fieldController.text = '';
+    locateController.text = '';
     cpf.enableField = true;
     rg.enableField = true;
     cpf.listValidator[0] = Validatorless.cpf('CPF inválido!');
@@ -51,11 +52,13 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeFields(Map data) {
-    locateController.text = data['locations']['name'];
-    name.fieldController.text = data['name'];
-    cpf.fieldController.text = data['cpf'].toString();
-    phone.fieldController.text = data['phone'].toString();
+  void loadOperatorField(Map operator) {
+    locateController.text = operator['locations']['name'];
+    name.fieldController.text = operator['name'];
+    cpf.fieldController.text = operator['cpf'].toString();
+    phone.fieldController.text = operator['phone'].toString();
+    cpf.enableField = false;
+
     notifyListeners();
   }
 

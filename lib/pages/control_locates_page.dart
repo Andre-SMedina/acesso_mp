@@ -93,6 +93,7 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                           await DbManage.saveLocate(
                                               locateField.fieldController.text);
                                           setState(() {});
+                                          // ignore: use_build_context_synchronously
                                           ZshowDialogs.alert(context,
                                               'Cadastro realizado com sucesso!');
                                         }

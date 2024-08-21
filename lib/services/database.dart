@@ -30,7 +30,11 @@ class Database {
     }
     if (type == 'update' && check != '') {
       DbManage.update(
-          data: dataMap, column: 'cpf', find: check['cpf'], table: 'visitors');
+          data: dataMap,
+          column: 'cpf',
+          find: check['cpf'],
+          table: 'visitors',
+          boxName: 'visitor');
 
       return 'updated';
     }

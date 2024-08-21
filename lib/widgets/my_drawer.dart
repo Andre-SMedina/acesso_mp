@@ -1,6 +1,8 @@
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -18,7 +20,7 @@ class MyDrawer extends StatelessWidget {
               title: 'Home',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () {
-                context.read<XProvider>().clearVisitorsField();
+                context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/home');
               },
               callIcon: () {},
@@ -27,8 +29,16 @@ class MyDrawer extends StatelessWidget {
               icon: Icons.person,
               title: 'Controle de operadores',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
-              callMain: () {
-                context.read<XProvider>().clearVisitorsField();
+              callMain: () async {
+                await DbManage.getLocations().then((value) {
+                  var box = Hive.box('db');
+                  List listFull = value.map((e) {
+                    return e['name'];
+                  }).toList();
+                  box.put('locations', listFull);
+                });
+
+                context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/controlOperators');
               },
               callIcon: () {},
@@ -38,7 +48,7 @@ class MyDrawer extends StatelessWidget {
               title: 'Controle de lotação',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () {
-                context.read<XProvider>().clearVisitorsField();
+                context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/controlLocates');
               },
               callIcon: () {},

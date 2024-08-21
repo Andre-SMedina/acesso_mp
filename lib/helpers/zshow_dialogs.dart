@@ -208,10 +208,12 @@ class ZshowDialogs {
                               column: 'name',
                               data: {'name': newName},
                               table: 'locations',
-                              find: oldName);
+                              find: oldName,
+                              boxName: '');
                           validate = true;
                         }
 
+                        // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       },
                       child: const Text('Salvar alteração')),

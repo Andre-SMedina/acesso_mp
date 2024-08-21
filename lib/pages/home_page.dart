@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
     loadImage = true;
     widget.image = '';
     setState(() {});
-    context.read<XProvider>().clearVisitorsField();
+    context.read<XProvider>().clearFields();
     // _formKey.currentState!.reset();
   }
 

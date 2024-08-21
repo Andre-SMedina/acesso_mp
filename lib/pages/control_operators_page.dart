@@ -4,6 +4,7 @@ import 'package:acesso_mp/widgets/form_operator.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class ControlOperatorsPage extends StatefulWidget {
@@ -94,6 +95,7 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                         hoverColor: const Color.fromARGB(
                                             255, 138, 199, 248),
                                         icon: Icons.person,
+                                        //TODO: desativar operador
                                         iconBtn: operators[index] ==
                                                 'João Paulo Fernandes'
                                             ? Icons.do_not_disturb_alt_outlined
@@ -101,11 +103,14 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                         iconColor: const Color.fromARGB(
                                             255, 18, 0, 153),
                                         callMain: () {
+                                          var box = Hive.box('db');
+                                          box.put('operator', operators[index]);
                                           saveUpdate = false;
                                           setState(() {});
                                           contex
                                               .read<XProvider>()
-                                              .changeFields(operators[index]);
+                                              .loadOperatorField(
+                                                  operators[index]);
                                         },
                                         callIcon: () {},
                                       );

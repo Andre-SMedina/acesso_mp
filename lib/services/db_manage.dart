@@ -60,7 +60,10 @@ class DbManage {
   }
 
   static Future<List> getOperators() async {
-    var operators = await supabase.from('operators').select('*, locations(*)');
+    var operators = await supabase
+        .from('operators')
+        .select('*, locations(*)')
+        .order('name', ascending: true);
 
     return operators;
   }
@@ -114,18 +117,24 @@ class DbManage {
   }
 
   static update(
-      {required Map<dynamic, dynamic> data,
+      {required var data,
       required String table,
       required String column,
-      required String find}) async {
+      required String find,
+      required String boxName}) async {
     var box = Hive.box('db');
-    Map visitor = box.get('visitor');
-    data['cpf'] = visitor['cpf'];
-    data['rg'] = visitor['rg'];
-    // await supabase.from(table).select().eq(column, find).then((e) {
-    // print(e);
-    // });
 
-    await supabase.from(table).update(data).eq(column, find);
+    if (boxName != '') {
+      var oldData = box.get(boxName);
+
+      data['cpf'] = oldData['cpf'];
+      if (data['rg'] != null) data['rg'] = oldData['rg'];
+
+      try {
+        await supabase.from(table).update(data).eq(column, find);
+      } catch (err) {
+        debugPrint(err.toString());
+      }
+    }
   }
 }

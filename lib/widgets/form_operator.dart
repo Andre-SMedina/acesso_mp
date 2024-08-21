@@ -6,12 +6,14 @@ import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ignore: must_be_immutable
 class FormOperator extends StatefulWidget {
   final VoidCallback callback;
-  const FormOperator({super.key, required this.callback});
+  FormOperator({super.key, required this.callback});
 
   @override
   State<FormOperator> createState() => _FormOperatorState();
@@ -19,6 +21,7 @@ class FormOperator extends StatefulWidget {
 
 class _FormOperatorState extends State<FormOperator> {
   String locate = '';
+  List<dynamic> listFull = [];
 
   Map loadData(String name, String cpf, String phone) {
     return {'name': name, 'cpf': cpf, 'phone': phone};
@@ -27,7 +30,6 @@ class _FormOperatorState extends State<FormOperator> {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController locateController = TextEditingController();
 
     return Form(
       key: formKey,
@@ -61,7 +63,10 @@ class _FormOperatorState extends State<FormOperator> {
                               controller: controller,
                               focusNode: focusNode,
                               validator: (e) {
-                                if (e == '' || locate == '') {
+                                if (e == '' ||
+                                    provider.locateController.text == '' ||
+                                    !listFull.contains(
+                                        provider.locateController.text)) {
                                   context.read<XProvider>().changeText();
                                 }
                                 return null;
@@ -88,15 +93,12 @@ class _FormOperatorState extends State<FormOperator> {
                       );
                     },
                     suggestionsCallback: (search) async {
-                      List<dynamic> listFull = [];
                       List<dynamic> listDropdown = [];
 
                       if (search.length > 2) {
-                        await DbManage.getLocations().then((value) {
-                          listFull = value.map((e) {
-                            return e['name'];
-                          }).toList();
-                        });
+                        var box = Hive.box('db');
+                        listFull = box.get('locations');
+
                         listDropdown = listFull.where((e) {
                           return Convert.removeAccent(e.toLowerCase()).contains(
                               Convert.removeAccent(search.toLowerCase()));
@@ -106,7 +108,7 @@ class _FormOperatorState extends State<FormOperator> {
                       return listDropdown;
                     },
                     onSelected: (suggestion) {
-                      locate = suggestion;
+                      // locate = suggestion;
                       provider.locateController.text = suggestion;
                     },
                   ),
@@ -119,7 +121,8 @@ class _FormOperatorState extends State<FormOperator> {
                       ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate() &&
-                                locate != '') {
+                                listFull
+                                    .contains(provider.locateController.text)) {
                               bool response = false;
 
                               await DbManage.saveOperator(
@@ -127,15 +130,15 @@ class _FormOperatorState extends State<FormOperator> {
                                           provider.name.fieldController.text,
                                           provider.cpf.fieldController.text,
                                           provider.phone.fieldController.text),
-                                      locate)
+                                      provider.locateController.text)
                                   .then((e) {
                                 if (e) response = true;
                               });
 
                               if (response) {
                                 formKey.currentState!.reset();
-                                locate = '';
                                 provider.locateController.text = '';
+                                // ignore: use_build_context_synchronously
                                 ZshowDialogs.alert(context,
                                     'Operador cadastrado com sucesso!');
                                 setState(() {});
@@ -150,14 +153,49 @@ class _FormOperatorState extends State<FormOperator> {
                           },
                           child: const Text('Cadastrar')),
                       ElevatedButton(
-                          onPressed: () {}, child: const Text('Salvar')),
+                          onPressed: () async {
+                            if (formKey.currentState!.validate() &&
+                                listFull
+                                    .contains(provider.locateController.text)) {
+                              SupabaseClient supabase =
+                                  Supabase.instance.client;
+                              var location = await supabase
+                                  .from('locations')
+                                  .select()
+                                  .eq('name', provider.locateController.text);
+
+                              Map operator = {
+                                'name': provider.name.fieldController.text,
+                                'cpf': provider.cpf.fieldController.text,
+                                'phone': provider.phone.fieldController.text,
+                                'location': location[0]['id']
+                              };
+
+                              operator['name'] =
+                                  provider.name.fieldController.text;
+                              operator['phone'] =
+                                  provider.phone.fieldController.text;
+                              operator['location'] = location[0]['id'];
+
+                              DbManage.update(
+                                data: operator,
+                                table: 'operators',
+                                column: 'cpf',
+                                find: operator['cpf'],
+                                boxName: 'operator',
+                              );
+
+                              widget.callback();
+                            } else {
+                              Timer(const Duration(seconds: 3), () {
+                                context.read<XProvider>().cleanText();
+                              });
+                            }
+                          },
+                          child: const Text('Salvar')),
                       ElevatedButton(
                           onPressed: () {
-                            provider.name.fieldController.text = '';
-                            provider.cpf.fieldController.text = '';
-                            provider.phone.fieldController.text = '';
-                            locate = '';
-                            provider.locateController.text = '';
+                            context.read<XProvider>().clearFields();
                             widget.callback();
                           },
                           child: const Text('Limpar'))
