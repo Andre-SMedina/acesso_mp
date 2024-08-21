@@ -1,11 +1,14 @@
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:validatorless/validatorless.dart';
 
 class XProvider with ChangeNotifier {
   String? errorText;
   TextEditingController locateController = TextEditingController();
+  bool enableField = true;
+  bool get enableField2 => enableField;
   String? get errorText2 => errorText;
   MyTextField get name2 => name;
   MyTextField get cpf2 => cpf;
@@ -22,12 +25,36 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void loadVisitorsField(Map<String, dynamic> visitor) {
+    name.fieldController.text = visitor['name'];
+    cpf.fieldController.text = "${visitor['cpf'].substring(0, 5)}...";
+    rg.fieldController.text = visitor['rg'];
+    phone.fieldController.text = visitor['phone'];
+    job.fieldController.text = visitor['job'];
+    cpf.enableField = false;
+    rg.enableField = false;
+    cpf.listValidator[0] = Validatorless.multiple([]);
+    notifyListeners();
+  }
+
+  void clearVisitorsField() {
+    name.fieldController.text = '';
+    cpf.fieldController.text = '';
+    rg.fieldController.text = '';
+    phone.fieldController.text = '';
+    job.fieldController.text = '';
+    cpf.enableField = true;
+    rg.enableField = true;
+    cpf.listValidator[0] = Validatorless.cpf('CPF inválido!');
+    var box = Hive.box('db');
+    box.putAll({'visitor': '', 'image': ''});
+    notifyListeners();
+  }
+
   void changeFields(Map data) {
     locateController.text = data['locations']['name'];
     name.fieldController.text = data['name'];
-    notifyListeners();
     cpf.fieldController.text = data['cpf'].toString();
-    notifyListeners();
     phone.fieldController.text = data['phone'].toString();
     notifyListeners();
   }
@@ -55,12 +82,26 @@ class XProvider with ChangeNotifier {
     ],
   );
 
+  MyTextField rg = MyTextField(
+    text: 'RG',
+    listInputFormat: [
+      FilteringTextInputFormatter.digitsOnly,
+    ],
+    listValidator: [Validatorless.required('Campo obrigatório!')],
+  );
+
   MyTextField phone = MyTextField(
     text: 'Telefone',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
     listValidator: [Validatorless.required('Campo obrigatório!')],
+  );
+
+  MyTextField job = MyTextField(
+    text: 'Profissão',
+    listValidator: [Validatorless.required('Campo obrigatório!')],
+    listInputFormat: const [],
   );
 }
 

@@ -17,6 +17,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -87,11 +88,16 @@ class _HomePageState extends State<HomePage> {
             : box.get('image');
 
     return [
-      widget.nameField.fieldController.text,
-      widget.cpfField.fieldController.text,
-      widget.rgField.fieldController.text,
-      widget.phoneField.fieldController.text,
-      widget.jobField.fieldController.text,
+      context.read<XProvider>().name.fieldController.text,
+      context.read<XProvider>().cpf.fieldController.text,
+      context.read<XProvider>().rg.fieldController.text,
+      context.read<XProvider>().phone.fieldController.text,
+      context.read<XProvider>().job.fieldController.text,
+      // widget.nameField.fieldController.text,
+      // widget.cpfField.fieldController.text,
+      // widget.rgField.fieldController.text,
+      // widget.phoneField.fieldController.text,
+      // widget.jobField.fieldController.text,
       img,
     ];
   }
@@ -105,7 +111,8 @@ class _HomePageState extends State<HomePage> {
     widget.image = visitor['image'];
     box.put('image', visitor['image']);
     setState(() {});
-    _formKey.currentState!.reset();
+    // _formKey.currentState!.reset();
+    context.read<XProvider>().loadVisitorsField(visitor);
     widget.nameField.loadData(Convert.firstUpper(visitor['name']));
     widget.cpfField.loadData("${visitor['cpf'].substring(0, 5)}...");
     widget.rgField.loadData(visitor['rg']);
@@ -114,12 +121,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void clearFields() {
-    var box = Hive.box('db');
-    box.putAll({'visitor': '', 'image': ''});
     loadImage = true;
     widget.image = '';
     setState(() {});
-    _formKey.currentState!.reset();
+    context.read<XProvider>().clearVisitorsField();
+    // _formKey.currentState!.reset();
   }
 
   alertCamera() {
@@ -178,250 +184,263 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: MyDropdown(
-                    loadData: () {
-                      loadData();
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                  child: Divider(
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  'Informações do Visitante',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 26),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 900),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              widget.nameField,
-                              widget.cpfField,
-                              widget.rgField,
-                              widget.phoneField,
-                              widget.jobField,
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+            child: Consumer<XProvider>(
+              builder: (context, provider, child) {
+                return Column(
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: MyDropdown(
+                        loadData: () {
+                          loadData();
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                      child: Divider(
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Informações do Visitante',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    const SizedBox(height: 26),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 900),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
                                 children: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          List dataVisitor = getDataVisitor();
+                                  provider.name,
+                                  provider.cpf,
+                                  provider.rg,
+                                  provider.phone,
+                                  provider.job,
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              List dataVisitor =
+                                                  getDataVisitor();
 
-                                          if (dataVisitor[5] != '') {
-                                            final Database db = Database(
-                                                alertVisited: alertVisited);
+                                              if (dataVisitor[5] != '') {
+                                                final Database db = Database(
+                                                    alertVisited: alertVisited);
 
-                                            db
-                                                .register(
-                                                    ModelVisitors(
-                                                      name: dataVisitor[0],
-                                                      cpf: dataVisitor[1],
-                                                      rg: dataVisitor[2],
-                                                      phone: dataVisitor[3],
-                                                      job: dataVisitor[4],
-                                                      image: dataVisitor[5],
-                                                    ),
-                                                    'save')
-                                                .then((v) {
-                                              if (v == 'saved') {
-                                                ZshowDialogs.alert(context,
-                                                    'Cadastro realizado com sucesso!');
-                                                clearFields();
-                                              } else if (v == 'exist') {
-                                                ZshowDialogs.alert(context,
-                                                    'Pessoa já cadastrada!',
-                                                    subTitle:
-                                                        'Selecione "Limpar" para depois cadastrar.');
-                                              } else if (v == 'empty') {
-                                                ZshowDialogs.alert(context,
-                                                    'Quem visitar, não preenchido!');
-                                              } else if (v == 'cpfExist') {
-                                                ZshowDialogs.alert(context,
-                                                    'CPF já cadastrado!');
-                                              }
-                                            });
-                                          } else {
-                                            ZshowDialogs.alert(context,
-                                                'Imagem não capturada!');
-                                          }
-                                        }
-                                      },
-                                      child: const Text('Cadastrar')),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          bool validate = false;
-
-                                          await ZshowDialogs.confirm(context,
-                                                  'Deseja atualizar os dados?')
-                                              .then((e) {
-                                            validate = e;
-                                          });
-
-                                          if (!validate) return;
-                                          List dataVisitor = getDataVisitor();
-                                          if (dataVisitor[5] != '') {
-                                            final Database db = Database(
-                                                alertVisited: alertVisited);
-
-                                            db
-                                                .register(
-                                                    ModelVisitors(
-                                                      name: dataVisitor[0],
-                                                      cpf: dataVisitor[1],
-                                                      rg: dataVisitor[2],
-                                                      phone: dataVisitor[3],
-                                                      job: dataVisitor[4],
-                                                      image: dataVisitor[5],
-                                                    ),
-                                                    'update')
-                                                .then((v) {
-                                              if (v == 'updated') {
-                                                ZshowDialogs.alert(context,
-                                                    'Registro atualizado!');
+                                                db
+                                                    .register(
+                                                        ModelVisitors(
+                                                          name: dataVisitor[0],
+                                                          cpf: dataVisitor[1],
+                                                          rg: dataVisitor[2],
+                                                          phone: dataVisitor[3],
+                                                          job: dataVisitor[4],
+                                                          image: dataVisitor[5],
+                                                        ),
+                                                        'save')
+                                                    .then((v) {
+                                                  if (v == 'saved') {
+                                                    ZshowDialogs.alert(context,
+                                                        'Cadastro realizado com sucesso!');
+                                                    clearFields();
+                                                  } else if (v == 'exist') {
+                                                    ZshowDialogs.alert(context,
+                                                        'Pessoa já cadastrada!',
+                                                        subTitle:
+                                                            'Selecione "Limpar" para depois cadastrar.');
+                                                  } else if (v == 'empty') {
+                                                    ZshowDialogs.alert(context,
+                                                        'Quem visitar, não preenchido!');
+                                                  } else if (v == 'cpfExist') {
+                                                    ZshowDialogs.alert(context,
+                                                        'CPF já cadastrado!');
+                                                  }
+                                                });
                                               } else {
                                                 ZshowDialogs.alert(context,
-                                                    'Registro não encontrado!');
+                                                    'Imagem não capturada!');
                                               }
-                                            });
-                                          } else {
-                                            ZshowDialogs.alert(context,
-                                                'Imagem não capturada!');
-                                          }
-                                        }
-                                      },
-                                      child: const Text('Salvar')),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 254, 3, 3)),
-                                    onPressed: () {
-                                      clearFields();
-                                    },
-                                    child: const Text(
-                                      'Limpar',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                            }
+                                          },
+                                          child: const Text('Cadastrar')),
+                                      ElevatedButton(
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              bool validate = false;
+
+                                              await ZshowDialogs.confirm(
+                                                      context,
+                                                      'Deseja atualizar os dados?')
+                                                  .then((e) {
+                                                validate = e;
+                                              });
+
+                                              if (!validate) return;
+                                              List dataVisitor =
+                                                  getDataVisitor();
+                                              if (dataVisitor[5] != '') {
+                                                final Database db = Database(
+                                                    alertVisited: alertVisited);
+
+                                                db
+                                                    .register(
+                                                        ModelVisitors(
+                                                          name: dataVisitor[0],
+                                                          cpf: dataVisitor[1],
+                                                          rg: dataVisitor[2],
+                                                          phone: dataVisitor[3],
+                                                          job: dataVisitor[4],
+                                                          image: dataVisitor[5],
+                                                        ),
+                                                        'update')
+                                                    .then((v) {
+                                                  if (v == 'updated') {
+                                                    ZshowDialogs.alert(context,
+                                                        'Registro atualizado!');
+                                                  } else {
+                                                    ZshowDialogs.alert(context,
+                                                        'Registro não encontrado!');
+                                                  }
+                                                });
+                                              } else {
+                                                ZshowDialogs.alert(context,
+                                                    'Imagem não capturada!');
+                                              }
+                                            }
+                                          },
+                                          child: const Text('Salvar')),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 254, 3, 3)),
+                                        onPressed: () {
+                                          clearFields();
+                                        },
+                                        child: const Text(
+                                          'Limpar',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 10, 1, 194)),
+                                          onPressed: () {
+                                            ZshowDialogs.historic(
+                                                context, visitor);
+                                          },
+                                          child: const Text(
+                                            'Histórico',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ))
+                                    ],
                                   ),
-                                  ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 10, 1, 194)),
-                                      onPressed: () {
-                                        ZshowDialogs.historic(context, visitor);
-                                      },
-                                      child: const Text(
-                                        'Histórico',
-                                        style: TextStyle(color: Colors.white),
-                                      ))
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                height: 350,
-                                width: 320,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(width: 2),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Center(
-                                  child: (loadImage)
-                                      ? Column(
-                                          children: [
-                                            Expanded(
-                                              child: (widget.image == '')
-                                                  ? const Icon(
-                                                      Icons
-                                                          .image_not_supported_outlined,
-                                                      size: 200,
-                                                    )
-                                                  : Image.memory(
-                                                      base64Decode(
-                                                          widget.image),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
-                                              child: ElevatedButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      loadImage = false;
-                                                    });
-                                                  },
-                                                  child:
-                                                      const Text('Capturar')),
+                                  child: Container(
+                                    height: 350,
+                                    width: 320,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(width: 2),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                      child: (loadImage)
+                                          ? Column(
+                                              children: [
+                                                Expanded(
+                                                  child: (widget.image == '')
+                                                      ? const Icon(
+                                                          Icons
+                                                              .image_not_supported_outlined,
+                                                          size: 200,
+                                                        )
+                                                      : Image.memory(
+                                                          base64Decode(
+                                                              widget.image),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8.0),
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          loadImage = false;
+                                                        });
+                                                      },
+                                                      child: const Text(
+                                                          'Capturar')),
+                                                )
+                                              ],
                                             )
-                                          ],
-                                        )
-                                      : (cameras.isEmpty)
-                                          ? const Text('Câmera não encontrada!')
-                                          : CameraApp(
-                                              cameras: cameras,
-                                              alert: alertCamera,
-                                            ),
+                                          : (cameras.isEmpty)
+                                              ? const Text(
+                                                  'Câmera não encontrada!')
+                                              : CameraApp(
+                                                  cameras: cameras,
+                                                  alert: alertCamera,
+                                                ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  ManageData manageDate = ManageData(
-                                    alert: alertAuth,
-                                    alertVisited: alertVisited,
-                                  );
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      ManageData manageDate = ManageData(
+                                        alert: alertAuth,
+                                        alertVisited: alertVisited,
+                                      );
 
-                                  bool success = false;
-                                  await manageDate
-                                      .authorized()
-                                      .then((v) => success = v);
+                                      bool success = false;
+                                      await manageDate
+                                          .authorized()
+                                          .then((v) => success = v);
 
-                                  if (success) {
-                                    clearFields();
-                                  }
-                                },
-                                child: const Text('Autorizar'))
-                          ],
-                        ),
+                                      if (success) {
+                                        clearFields();
+                                      }
+                                    },
+                                    child: const Text('Autorizar'))
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

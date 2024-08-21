@@ -1,5 +1,7 @@
+import 'package:acesso_mp/services/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
@@ -21,18 +23,21 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 3.0),
-      child: TextFormField(
-        validator: Validatorless.multiple(listValidator),
-        controller: fieldController,
-        inputFormatters: listInputFormat,
-        decoration: InputDecoration(
-          hintText: 'testando',
-          enabled: enableField,
-          filled: true,
-          fillColor: Colors.white,
-          labelText: text,
-          helperText: '',
-        ),
+      child: Consumer<XProvider>(
+        builder: (context, provider, child) {
+          return TextFormField(
+            validator: Validatorless.multiple(listValidator),
+            controller: fieldController,
+            inputFormatters: listInputFormat,
+            decoration: InputDecoration(
+              enabled: enableField,
+              filled: true,
+              fillColor: Colors.white,
+              labelText: text,
+              helperText: '',
+            ),
+          );
+        },
       ),
     );
   }
