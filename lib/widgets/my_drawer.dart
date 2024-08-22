@@ -10,6 +10,11 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void operatorControl() {
+      context.read<XProvider>().clearFields();
+      Navigator.pushReplacementNamed(context, '/controlOperators');
+    }
+
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.only(top: 20.0),
@@ -36,10 +41,9 @@ class MyDrawer extends StatelessWidget {
                     return e['name'];
                   }).toList();
                   box.put('locations', listFull);
+                  box.put('locationsId', value);
+                  operatorControl();
                 });
-
-                context.read<XProvider>().clearFields();
-                Navigator.pushReplacementNamed(context, '/controlOperators');
               },
               callIcon: () {},
             ),

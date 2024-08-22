@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
@@ -13,7 +15,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // ignore: must_be_immutable
 class FormOperator extends StatefulWidget {
   final VoidCallback callback;
-  FormOperator({super.key, required this.callback});
+  const FormOperator({super.key, required this.callback});
 
   @override
   State<FormOperator> createState() => _FormOperatorState();
@@ -29,6 +31,8 @@ class _FormOperatorState extends State<FormOperator> {
 
   @override
   Widget build(BuildContext context) {
+    var box = Hive.box('db');
+    listFull = box.get('locations');
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Form(
@@ -96,9 +100,6 @@ class _FormOperatorState extends State<FormOperator> {
                       List<dynamic> listDropdown = [];
 
                       if (search.length > 2) {
-                        var box = Hive.box('db');
-                        listFull = box.get('locations');
-
                         listDropdown = listFull.where((e) {
                           return Convert.removeAccent(e.toLowerCase()).contains(
                               Convert.removeAccent(search.toLowerCase()));
@@ -108,7 +109,6 @@ class _FormOperatorState extends State<FormOperator> {
                       return listDropdown;
                     },
                     onSelected: (suggestion) {
-                      // locate = suggestion;
                       provider.locateController.text = suggestion;
                     },
                   ),
@@ -138,12 +138,15 @@ class _FormOperatorState extends State<FormOperator> {
                               if (response) {
                                 formKey.currentState!.reset();
                                 provider.locateController.text = '';
-                                // ignore: use_build_context_synchronously
+                                // ignore:
                                 ZshowDialogs.alert(context,
                                     'Operador cadastrado com sucesso!');
                                 setState(() {});
 
                                 widget.callback();
+                              } else {
+                                ZshowDialogs.alert(
+                                    context, 'CPF já cadastrado.');
                               }
                             } else {
                               Timer(const Duration(seconds: 3), () {
@@ -159,34 +162,53 @@ class _FormOperatorState extends State<FormOperator> {
                                     .contains(provider.locateController.text)) {
                               SupabaseClient supabase =
                                   Supabase.instance.client;
-                              var location = await supabase
-                                  .from('locations')
-                                  .select()
-                                  .eq('name', provider.locateController.text);
+                              List cpfs = await supabase
+                                  .from('operators')
+                                  .select('cpf');
+                              bool validate = false;
 
-                              Map operator = {
-                                'name': provider.name.fieldController.text,
-                                'cpf': provider.cpf.fieldController.text,
-                                'phone': provider.phone.fieldController.text,
-                                'location': location[0]['id']
-                              };
+                              for (var item in cpfs) {
+                                if (item['cpf'] ==
+                                    provider.cpf.fieldController.text) {
+                                  await ZshowDialogs.confirm(
+                                          context, 'Salvar alterações?')
+                                      .then((e) {
+                                    validate = e;
+                                  });
+                                }
+                              }
 
-                              operator['name'] =
-                                  provider.name.fieldController.text;
-                              operator['phone'] =
-                                  provider.phone.fieldController.text;
-                              operator['location'] = location[0]['id'];
+                              if (validate) {
+                                List locationsId = box.get('locationsId');
 
-                              DbManage.update(
-                                data: operator,
-                                table: 'operators',
-                                column: 'cpf',
-                                find: operator['cpf'],
-                                boxName: 'operator',
-                              );
+                                int locationId = 0;
+                                for (var e in locationsId) {
+                                  if (e['name'] ==
+                                      provider.locateController.text) {
+                                    locationId = e['id'];
+                                  }
+                                }
 
-                              widget.callback();
+                                Map operator = {
+                                  'name': provider.name.fieldController.text,
+                                  'cpf': provider.cpf.fieldController.text,
+                                  'phone': provider.phone.fieldController.text,
+                                  'location': locationId
+                                };
+
+                                DbManage.update(
+                                  data: operator,
+                                  table: 'operators',
+                                  column: 'cpf',
+                                  find: operator['cpf'],
+                                  boxName: 'operator',
+                                );
+
+                                widget.callback();
+                              }
                             } else {
+                              ZshowDialogs.alert(
+                                  context, 'Operador não encontrado!');
                               Timer(const Duration(seconds: 3), () {
                                 context.read<XProvider>().cleanText();
                               });
@@ -194,11 +216,19 @@ class _FormOperatorState extends State<FormOperator> {
                           },
                           child: const Text('Salvar')),
                       ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 254, 3, 3)),
                           onPressed: () {
                             context.read<XProvider>().clearFields();
+                            context.read<XProvider>().cleanText();
+
                             widget.callback();
                           },
-                          child: const Text('Limpar'))
+                          child: const Text(
+                            'Limpar',
+                            style: TextStyle(color: Colors.white),
+                          ))
                     ],
                   )
                 ],
