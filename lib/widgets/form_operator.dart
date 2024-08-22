@@ -25,10 +25,6 @@ class _FormOperatorState extends State<FormOperator> {
   String locate = '';
   List<dynamic> listFull = [];
 
-  Map loadData(String name, String cpf, String phone) {
-    return {'name': name, 'cpf': cpf, 'phone': phone};
-  }
-
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('db');
@@ -40,7 +36,7 @@ class _FormOperatorState extends State<FormOperator> {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
+          constraints: const BoxConstraints(maxHeight: 430, maxWidth: 400),
           child: Consumer<XProvider>(
             builder: (context, provider, child) {
               return Column(
@@ -48,6 +44,7 @@ class _FormOperatorState extends State<FormOperator> {
                   provider.name,
                   provider.cpf,
                   provider.phone,
+                  // provider.email,
                   TypeAheadField(
                     loadingBuilder: (context) => const Padding(
                       padding: EdgeInsets.all(8),
@@ -125,12 +122,11 @@ class _FormOperatorState extends State<FormOperator> {
                                     .contains(provider.locateController.text)) {
                               bool response = false;
 
-                              await DbManage.saveOperator(
-                                      loadData(
-                                          provider.name.fieldController.text,
-                                          provider.cpf.fieldController.text,
-                                          provider.phone.fieldController.text),
-                                      provider.locateController.text)
+                              await DbManage.saveOperator({
+                                'name': provider.name.fieldController.text,
+                                'cpf': provider.cpf.fieldController.text,
+                                'phone': provider.phone.fieldController.text
+                              }, provider.locateController.text)
                                   .then((e) {
                                 if (e) response = true;
                               });

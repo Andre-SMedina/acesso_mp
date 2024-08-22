@@ -106,6 +106,15 @@ class XProvider with ChangeNotifier {
     listValidator: [Validatorless.required('Campo obrigatório!')],
     listInputFormat: const [],
   );
+
+  MyTextField email = MyTextField(
+    text: 'Email',
+    listValidator: [
+      Validatorless.required('Campo obrigatório!'),
+      Validatorless.email('Email inválido!')
+    ],
+    listInputFormat: const [],
+  );
 }
 
 // Consumer<XProvider>(

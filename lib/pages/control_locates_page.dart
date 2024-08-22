@@ -89,9 +89,17 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                   locateField,
                                   ElevatedButton(
                                       onPressed: () async {
+                                        bool validate = false;
+
                                         if (formKey.currentState!.validate()) {
-                                          await DbManage.saveLocate(
-                                              locateField.fieldController.text);
+                                          await DbManage.saveLocate(locateField
+                                                  .fieldController.text)
+                                              .then((e) => validate = e);
+                                          if (!validate) {
+                                            // ignore: use_build_context_synchronously
+                                            return ZshowDialogs.alert(context,
+                                                'Lotação já cadastrada!');
+                                          }
                                           setState(() {});
                                           // ignore: use_build_context_synchronously
                                           ZshowDialogs.alert(context,
@@ -108,7 +116,7 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                           color: Colors.white, border: Border.all()),
                       child: ConstrainedBox(
                         constraints:
-                            const BoxConstraints(maxHeight: 400, maxWidth: 400),
+                            const BoxConstraints(maxHeight: 400, maxWidth: 300),
                         child: FutureBuilder(
                           future: DbManage.getLocations(),
                           builder: (context, snapshot) {
@@ -123,17 +131,7 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                     hoverColor: const Color.fromARGB(
                                         255, 138, 199, 248),
                                     icon: Icons.location_city,
-                                    iconBtn: Icons.delete_forever,
-                                    iconColor: Colors.red,
-                                    callIcon: () {
-                                      ZshowDialogs.confirm(
-                                              contex, 'Confirma a exclusão?')
-                                          .then((e) {
-                                        if (e) {
-                                          delete(locations[index]['name']);
-                                        }
-                                      });
-                                    },
+                                    callIcon: () {},
                                     callMain: () async {
                                       await ZshowDialogs.updateLocate(
                                               contex, locations[index]['name'])
