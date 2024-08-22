@@ -55,4 +55,15 @@ class Convert {
       return index == -1 ? char : withoutAccents[index];
     }).join();
   }
+
+  static List<String> forList(List<Map> listMap, String key) {
+    List<String> list = listMap.map((map) {
+      String item = Convert.removeAccent(map[key].toLowerCase());
+      String itemModify = "${item.split(' ').first}${item.split(' ').last}";
+
+      return itemModify;
+    }).toList();
+
+    return list;
+  }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,8 +19,20 @@ class LoginPageState extends State<LoginPage> {
 
   void _login(BuildContext context) async {
     String auth = 'void';
+    final supabase = Supabase.instance.client;
+    final operators = await supabase.from('operators').select();
+    List<String> users = Convert.forList(operators, 'name');
 
-    if (_formKey.currentState!.validate()) {
+    // if (_formKey.currentState!.validate()) {
+    if (true) {
+      // if (!users.contains(_emailController.text)) {
+      //   return ZshowDialogs.alert(context, 'Usuário não encontrado!');
+      // }
+      if (_passwordController.text == '123456') {
+        ZshowDialogs.alert(context, 'Cadastre uma nova senha!');
+      }
+
+      return;
       try {
         await Supabase.instance.client.auth.signInWithPassword(
             email: _emailController.text, password: _passwordController.text);

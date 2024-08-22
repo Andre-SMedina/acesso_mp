@@ -43,6 +43,7 @@ class XProvider with ChangeNotifier {
     rg.fieldController.text = '';
     phone.fieldController.text = '';
     job.fieldController.text = '';
+    email.fieldController.text = '';
     locateController.text = '';
     cpf.enableField = true;
     rg.enableField = true;
@@ -57,6 +58,7 @@ class XProvider with ChangeNotifier {
     name.fieldController.text = operator['name'];
     cpf.fieldController.text = operator['cpf'].toString();
     phone.fieldController.text = operator['phone'].toString();
+    email.fieldController.text = operator['email'];
     cpf.enableField = false;
 
     notifyListeners();

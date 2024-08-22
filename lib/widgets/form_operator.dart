@@ -36,7 +36,7 @@ class _FormOperatorState extends State<FormOperator> {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 430, maxWidth: 400),
+          constraints: const BoxConstraints(minHeight: 430, maxWidth: 400),
           child: Consumer<XProvider>(
             builder: (context, provider, child) {
               return Column(
@@ -44,7 +44,7 @@ class _FormOperatorState extends State<FormOperator> {
                   provider.name,
                   provider.cpf,
                   provider.phone,
-                  // provider.email,
+                  provider.email,
                   TypeAheadField(
                     loadingBuilder: (context) => const Padding(
                       padding: EdgeInsets.all(8),
@@ -125,7 +125,8 @@ class _FormOperatorState extends State<FormOperator> {
                               await DbManage.saveOperator({
                                 'name': provider.name.fieldController.text,
                                 'cpf': provider.cpf.fieldController.text,
-                                'phone': provider.phone.fieldController.text
+                                'phone': provider.phone.fieldController.text,
+                                'email': provider.email.fieldController.text,
                               }, provider.locateController.text)
                                   .then((e) {
                                 if (e) response = true;
@@ -164,7 +165,7 @@ class _FormOperatorState extends State<FormOperator> {
                               bool validate = false;
 
                               for (var item in cpfs) {
-                                if (item['cpf'] ==
+                                if (item['cpf'].toString() ==
                                     provider.cpf.fieldController.text) {
                                   await ZshowDialogs.confirm(
                                           context, 'Salvar alterações?')
@@ -189,6 +190,7 @@ class _FormOperatorState extends State<FormOperator> {
                                   'name': provider.name.fieldController.text,
                                   'cpf': provider.cpf.fieldController.text,
                                   'phone': provider.phone.fieldController.text,
+                                  'email': provider.email.fieldController.text,
                                   'location': locationId
                                 };
 
