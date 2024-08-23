@@ -29,7 +29,15 @@ class LoginPageState extends State<LoginPage> {
       //   return ZshowDialogs.alert(context, 'Usuário não encontrado!');
       // }
       if (_passwordController.text == '123456') {
-        ZshowDialogs.alert(context, 'Cadastre uma nova senha!');
+        bool validate = false;
+
+        await ZshowDialogs.updatePassword(context).then((e) {
+          validate = e;
+        });
+
+        if (validate) {
+          //TODO: Continuar aqui
+        }
       }
 
       return;

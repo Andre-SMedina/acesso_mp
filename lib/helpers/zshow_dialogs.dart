@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/custom_validator.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
@@ -180,6 +181,7 @@ class ZshowDialogs {
 
   static Future<bool> updateLocate(BuildContext context, String oldName) async {
     bool validate = false;
+
     MyTextField nameField = MyTextField(
         text: 'Novo nome',
         listValidator: [Validatorless.required('Campo obrgatório!')],
@@ -218,6 +220,77 @@ class ZshowDialogs {
                       },
                       child: const Text('Salvar alteração')),
                 ],
+              ),
+            ),
+          );
+        });
+
+    return validate;
+  }
+
+  static Future<bool> updatePassword(BuildContext context) async {
+    bool validate = false;
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController passwordController = TextEditingController();
+    var validates = [
+      Validatorless.required('Campo Obrigatório'),
+      Validatorless.min(6, 'A senha não pode ter menos de 6 caracteres!'),
+    ];
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Atualizar senha',
+              textAlign: TextAlign.center,
+            ),
+            content: Form(
+              key: formKey,
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(maxHeight: 200, minWidth: 300),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: Validatorless.multiple([
+                        ...validates,
+                        CustomValidator.standartPasswordValidator
+                      ]),
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Senha',
+                          helperText: ''),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      validator: Validatorless.multiple([
+                        ...validates,
+                        Validatorless.compare(
+                            passwordController, 'As senhas não são iguais!')
+                      ]),
+                      decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Confirmar senha',
+                          helperText: ''),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            validate = true;
+                          }
+                        },
+                        child: const Text('Registrar'))
+                  ],
+                ),
               ),
             ),
           );
