@@ -6,66 +6,22 @@ import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
-import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
-import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/database.dart';
 import 'package:acesso_mp/services/data_manage.dart';
 import 'package:acesso_mp/widgets/camera.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   final List<CameraDescription> cameras;
   HomePage({super.key, required this.cameras});
 
-  MyTextField nameField = MyTextField(
-    text: 'Nome',
-    listInputFormat: const [],
-    listValidator: [
-      Validatorless.required('Campo obrigatório!'),
-      (v) => v!.split(' ').length >= 2
-          ? null
-          : 'O nome deve ter nome e sobrenome!',
-    ],
-  );
-  MyTextField cpfField = MyTextField(
-    text: 'CPF',
-    listValidator: [
-      Validatorless.cpf('CPF inválido!'),
-      Validatorless.required('Campo obrigatório!')
-    ],
-    listInputFormat: [
-      FilteringTextInputFormatter.digitsOnly,
-      LengthLimitingTextInputFormatter(11)
-    ],
-  );
-  MyTextField rgField = MyTextField(
-    text: 'RG',
-    listInputFormat: [
-      FilteringTextInputFormatter.digitsOnly,
-    ],
-    listValidator: [Validatorless.required('Campo obrigatório!')],
-  );
-  MyTextField phoneField = MyTextField(
-    text: 'Telefone',
-    listInputFormat: [
-      FilteringTextInputFormatter.digitsOnly,
-    ],
-    listValidator: [Validatorless.required('Campo obrigatório!')],
-  );
-  MyTextField jobField = MyTextField(
-    text: 'Profissão',
-    listValidator: [Validatorless.required('Campo obrigatório!')],
-    listInputFormat: const [],
-  );
   String image = '';
 
   @override
@@ -93,17 +49,11 @@ class _HomePageState extends State<HomePage> {
       context.read<XProvider>().rg.fieldController.text,
       context.read<XProvider>().phone.fieldController.text,
       context.read<XProvider>().job.fieldController.text,
-      // widget.nameField.fieldController.text,
-      // widget.cpfField.fieldController.text,
-      // widget.rgField.fieldController.text,
-      // widget.phoneField.fieldController.text,
-      // widget.jobField.fieldController.text,
       img,
     ];
   }
 
   void loadData() {
-    widget.cpfField.enableField = false;
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -111,21 +61,16 @@ class _HomePageState extends State<HomePage> {
     widget.image = visitor['image'];
     box.put('image', visitor['image']);
     setState(() {});
-    // _formKey.currentState!.reset();
+    _formKey.currentState!.reset();
     context.read<XProvider>().loadVisitorsField(visitor);
-    widget.nameField.loadData(Convert.firstUpper(visitor['name']));
-    widget.cpfField.loadData("${visitor['cpf'].substring(0, 5)}...");
-    widget.rgField.loadData(visitor['rg']);
-    widget.phoneField.loadData(visitor['phone']);
-    widget.jobField.loadData(visitor['job']);
   }
 
   void clearFields() {
     loadImage = true;
     widget.image = '';
     setState(() {});
+    _formKey.currentState!.reset();
     context.read<XProvider>().clearFields();
-    // _formKey.currentState!.reset();
   }
 
   alertCamera() {
@@ -258,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                                                     clearFields();
                                                   } else if (v == 'exist') {
                                                     ZshowDialogs.alert(context,
-                                                        'Pessoa já cadastrada!',
+                                                        'CPF já cadastrado!',
                                                         subTitle:
                                                             'Selecione "Limpar" para depois cadastrar.');
                                                   } else if (v == 'empty') {

@@ -56,14 +56,10 @@ class Convert {
     }).join();
   }
 
-  static List<String> forList(List<Map> listMap, String key) {
-    List<String> list = listMap.map((map) {
-      String item = Convert.removeAccent(map[key].toLowerCase());
-      String itemModify = "${item.split(' ').first}${item.split(' ').last}";
+  static String forUserName(String name) {
+    String newName = removeAccent(
+        "${name.split(' ').first}${name.split(' ').last}".toLowerCase());
 
-      return itemModify;
-    }).toList();
-
-    return list;
+    return newName;
   }
 }

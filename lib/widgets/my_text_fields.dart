@@ -23,17 +23,21 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 3.0),
-      child: TextFormField(
-        validator: Validatorless.multiple(listValidator),
-        controller: fieldController,
-        inputFormatters: listInputFormat,
-        decoration: InputDecoration(
-          enabled: enableField,
-          filled: true,
-          fillColor: Colors.white,
-          labelText: text,
-          helperText: '',
-        ),
+      child: Consumer<XProvider>(
+        builder: (context, value, child) {
+          return TextFormField(
+            validator: Validatorless.multiple(listValidator),
+            controller: fieldController,
+            inputFormatters: listInputFormat,
+            decoration: InputDecoration(
+              enabled: enableField,
+              filled: true,
+              fillColor: Colors.white,
+              labelText: text,
+              helperText: '',
+            ),
+          );
+        },
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControlOperatorsPage extends StatefulWidget {
   const ControlOperatorsPage({super.key});
@@ -31,10 +32,30 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Controle de Operadores'),
-        centerTitle: true,
-      ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text('Controle de Operadores'),
+          centerTitle: true,
+          actions: [
+            Row(
+              children: [
+                const Text(
+                  'Sair',
+                  style: TextStyle(color: Colors.white),
+                ),
+                IconButton(
+                    padding: const EdgeInsets.only(right: 30, left: 10),
+                    onPressed: () async {
+                      var supabase = Supabase.instance.client;
+                      await supabase.auth.signOut();
+                      Navigator.pushReplacementNamed(context, '/');
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ))
+              ],
+            )
+          ]),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -47,7 +68,7 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 60.0),
               child: Consumer(
-                builder: (context, value, child) {
+                builder: (context, provider, child) {
                   return Column(
                     children: [
                       Container(

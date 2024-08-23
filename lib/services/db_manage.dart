@@ -49,6 +49,7 @@ class DbManage {
 
       Map operator = dataOperator;
       operator['location'] = locateId.toString();
+      operator['userName'] = Convert.forUserName(operator['name']);
 
       await supabase.from('operators').insert(operator);
       response = true;
@@ -128,6 +129,7 @@ class DbManage {
       var oldData = box.get(boxName);
 
       data['cpf'] = oldData['cpf'];
+      data['consult'] = Convert.removeAccent(data['name'].toLowerCase());
       if (data['rg'] != null) data['rg'] = oldData['rg'];
 
       try {

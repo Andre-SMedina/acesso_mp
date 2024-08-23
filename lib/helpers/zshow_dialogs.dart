@@ -286,6 +286,7 @@ class ZshowDialogs {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             validate = true;
+                            Navigator.pop(context);
                           }
                         },
                         child: const Text('Registrar'))

@@ -4,6 +4,7 @@ import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ControlLocatesPage extends StatefulWidget {
@@ -40,10 +41,30 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Controle de Lotações'),
-        centerTitle: true,
-      ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text('Controle de Lotações'),
+          centerTitle: true,
+          actions: [
+            Row(
+              children: [
+                const Text(
+                  'Sair',
+                  style: TextStyle(color: Colors.white),
+                ),
+                IconButton(
+                    padding: const EdgeInsets.only(right: 30, left: 10),
+                    onPressed: () async {
+                      var supabase = Supabase.instance.client;
+                      await supabase.auth.signOut();
+                      Navigator.pushReplacementNamed(context, '/');
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ))
+              ],
+            )
+          ]),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
