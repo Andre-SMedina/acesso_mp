@@ -23,22 +23,23 @@ class LoginPageState extends State<LoginPage> {
         .from('operators')
         .select('userName, email, active, newUser');
 
-    // return;
-
     if (_formKey.currentState!.validate()) {
       // if (true) {
       bool validate = false;
       String email = '';
       bool auth = false;
-      bool activate = false;
+      bool active = false;
       bool newUser = false;
+      String userName = '';
+      String password = '';
 
       for (var e in operators) {
         if (e.containsValue(emailController.text)) {
           email = e['email'];
-          activate = e['active'];
+          active = e['active'];
           newUser = e['newUser'];
           validate = true;
+          userName = e['userName'];
         }
       }
 
@@ -47,25 +48,31 @@ class LoginPageState extends State<LoginPage> {
       }
       if (passwordController.text == '123456' && newUser) {
         await ZshowDialogs.updatePassword(context).then((e) {
-          validate = e;
+          validate = e[0];
+          password = e[1];
         });
 
         if (validate) {
-          ZshowDialogs.alert(context, 'Senha atualizada com sucesso!');
           try {
-            await supabase.auth
-                .signUp(email: email, password: passwordController.text);
+            await supabase.auth.signUp(
+              email: email,
+              password: password,
+            );
             await supabase
                 .from('operators')
                 .update({'active': true, 'newUser': false}).eq('email', email);
-            // await supabase.auth.signInWithPassword(
-            //     email: email, password: passwordController.text);
+            await supabase.auth.updateUser(UserAttributes(data: {
+              'displayName': userName,
+            }));
             auth = true;
           } catch (err) {
             debugPrint(err.toString());
           }
         }
       } else {
+        if (!active) {
+          return ZshowDialogs.alert(context, 'Usuário desativado');
+        }
         try {
           await supabase.auth.signInWithPassword(
               email: email, password: passwordController.text);
@@ -78,7 +85,6 @@ class LoginPageState extends State<LoginPage> {
 
       if (auth) {
         Navigator.pushReplacementNamed(context, '/home');
-        // _formKey.currentState!.reset();
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
@@ -132,11 +138,11 @@ class LoginPageState extends State<LoginPage> {
                       decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          labelText: 'E-mail',
+                          labelText: 'Usuário',
                           helperText: ''),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Por favor, insira seu e-mail';
+                          return 'Por favor, insira seu usuário';
                         }
                         return null;
                       },

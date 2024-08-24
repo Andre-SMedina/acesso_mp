@@ -228,7 +228,7 @@ class ZshowDialogs {
     return validate;
   }
 
-  static Future<bool> updatePassword(BuildContext context) async {
+  static Future<List> updatePassword(BuildContext context) async {
     bool validate = false;
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController passwordController = TextEditingController();
@@ -297,6 +297,6 @@ class ZshowDialogs {
           );
         });
 
-    return validate;
+    return [validate, passwordController.text];
   }
 }

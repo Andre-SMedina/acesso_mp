@@ -29,136 +29,163 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
       },
     );
     var operators = [];
-    return Scaffold(
-      drawer: const MyDrawer(),
-      appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: const Text('Controle de Operadores'),
-          centerTitle: true,
-          actions: [
-            Row(
+    if (Supabase.instance.client.auth.currentUser == null) {
+      return Scaffold(
+        body: Center(
+          child: SizedBox(
+            height: 100,
+            child: Column(
               children: [
                 const Text(
-                  'Sair',
-                  style: TextStyle(color: Colors.white),
+                  'Nenhum usuário logado no sistema',
+                  style: TextStyle(fontSize: 30),
                 ),
-                IconButton(
-                    padding: const EdgeInsets.only(right: 30, left: 10),
-                    onPressed: () async {
-                      var supabase = Supabase.instance.client;
-                      await supabase.auth.signOut();
+                const SizedBox(
+                  height: 15,
+                ),
+                ElevatedButton(
+                    onPressed: () {
                       Navigator.pushReplacementNamed(context, '/');
                     },
-                    icon: const Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ))
+                    child: const Text('Voltar para login'))
               ],
-            )
-          ]),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/manut.jpg'),
-                    fit: BoxFit.cover,
-                    opacity: 0.1)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-              child: Consumer(
-                builder: (context, provider, child) {
-                  return Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+        drawer: const MyDrawer(),
+        appBar: AppBar(
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: const Text('Controle de Operadores'),
+            centerTitle: true,
+            actions: [
+              Row(
+                children: [
+                  const Text(
+                    'Sair',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  IconButton(
+                      padding: const EdgeInsets.only(right: 30, left: 10),
+                      onPressed: () async {
+                        var supabase = Supabase.instance.client;
+                        await supabase.auth.signOut();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacementNamed(context, '/');
+                      },
+                      icon: const Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ))
+                ],
+              )
+            ]),
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1200),
+            child: Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/manut.jpg'),
+                      fit: BoxFit.cover,
+                      opacity: 0.1)),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 60.0),
+                child: Consumer(
+                  builder: (context, provider, child) {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 550,
+                                  child: Text(
+                                    (saveUpdate)
+                                        ? 'Cadastrar operador'
+                                        : 'Editar operador',
+                                    style: title,
+                                  )),
+                              Text(
+                                'Lista de operadores',
+                                style: title,
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(
-                                width: 550,
-                                child: Text(
-                                  (saveUpdate)
-                                      ? 'Cadastrar operador'
-                                      : 'Editar operador',
-                                  style: title,
-                                )),
-                            Text(
-                              'Lista de operadores',
-                              style: title,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 22.0),
+                              child: formOperator,
+                            ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white, border: Border.all()),
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 400, maxWidth: 400),
+                                  child: FutureBuilder(
+                                    future: DbManage.getOperators(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        operators = snapshot.data!;
+                                      }
+                                      return ListView.builder(
+                                          itemCount: operators.length,
+                                          itemBuilder: (contex, index) {
+                                            return MyListTile(
+                                              title: operators[index]['name'],
+                                              hoverColor: const Color.fromARGB(
+                                                  255, 138, 199, 248),
+                                              icon: Icons.person,
+                                              //TODO: desativar operador
+                                              iconBtn: operators[index] ==
+                                                      'João Paulo Fernandes'
+                                                  ? Icons
+                                                      .do_not_disturb_alt_outlined
+                                                  : Icons.assignment_ind_sharp,
+                                              iconColor: const Color.fromARGB(
+                                                  255, 18, 0, 153),
+                                              callMain: () {
+                                                var box = Hive.box('db');
+                                                box.put('operator',
+                                                    operators[index]);
+                                                saveUpdate = false;
+                                                setState(() {});
+                                                contex
+                                                    .read<XProvider>()
+                                                    .loadOperatorField(
+                                                        operators[index]);
+                                              },
+                                              callIcon: () {},
+                                            );
+                                          });
+                                    },
+                                  ),
+                                ),
+                              ),
                             )
                           ],
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 22.0),
-                            child: formOperator,
-                          ),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white, border: Border.all()),
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                    maxHeight: 400, maxWidth: 400),
-                                child: FutureBuilder(
-                                  future: DbManage.getOperators(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      operators = snapshot.data!;
-                                    }
-                                    return ListView.builder(
-                                        itemCount: operators.length,
-                                        itemBuilder: (contex, index) {
-                                          return MyListTile(
-                                            title: operators[index]['name'],
-                                            hoverColor: const Color.fromARGB(
-                                                255, 138, 199, 248),
-                                            icon: Icons.person,
-                                            //TODO: desativar operador
-                                            iconBtn: operators[index] ==
-                                                    'João Paulo Fernandes'
-                                                ? Icons
-                                                    .do_not_disturb_alt_outlined
-                                                : Icons.assignment_ind_sharp,
-                                            iconColor: const Color.fromARGB(
-                                                255, 18, 0, 153),
-                                            callMain: () {
-                                              var box = Hive.box('db');
-                                              box.put(
-                                                  'operator', operators[index]);
-                                              saveUpdate = false;
-                                              setState(() {});
-                                              contex
-                                                  .read<XProvider>()
-                                                  .loadOperatorField(
-                                                      operators[index]);
-                                            },
-                                            callIcon: () {},
-                                          );
-                                        });
-                                  },
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

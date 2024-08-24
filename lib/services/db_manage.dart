@@ -50,6 +50,7 @@ class DbManage {
       Map operator = dataOperator;
       operator['location'] = locateId.toString();
       operator['userName'] = Convert.forUserName(operator['name']);
+      operator['name'] = Convert.firstUpper(operator['name']);
 
       await supabase.from('operators').insert(operator);
       response = true;
@@ -96,14 +97,6 @@ class DbManage {
     return locations;
   }
 
-  static deleteLocate(String locate) async {
-    try {
-      await supabase.from('locations').delete().eq('name', locate);
-    } catch (err) {
-      debugPrint(err.toString());
-    }
-  }
-
   static Future<dynamic> getJoin(
       {required String findTb1,
       required String columnTb1,
@@ -129,7 +122,6 @@ class DbManage {
       var oldData = box.get(boxName);
 
       data['cpf'] = oldData['cpf'];
-      data['consult'] = Convert.removeAccent(data['name'].toLowerCase());
       if (data['rg'] != null) data['rg'] = oldData['rg'];
 
       try {
