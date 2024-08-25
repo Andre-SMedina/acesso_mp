@@ -25,6 +25,11 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Map getProfile() {
+    var box = Hive.box('db');
+    return box.get('profile') ?? {};
+  }
+
   void loadVisitorsField(Map<String, dynamic> visitor) {
     name.fieldController.text = visitor['name'];
     cpf.fieldController.text = "${visitor['cpf'].substring(0, 5)}...";

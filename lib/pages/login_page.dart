@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,10 +21,10 @@ class LoginPageState extends State<LoginPage> {
     final supabase = Supabase.instance.client;
     final operators = await supabase
         .from('operators')
-        .select('userName, email, active, newUser');
+        .select('name, userName, email, active, newUser, adm, locations(name)');
 
     if (_formKey.currentState!.validate()) {
-      // if (true) {
+      var box = Hive.box('db');
       bool validate = false;
       String email = '';
       bool auth = false;
@@ -40,13 +40,14 @@ class LoginPageState extends State<LoginPage> {
           newUser = e['newUser'];
           validate = true;
           userName = e['userName'];
+          box.put('profile', e);
         }
       }
 
       if (!validate) {
         return ZshowDialogs.alert(context, 'Usuário não encontrado!');
       }
-      if (passwordController.text == '123456' && newUser) {
+      if (newUser) {
         await ZshowDialogs.updatePassword(context).then((e) {
           validate = e[0];
           password = e[1];

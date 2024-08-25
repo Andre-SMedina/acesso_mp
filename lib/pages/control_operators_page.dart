@@ -1,6 +1,7 @@
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/form_operator.dart';
+import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -54,37 +55,19 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
         ),
       );
     } else {
+      var supabase = Supabase.instance.client;
+
+      void updateProfile(Map data, int cpf) async {
+        await supabase.from('operators').update(data).eq('cpf', cpf);
+        setState(() {});
+      }
+
       return Scaffold(
         drawer: const MyDrawer(),
-        appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.white),
-            title: const Text('Controle de Operadores'),
-            centerTitle: true,
-            actions: [
-              Row(
-                children: [
-                  const Text(
-                    'Sair',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  IconButton(
-                      padding: const EdgeInsets.only(right: 30, left: 10),
-                      onPressed: () async {
-                        var supabase = Supabase.instance.client;
-                        await supabase.auth.signOut();
-                        // ignore: use_build_context_synchronously
-                        Navigator.pushReplacementNamed(context, '/');
-                      },
-                      icon: const Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                      ))
-                ],
-              )
-            ]),
+        appBar: myAppbar(context, 'Controle de Operadores'),
         body: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1200),
+            constraints: const BoxConstraints(maxWidth: 1000),
             child: Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -92,92 +75,118 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                       fit: BoxFit.cover,
                       opacity: 0.1)),
               child: Padding(
-                padding: const EdgeInsets.only(top: 60.0),
+                padding: const EdgeInsets.only(top: 0.0),
                 child: Consumer(
                   builder: (context, provider, child) {
-                    return Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    return Container(
+                      constraints: const BoxConstraints(maxHeight: 550),
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            width: 3,
+                          )),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                    width: 470,
+                                    child: Text(
+                                      (saveUpdate)
+                                          ? 'Cadastrar operador'
+                                          : 'Editar operador',
+                                      style: title,
+                                    )),
+                                Text(
+                                  'Lista de operadores',
+                                  style: title,
+                                )
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                  width: 550,
-                                  child: Text(
-                                    (saveUpdate)
-                                        ? 'Cadastrar operador'
-                                        : 'Editar operador',
-                                    style: title,
-                                  )),
-                              Text(
-                                'Lista de operadores',
-                                style: title,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 22.0),
+                                child: formOperator,
+                              ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all()),
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                        maxHeight: 400, maxWidth: 450),
+                                    child: FutureBuilder(
+                                      future: DbManage.getOperators(),
+                                      builder: (context, snapshot) {
+                                        var box = Hive.box('db');
+                                        if (snapshot.hasData) {
+                                          operators = snapshot.data!;
+                                        }
+                                        return ListView.builder(
+                                            itemCount: operators.length,
+                                            itemBuilder: (contex, index) {
+                                              return MyListTile(
+                                                iconTip1:
+                                                    'Usuário Administrador',
+                                                iconTip2: 'Usuário Comum',
+                                                title: operators[index]['name'],
+                                                hoverColor:
+                                                    const Color.fromARGB(
+                                                        255, 138, 199, 248),
+                                                iconBtn1: (operators[index]
+                                                        ['adm'])
+                                                    ? Icons.admin_panel_settings
+                                                    : Icons
+                                                        .person_outline_outlined,
+                                                iconBtn2: operators[index]
+                                                        ['active']
+                                                    ? Icons.assignment_ind_sharp
+                                                    : Icons
+                                                        .do_not_disturb_alt_outlined,
+                                                callMain: () {
+                                                  box.put('operator',
+                                                      operators[index]);
+                                                  saveUpdate = false;
+                                                  setState(() {});
+                                                  contex
+                                                      .read<XProvider>()
+                                                      .loadOperatorField(
+                                                          operators[index]);
+                                                },
+                                                callIconBtn1: () {
+                                                  updateProfile({
+                                                    'adm': !operators[index]
+                                                        ['adm']
+                                                  }, operators[index]['cpf']);
+                                                },
+                                                callIconBtn2: () {
+                                                  updateProfile({
+                                                    'active': !operators[index]
+                                                        ['active']
+                                                  }, operators[index]['cpf']);
+                                                },
+                                              );
+                                            });
+                                      },
+                                    ),
+                                  ),
+                                ),
                               )
                             ],
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 22.0),
-                              child: formOperator,
-                            ),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white, border: Border.all()),
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 400, maxWidth: 400),
-                                  child: FutureBuilder(
-                                    future: DbManage.getOperators(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        operators = snapshot.data!;
-                                      }
-                                      return ListView.builder(
-                                          itemCount: operators.length,
-                                          itemBuilder: (contex, index) {
-                                            return MyListTile(
-                                              title: operators[index]['name'],
-                                              hoverColor: const Color.fromARGB(
-                                                  255, 138, 199, 248),
-                                              icon: Icons.person,
-                                              //TODO: desativar operador
-                                              iconBtn: operators[index] ==
-                                                      'João Paulo Fernandes'
-                                                  ? Icons
-                                                      .do_not_disturb_alt_outlined
-                                                  : Icons.assignment_ind_sharp,
-                                              iconColor: const Color.fromARGB(
-                                                  255, 18, 0, 153),
-                                              callMain: () {
-                                                var box = Hive.box('db');
-                                                box.put('operator',
-                                                    operators[index]);
-                                                saveUpdate = false;
-                                                setState(() {});
-                                                contex
-                                                    .read<XProvider>()
-                                                    .loadOperatorField(
-                                                        operators[index]);
-                                              },
-                                              callIcon: () {},
-                                            );
-                                          });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   },
                 ),

@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 
 class MyListTile extends StatefulWidget {
   final String title;
+  final String iconTip1;
+  final String iconTip2;
   final Color hoverColor;
-  final IconData icon;
-  final IconData? iconBtn;
-  final Color? iconColor;
+  final IconData iconBtn1;
+  final IconData? iconBtn2;
   final VoidCallback callMain;
-  final VoidCallback callIcon;
+  final VoidCallback callIconBtn1;
+  final VoidCallback callIconBtn2;
   const MyListTile(
       {super.key,
       required this.title,
       required this.hoverColor,
-      required this.icon,
-      required this.callIcon,
-      this.iconBtn,
-      this.iconColor,
-      required this.callMain});
+      required this.iconBtn1,
+      required this.callIconBtn2,
+      this.iconBtn2,
+      required this.callMain,
+      required this.callIconBtn1,
+      required this.iconTip1,
+      required this.iconTip2});
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -31,15 +35,37 @@ class _MyListTileState extends State<MyListTile> {
       onTap: () {
         widget.callMain();
       },
-      leading: Icon(widget.icon),
-      trailing: widget.iconBtn != null
-          ? IconButton(
-              onPressed: () {
-                widget.callIcon();
-              },
-              icon: Icon(
-                widget.iconBtn,
-                color: widget.iconColor,
+      leading: Tooltip(
+        message: (widget.iconBtn1 == Icons.admin_panel_settings
+            ? widget.iconTip1
+            : widget.iconTip2),
+        child: IconButton(
+          onPressed: () {
+            widget.callIconBtn1();
+          },
+          icon: Icon(
+            widget.iconBtn1,
+            color: (widget.iconBtn1 == Icons.admin_panel_settings)
+                ? const Color.fromARGB(255, 218, 165, 32)
+                : const Color.fromARGB(255, 18, 0, 153),
+          ),
+        ),
+      ),
+      trailing: widget.iconBtn2 != null
+          ? Tooltip(
+              message: (widget.iconBtn2 == Icons.do_not_disturb_alt_outlined
+                  ? 'Usuário bloqueado'
+                  : 'Usuário ativo'),
+              child: IconButton(
+                onPressed: () {
+                  widget.callIconBtn2();
+                },
+                icon: Icon(
+                  widget.iconBtn2,
+                  color: (widget.iconBtn2 == Icons.do_not_disturb_alt_outlined
+                      ? Colors.red
+                      : const Color.fromARGB(255, 18, 0, 153)),
+                ),
               ),
             )
           : null,

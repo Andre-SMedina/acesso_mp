@@ -212,7 +212,7 @@ class _FormOperatorState extends State<FormOperator> {
                               });
                             }
                           },
-                          child: const Text('Salvar')),
+                          child: const Text('Atualizar')),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor:

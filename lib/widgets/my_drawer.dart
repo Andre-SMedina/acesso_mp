@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
@@ -10,6 +11,8 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var box = Hive.box('db');
+
     void operatorControl() {
       context.read<XProvider>().clearFields();
       Navigator.pushReplacementNamed(context, '/controlOperators');
@@ -21,41 +24,59 @@ class MyDrawer extends StatelessWidget {
         child: Column(
           children: [
             MyListTile(
-              icon: Icons.home,
+              iconTip1: '',
+              iconTip2: '',
+              iconBtn1: Icons.home,
               title: 'Home',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () {
                 context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/home');
               },
-              callIcon: () {},
+              callIconBtn1: () {},
+              callIconBtn2: () {},
             ),
             MyListTile(
-              icon: Icons.person,
+              iconTip1: '',
+              iconTip2: '',
+              iconBtn1: Icons.person,
               title: 'Controle de operadores',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () async {
-                await DbManage.getLocations().then((value) {
-                  var box = Hive.box('db');
-                  List listFull = value.map((e) {
-                    return e['name'];
-                  }).toList();
-                  box.put('locations', listFull);
-                  box.put('locationsId', value);
-                  operatorControl();
-                });
+                if (box.get('profile')['adm']) {
+                  await DbManage.getLocations().then((value) {
+                    List listFull = value.map((e) {
+                      return e['name'];
+                    }).toList();
+                    box.put('locations', listFull);
+                    box.put('locationsId', value);
+                    operatorControl();
+                  });
+                } else {
+                  ZshowDialogs.alert(
+                      context, 'Você não tem perfil administrador.');
+                }
               },
-              callIcon: () {},
+              callIconBtn1: () {},
+              callIconBtn2: () {},
             ),
             MyListTile(
-              icon: Icons.location_city,
+              iconTip1: '',
+              iconTip2: '',
+              iconBtn1: Icons.location_city,
               title: 'Controle de lotação',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () {
-                context.read<XProvider>().clearFields();
-                Navigator.pushReplacementNamed(context, '/controlLocates');
+                if (box.get('profile')['adm']) {
+                  context.read<XProvider>().clearFields();
+                  Navigator.pushReplacementNamed(context, '/controlLocates');
+                } else {
+                  ZshowDialogs.alert(
+                      context, 'Você não tem perfil administrador.');
+                }
               },
-              callIcon: () {},
+              callIconBtn1: () {},
+              callIconBtn2: () {},
             )
           ],
         ),

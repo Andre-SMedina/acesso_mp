@@ -1,4 +1,3 @@
-import 'package:acesso_mp/helpers/custom_validator.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
@@ -253,10 +252,9 @@ class ZshowDialogs {
                 child: Column(
                   children: [
                     TextFormField(
-                      validator: Validatorless.multiple([
-                        ...validates,
-                        CustomValidator.standartPasswordValidator
-                      ]),
+                      validator: Validatorless.multiple(
+                        validates,
+                      ),
                       controller: passwordController,
                       decoration: const InputDecoration(
                           filled: true,

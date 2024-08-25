@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
+import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
@@ -117,32 +118,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       return Scaffold(
         drawer: const MyDrawer(),
-        appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.white),
-          centerTitle: true,
-          title: const Text('Controle de Acesso ao Ministério Público'),
-          actions: [
-            Row(
-              children: [
-                const Text(
-                  'Sair',
-                  style: TextStyle(color: Colors.white),
-                ),
-                IconButton(
-                    padding: const EdgeInsets.only(right: 30, left: 10),
-                    onPressed: () async {
-                      var supabase = Supabase.instance.client;
-                      await supabase.auth.signOut();
-                      Navigator.pushReplacementNamed(context, '/');
-                    },
-                    icon: const Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ))
-              ],
-            )
-          ],
-        ),
+        appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
         body: Container(
           height: double.infinity,
           decoration: const BoxDecoration(
@@ -307,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                                                 }
                                               }
                                             },
-                                            child: const Text('Salvar')),
+                                            child: const Text('Atualizar')),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
