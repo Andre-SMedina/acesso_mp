@@ -20,9 +20,9 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
                   style: const TextStyle(
                       color: Color.fromARGB(255, 255, 237, 79), fontSize: 17),
                 ),
-                const Text(
-                  'Palmas(Anexo)',
-                  style: TextStyle(
+                Text(
+                  profile['locations']['name'],
+                  style: const TextStyle(
                       color: Color.fromARGB(255, 15, 244, 160),
                       fontSize: 13,
                       height: 0),
