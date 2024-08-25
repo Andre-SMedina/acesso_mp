@@ -16,8 +16,6 @@ class Database {
       String msg = '';
       String visited = await alertVisited();
 
-      if (visited == '') return 'empty';
-
       await DbManage.save(data, visited).then((e) {
         if (!e) {
           msg = 'cpfExist';

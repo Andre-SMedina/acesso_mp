@@ -1,5 +1,6 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:acesso_mp/services/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -32,9 +33,16 @@ class DbManage {
       //pega o registro atual no banco para ter acesso ao id e criar a foreing key
       var visitor =
           await supabase.from('visitors').select().eq('cpf', data.cpf);
+      var box = Hive.box('db');
+      Map profile = box.get('profile');
 
-      await supabase.from('visits').insert(
-          {'goal': goal, 'date': dateNow, 'id_visitor': visitor[0]['id']});
+      await supabase.from('visits').insert({
+        'goal': goal,
+        'date': dateNow,
+        'id_visitor': visitor[0]['id'],
+        'location': profile['locations']['name'],
+        'id_operator': profile['id']
+      });
     }
 
     return response;

@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,9 +20,15 @@ class ManageData {
             DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
 
         SupabaseClient supabase = Supabase.instance.client;
+        Map profile = MyFunctons.getHive('profile');
 
-        await supabase.from('visits').insert(
-            {'goal': goal, 'date': dateNow, 'id_visitor': checked['id']});
+        await supabase.from('visits').insert({
+          'goal': goal,
+          'date': dateNow,
+          'id_visitor': checked['id'],
+          'location': profile['locations']['name'],
+          'id_operator': profile['id']
+        });
 
         alert();
 

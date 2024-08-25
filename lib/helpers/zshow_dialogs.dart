@@ -1,17 +1,27 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
   static Future<void> historic(
       BuildContext context, List<String> visitor) async {
-    var box = Hive.box('db');
-    var checked = box.get('visitor');
+    var checked = MyFunctons.getHive('visitor');
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
+
+      Future<dynamic> getOperator(int idOperator) async {
+        SupabaseClient supabase = Supabase.instance.client;
+        var operator = await supabase
+            .from('operator')
+            .select('*, operators(name)')
+            .eq('id_operator', idOperator);
+
+        return operator;
+      }
 
       await showDialog(
         context: context,
@@ -27,13 +37,27 @@ class ZshowDialogs {
                   itemCount:
                       visitorHistoric.length, // Número de elementos na lista
                   itemBuilder: (context, index) {
+                    String operator = '';
+                    List operators = MyFunctons.getHive('operators');
+
+                    for (var i = 0; i < operators.length; i++) {
+                      if (operators[i]['id'] ==
+                          visitorHistoric[index]['id_operator']) {
+                        operator = operators[i]['name'];
+                      }
+                    }
+
+                    // getOperator(visitorHistoric[index]['id_operator'])
+                    //     .then((e) {
+                    //   print(e);
+                    // });
                     return ListTile(
                         leading: const Icon(Icons
                             .check_circle_outline_outlined), // Ícone opcional para cada item
                         title: RichText(
                           text: TextSpan(
                             children: [
-                              const TextSpan(text: 'Registro de entrada: '),
+                              TextSpan(text: 'Operador: $operator '),
                               TextSpan(
                                 text: '${visitorHistoric[index]['date']}',
                                 style: const TextStyle(

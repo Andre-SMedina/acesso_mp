@@ -213,10 +213,6 @@ class _HomePageState extends State<HomePage> {
                                                           'CPF já cadastrado!',
                                                           subTitle:
                                                               'Selecione "Limpar" para depois cadastrar.');
-                                                    } else if (v == 'empty') {
-                                                      ZshowDialogs.alert(
-                                                          context,
-                                                          'Quem visitar, não preenchido!');
                                                     } else if (v ==
                                                         'cpfExist') {
                                                       ZshowDialogs.alert(

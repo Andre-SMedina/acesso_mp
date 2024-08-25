@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
@@ -30,6 +31,9 @@ class MyDrawer extends StatelessWidget {
               title: 'Home',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () {
+                MyFunctons.getOperators().then((e) {
+                  MyFunctons.putHive('operators', e);
+                });
                 context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/home');
               },
