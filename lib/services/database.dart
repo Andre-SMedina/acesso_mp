@@ -1,4 +1,5 @@
 import 'package:acesso_mp/models/model_visitors.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:hive/hive.dart';
 
@@ -9,6 +10,7 @@ class Database {
   Future<String> register(ModelVisitors data, String type) async {
     var box = Hive.box('db');
     var check = box.get('visitor');
+    Map<dynamic, dynamic> dataMap = Convert.forMap(data);
 
     if (type == 'save' && check == '') {
       String msg = '';
@@ -27,7 +29,12 @@ class Database {
       return msg;
     }
     if (type == 'update' && check != '') {
-      DbManage.update(data);
+      DbManage.update(
+          data: dataMap,
+          column: 'cpf',
+          find: check['cpf'],
+          table: 'visitors',
+          boxName: 'visitor');
 
       return 'updated';
     }

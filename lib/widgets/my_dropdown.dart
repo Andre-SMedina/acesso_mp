@@ -28,7 +28,12 @@ class MyDropdownState extends State<MyDropdown> {
     listVisitor = [];
 
     List<String> listDropdown = [];
-    await DbManage.get(query).then((e) {
+    await DbManage.getJoin(
+            table1: 'visitors',
+            table2: 'visits',
+            columnTb1: 'consult',
+            findTb1: query)
+        .then((e) {
       for (var v in e) {
         listDropdown.add(Convert.firstUpper(v['name']));
         listVisitor.add(v);

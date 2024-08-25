@@ -1,9 +1,12 @@
-import 'package:acesso_mp/pages/home_page.dart';
 import 'package:acesso_mp/pages/login_page.dart';
+import 'package:acesso_mp/services/x_provider.dart';
+import 'package:acesso_mp/pages/control_locates_page.dart';
+import 'package:acesso_mp/pages/control_operators_page.dart';
+import 'package:acesso_mp/pages/home_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 List<CameraDescription> cameras = [];
@@ -35,7 +38,8 @@ Future<void> main() async {
     debugPrint('Erro ao acessar câmera! $e');
   }
 
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => XProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -76,6 +80,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
+        '/controlLocates': (context) => const ControlLocatesPage(),
+        '/controlOperators': (context) => const ControlOperatorsPage(),
       },
     );
   }

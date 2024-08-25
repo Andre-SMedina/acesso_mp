@@ -1,6 +1,8 @@
+import 'package:acesso_mp/services/db_manage.dart';
+import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
+import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
   static Future<void> historic(
@@ -143,14 +145,14 @@ class ZshowDialogs {
     return textController.text;
   }
 
-  static Future<bool> update(BuildContext context) async {
+  static Future<bool> confirm(BuildContext context, String title) async {
     bool validate = false;
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Deseja atualizar os dados?'),
+            title: Text(title),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -174,5 +176,125 @@ class ZshowDialogs {
         });
 
     return validate;
+  }
+
+  static Future<bool> updateLocate(BuildContext context, String oldName) async {
+    bool validate = false;
+
+    MyTextField nameField = MyTextField(
+        text: 'Novo nome',
+        listValidator: [Validatorless.required('Campo obrgatório!')],
+        listInputFormat: const []);
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Alterar lotação',
+              textAlign: TextAlign.center,
+            ),
+            content: SizedBox(
+              height: 130,
+              width: 400,
+              child: Column(
+                children: [
+                  nameField,
+                  ElevatedButton(
+                      onPressed: () async {
+                        String newName = nameField.fieldController.text;
+
+                        if (newName.isNotEmpty) {
+                          await DbManage.update(
+                              column: 'name',
+                              data: {'name': newName},
+                              table: 'locations',
+                              find: oldName,
+                              boxName: '');
+                          validate = true;
+                        }
+
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Salvar alteração')),
+                ],
+              ),
+            ),
+          );
+        });
+
+    return validate;
+  }
+
+  static Future<List> updatePassword(BuildContext context) async {
+    bool validate = false;
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController passwordController = TextEditingController();
+    var validates = [
+      Validatorless.required('Campo Obrigatório'),
+      Validatorless.min(6, 'A senha não pode ter menos de 6 caracteres!'),
+    ];
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Atualizar senha',
+              textAlign: TextAlign.center,
+            ),
+            content: Form(
+              key: formKey,
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(maxHeight: 200, minWidth: 300),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: Validatorless.multiple(
+                        validates,
+                      ),
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Senha',
+                          helperText: ''),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      validator: Validatorless.multiple([
+                        ...validates,
+                        Validatorless.compare(
+                            passwordController, 'As senhas não são iguais!')
+                      ]),
+                      decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Confirmar senha',
+                          helperText: ''),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            validate = true;
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text('Registrar'))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+
+    return [validate, passwordController.text];
   }
 }

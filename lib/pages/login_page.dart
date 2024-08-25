@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,26 +14,78 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   void _login(BuildContext context) async {
-    String auth = 'void';
+    final supabase = Supabase.instance.client;
+    final operators = await supabase
+        .from('operators')
+        .select('name, userName, email, active, newUser, adm, locations(name)');
 
     if (_formKey.currentState!.validate()) {
-      try {
-        await Supabase.instance.client.auth.signInWithPassword(
-            email: _emailController.text, password: _passwordController.text);
+      var box = Hive.box('db');
+      bool validate = false;
+      String email = '';
+      bool auth = false;
+      bool active = false;
+      bool newUser = false;
+      String userName = '';
+      String password = '';
 
-        auth = 'success';
-      } catch (err) {
-        debugPrint(err.toString());
-        auth = 'failed';
+      for (var e in operators) {
+        if (e.containsValue(emailController.text)) {
+          email = e['email'];
+          active = e['active'];
+          newUser = e['newUser'];
+          validate = true;
+          userName = e['userName'];
+          box.put('profile', e);
+        }
       }
 
-      if (auth == 'success') {
+      if (!validate) {
+        return ZshowDialogs.alert(context, 'Usuário não encontrado!');
+      }
+      if (newUser) {
+        await ZshowDialogs.updatePassword(context).then((e) {
+          validate = e[0];
+          password = e[1];
+        });
+
+        if (validate) {
+          try {
+            await supabase.auth.signUp(
+              email: email,
+              password: password,
+            );
+            await supabase
+                .from('operators')
+                .update({'active': true, 'newUser': false}).eq('email', email);
+            await supabase.auth.updateUser(UserAttributes(data: {
+              'displayName': userName,
+            }));
+            auth = true;
+          } catch (err) {
+            debugPrint(err.toString());
+          }
+        }
+      } else {
+        if (!active) {
+          return ZshowDialogs.alert(context, 'Usuário desativado');
+        }
+        try {
+          await supabase.auth.signInWithPassword(
+              email: email, password: passwordController.text);
+
+          auth = true;
+        } catch (err) {
+          debugPrint(err.toString());
+        }
+      }
+
+      if (auth) {
         Navigator.pushReplacementNamed(context, '/home');
-        _formKey.currentState!.reset();
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
@@ -80,28 +135,27 @@ class LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _emailController,
+                      controller: emailController,
                       decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelText: 'E-mail',
-                      ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Usuário',
+                          helperText: ''),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Por favor, insira seu e-mail';
+                          return 'Por favor, insira seu usuário';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
                     TextFormField(
                       onFieldSubmitted: (e) => _login(context),
-                      controller: _passwordController,
+                      controller: passwordController,
                       decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelText: 'Senha',
-                      ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Senha',
+                          helperText: ''),
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -110,7 +164,7 @@ class LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 5),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
