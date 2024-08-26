@@ -87,6 +87,9 @@ class LoginPageState extends State<LoginPage> {
       }
 
       if (auth) {
+        MyFunctons.getOperators().then((e) {
+          MyFunctons.putHive('operators', e);
+        });
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
