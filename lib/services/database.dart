@@ -14,7 +14,7 @@ class Database {
 
     if (type == 'save' && check == '') {
       String msg = '';
-      String visited = await alertVisited();
+      List<String> visited = await alertVisited();
 
       await DbManage.save(data, visited).then((e) {
         if (!e) {

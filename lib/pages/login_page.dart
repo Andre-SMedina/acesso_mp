@@ -23,7 +23,7 @@ class LoginPageState extends State<LoginPage> {
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
     final operators = await supabase.from('operators').select(
-        'id, name, userName, email, active, newUser, adm, locations(name)');
+        'id, name, userName, email, active, newUser, adm, locations(*)');
 
     if (_formKey.currentState!.validate()) {
       var box = Hive.box('db');

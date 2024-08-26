@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbManage {
   static final SupabaseClient supabase = Supabase.instance.client;
 
-  static Future<bool> save(ModelVisitors data, String goal) async {
+  static Future<bool> save(ModelVisitors data, List<String> auth) async {
     String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
     bool response = false;
 
@@ -36,10 +36,12 @@ class DbManage {
       Map profile = box.get('profile');
 
       await supabase.from('visits').insert({
-        'goal': goal,
+        'goal': auth[0],
+        'authorizedBy': auth[1],
         'date': dateNow,
         'id_visitor': visitor[0]['id'],
-        'location': profile['locations']['name'],
+        //TODO: colocar id no lugar do nome do local
+        'location': profile['locations']['id'],
         'id_operator': profile['id']
       });
     }
@@ -130,12 +132,11 @@ class DbManage {
 
       data['cpf'] = oldData['cpf'];
       if (data['rg'] != null) data['rg'] = oldData['rg'];
-
-      try {
-        await supabase.from(table).update(data).eq(column, find);
-      } catch (err) {
-        debugPrint(err.toString());
-      }
+    }
+    try {
+      await supabase.from(table).update(data).eq(column, find);
+    } catch (err) {
+      debugPrint(err.toString());
     }
   }
 }

@@ -9,7 +9,7 @@ import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
-import 'package:acesso_mp/services/data_manage.dart';
+import 'package:acesso_mp/services/db_visits.dart';
 import 'package:acesso_mp/widgets/camera.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:camera/camera.dart';
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   alertVisited() async {
-    String visited = '';
+    List<String> visited = [];
     await ZshowDialogs.visited(context).then((v) => visited = v);
 
     return visited;
@@ -384,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   ElevatedButton(
                                       onPressed: () async {
-                                        ManageData manageDate = ManageData(
+                                        DbVisits manageDate = DbVisits(
                                           alert: alertAuth,
                                           alertVisited: alertVisited,
                                         );

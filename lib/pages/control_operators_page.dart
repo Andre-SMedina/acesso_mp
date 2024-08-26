@@ -67,10 +67,12 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
       return Scaffold(
         drawer: const MyDrawer(),
         appBar: myAppbar(context, 'Controle de Operadores'),
-        body: Center(
+        body: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
             child: Container(
+              padding: const EdgeInsets.only(top: 50),
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage('assets/manut.jpg'),

@@ -24,7 +24,6 @@ class MyListTile extends StatefulWidget {
       required this.iconTip1,
       required this.iconTip2,
       required this.actionBtn1});
-  //TODO: tirar ação do btn1 do menu
 
   @override
   State<MyListTile> createState() => _MyListTileState();

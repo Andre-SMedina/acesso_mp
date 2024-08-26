@@ -1,6 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/db_manage.dart';
-import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -44,23 +43,29 @@ class ZshowDialogs {
                           style: const TextStyle(fontWeight: FontWeight.bold));
                     }
 
-                    return ListTile(
-                        leading: const Icon(Icons
-                            .check_circle_outline_outlined), // Ícone opcional para cada item
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              myText('Operador'),
-                              TextSpan(text: operator),
-                              myText('\nLocal'),
-                              TextSpan(text: location),
-                              myText('\nData'),
-                              TextSpan(text: visitorHistoric[index]['date']),
-                              myText('\nFinalidade: '),
-                              TextSpan(text: visitorHistoric[index]['goal'])
-                            ],
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons
+                              .check_circle_outline_outlined), // Ícone opcional para cada item
+                          title: RichText(
+                            text: TextSpan(
+                              children: [
+                                myText('Operador'),
+                                TextSpan(text: operator),
+                                myText('\nLocal'),
+                                TextSpan(text: location),
+                                myText('\nData'),
+                                TextSpan(text: visitorHistoric[index]['date']),
+                                myText('\nFinalidade: '),
+                                TextSpan(text: visitorHistoric[index]['goal'])
+                              ],
+                            ),
                           ),
-                        ));
+                        ),
+                        if (index < visitorHistoric.length - 1) const Divider()
+                      ],
+                    );
                   },
                 ),
               ),
@@ -115,28 +120,58 @@ class ZshowDialogs {
     );
   }
 
-  static Future<String> visited(BuildContext context) async {
-    late TextEditingController textController = TextEditingController();
+  static Future<List<String>> visited(BuildContext context) async {
+    late TextEditingController textController1 = TextEditingController();
+    late TextEditingController textController2 = TextEditingController();
     FocusNode focusNode = FocusNode();
+    String goalText = '';
+    String whoAuth = '';
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Finalidade do acesso.'),
+          title: const Text('Informações sobre o acesso.'),
           content: Builder(builder: (BuildContext context) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               FocusScope.of(context).requestFocus(focusNode);
             });
 
-            return TextField(
-              onSubmitted: (v) {
-                if (textController.text != '') {
-                  Navigator.of(context).pop();
-                }
-              },
-              focusNode: focusNode,
-              controller: textController,
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 140),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: TextField(
+                      maxLines: 2,
+                      decoration:
+                          const InputDecoration(labelText: 'Finalidade'),
+                      focusNode: focusNode,
+                      controller: textController1,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: 250,
+                    child: TextField(
+                      controller: textController2,
+                      onSubmitted: (v) {
+                        if (textController1.text != '') {
+                          whoAuth = textController2.text;
+                          goalText = textController1.text;
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Quem autorizou',
+                      ),
+                    ),
+                  )
+                ],
+              ),
             );
           }),
           actions: [
@@ -144,7 +179,9 @@ class ZshowDialogs {
               child: ElevatedButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  if (textController.text != '') {
+                  if (textController1.text != '') {
+                    goalText = textController1.text;
+                    whoAuth = textController2.text;
                     Navigator.of(context).pop();
                   }
                 },
@@ -155,7 +192,7 @@ class ZshowDialogs {
       },
     );
 
-    return textController.text;
+    return [goalText, whoAuth];
   }
 
   static Future<bool> confirm(BuildContext context, String title) async {
@@ -197,47 +234,61 @@ class ZshowDialogs {
   static Future<bool> updateLocate(BuildContext context, String oldName) async {
     bool validate = false;
 
-    MyTextField nameField = MyTextField(
-        text: 'Novo nome',
-        listValidator: [Validatorless.required('Campo obrgatório!')],
-        listInputFormat: const []);
+    TextEditingController fieldController =
+        TextEditingController(text: oldName);
+    FocusNode focusNode = FocusNode();
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text(
-              'Alterar lotação',
-              textAlign: TextAlign.center,
-            ),
-            content: SizedBox(
-              height: 130,
-              width: 400,
-              child: Column(
-                children: [
-                  nameField,
-                  ElevatedButton(
-                      onPressed: () async {
-                        String newName = nameField.fieldController.text;
-
-                        if (newName.isNotEmpty) {
-                          await DbManage.update(
-                              column: 'name',
-                              data: {'name': newName},
-                              table: 'locations',
-                              find: oldName,
-                              boxName: '');
-                          validate = true;
-                        }
-
-                        // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Salvar alteração')),
-                ],
+              title: const Text(
+                'Alterar lotação',
+                textAlign: TextAlign.center,
               ),
-            ),
-          );
+              content: Builder(builder: (BuildContext context) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  FocusScope.of(context).requestFocus(focusNode);
+                });
+                return SizedBox(
+                  height: 130,
+                  width: 400,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: Validatorless.multiple(
+                            [Validatorless.required('Campo obrgatório!')]),
+                        controller: fieldController,
+                        focusNode: focusNode,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Novo nome',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            if (fieldController.text.isNotEmpty) {
+                              await DbManage.update(
+                                  column: 'name',
+                                  data: {'name': fieldController.text},
+                                  table: 'locations',
+                                  find: oldName,
+                                  boxName: '');
+                              validate = true;
+                            }
+
+                            // ignore: use_build_context_synchronously
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Salvar alteração')),
+                    ],
+                  ),
+                );
+              }));
         });
 
     return validate;
