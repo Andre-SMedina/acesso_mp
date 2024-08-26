@@ -46,9 +46,17 @@ class _HomePageState extends State<HomePage> {
 
     return [
       context.read<XProvider>().name.fieldController.text,
-      context.read<XProvider>().cpf.fieldController.text,
+      context
+          .read<XProvider>()
+          .cpfController
+          .text
+          .replaceAll(RegExp(r'\D'), ''),
       context.read<XProvider>().rg.fieldController.text,
-      context.read<XProvider>().phone.fieldController.text,
+      context
+          .read<XProvider>()
+          .phoneController
+          .text
+          .replaceAll(RegExp(r'\D'), ''),
       context.read<XProvider>().job.fieldController.text,
       img,
     ];
@@ -164,9 +172,9 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   children: [
                                     provider.name,
-                                    provider.cpf,
+                                    provider.cpfWidget(),
                                     provider.rg,
-                                    provider.phone,
+                                    provider.phoneWidget(),
                                     provider.job,
                                     const SizedBox(
                                       height: 20,

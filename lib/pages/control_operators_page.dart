@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/form_operator.dart';
@@ -25,6 +26,7 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
   Widget build(BuildContext context) {
     FormOperator formOperator = FormOperator(
       callback: () {
+        ZshowDialogs.alert(context, 'Usuário atualizado!');
         saveUpdate = true;
         setState(() {});
       },
@@ -164,6 +166,7 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                                       .loadOperatorField(
                                                           operators[index]);
                                                 },
+                                                actionBtn1: true,
                                                 callIconBtn1: () {
                                                   updateProfile({
                                                     'adm': !operators[index]

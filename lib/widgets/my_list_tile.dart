@@ -1,9 +1,11 @@
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 
 class MyListTile extends StatefulWidget {
   final String title;
   final String iconTip1;
   final String iconTip2;
+  final bool actionBtn1;
   final Color hoverColor;
   final IconData iconBtn1;
   final IconData? iconBtn2;
@@ -20,7 +22,9 @@ class MyListTile extends StatefulWidget {
       required this.callMain,
       required this.callIconBtn1,
       required this.iconTip1,
-      required this.iconTip2});
+      required this.iconTip2,
+      required this.actionBtn1});
+  //TODO: tirar ação do btn1 do menu
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -41,7 +45,18 @@ class _MyListTileState extends State<MyListTile> {
             : widget.iconTip2),
         child: IconButton(
           onPressed: () {
-            widget.callIconBtn1();
+            if (widget.actionBtn1) {
+              ZshowDialogs.confirm(
+                      context,
+                      (widget.iconBtn1 == Icons.admin_panel_settings)
+                          ? 'Tornar usuário comum?'
+                          : 'Tornar Administrador?')
+                  .then((e) {
+                if (e) {
+                  widget.callIconBtn1();
+                }
+              });
+            }
           },
           icon: Icon(
             widget.iconBtn1,
@@ -58,7 +73,16 @@ class _MyListTileState extends State<MyListTile> {
                   : 'Usuário ativo'),
               child: IconButton(
                 onPressed: () {
-                  widget.callIconBtn2();
+                  ZshowDialogs.confirm(
+                          context,
+                          (widget.iconBtn2 == Icons.do_not_disturb_alt_outlined)
+                              ? 'Desbloquear usuário?'
+                              : 'Bloquear usuário?')
+                      .then((e) {
+                    if (e) {
+                      widget.callIconBtn2();
+                    }
+                  });
                 },
                 icon: Icon(
                   widget.iconBtn2,

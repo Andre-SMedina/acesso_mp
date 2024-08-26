@@ -37,6 +37,7 @@ class MyDrawer extends StatelessWidget {
                 context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/home');
               },
+              actionBtn1: false,
               callIconBtn1: () {},
               callIconBtn2: () {},
             ),
@@ -61,6 +62,7 @@ class MyDrawer extends StatelessWidget {
                       context, 'Você não tem perfil administrador.');
                 }
               },
+              actionBtn1: false,
               callIconBtn1: () {},
               callIconBtn2: () {},
             ),
@@ -79,6 +81,7 @@ class MyDrawer extends StatelessWidget {
                       context, 'Você não tem perfil administrador.');
                 }
               },
+              actionBtn1: false,
               callIconBtn1: () {},
               callIconBtn2: () {},
             )

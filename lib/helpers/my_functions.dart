@@ -6,16 +6,17 @@ class MyFunctons {
 
   static Future<List> getOperators() async {
     SupabaseClient supabase = Supabase.instance.client;
-    List operators = await supabase.from('operators').select('id, name');
-    List newOperators = operators.map((e) {
-      List list = e['name'].split(' ');
-      String firstName = list.first;
-      String lastName = list.last;
-      e['name'] = "$firstName $lastName";
-      return e;
-    }).toList();
+    List operators =
+        await supabase.from('operators').select('id, name, locations(name)');
+    // List newOperators = operators.map((e) {
+    //   List list = e['name'].split(' ');
+    //   String firstName = list.first;
+    //   String lastName = list.last;
+    //   e['name'] = "$firstName $lastName";
+    //   return e;
+    // }).toList();
 
-    return newOperators;
+    return operators;
   }
 
   static getHive(String nameBox) {

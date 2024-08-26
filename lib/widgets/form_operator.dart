@@ -42,8 +42,8 @@ class _FormOperatorState extends State<FormOperator> {
               return Column(
                 children: [
                   provider.name,
-                  provider.cpf,
-                  provider.phone,
+                  provider.cpfWidget(),
+                  provider.phoneWidget(),
                   provider.email,
                   TypeAheadField(
                     loadingBuilder: (context) => const Padding(
@@ -124,8 +124,8 @@ class _FormOperatorState extends State<FormOperator> {
 
                               await DbManage.saveOperator({
                                 'name': provider.name.fieldController.text,
-                                'cpf': provider.cpf.fieldController.text,
-                                'phone': provider.phone.fieldController.text,
+                                'cpf': provider.cpfController.text,
+                                'phone': provider.phoneController.text,
                                 'email': provider.email.fieldController.text,
                               }, provider.locateController.text)
                                   .then((e) {
@@ -166,7 +166,8 @@ class _FormOperatorState extends State<FormOperator> {
 
                               for (var item in cpfs) {
                                 if (item['cpf'].toString() ==
-                                    provider.cpf.fieldController.text) {
+                                    provider.cpfController.text
+                                        .replaceAll(RegExp(r'\D'), '')) {
                                   await ZshowDialogs.confirm(
                                           context, 'Salvar alterações?')
                                       .then((e) {
@@ -188,8 +189,10 @@ class _FormOperatorState extends State<FormOperator> {
 
                                 Map operator = {
                                   'name': provider.name.fieldController.text,
-                                  'cpf': provider.cpf.fieldController.text,
-                                  'phone': provider.phone.fieldController.text,
+                                  'cpf': provider.cpfController.text
+                                      .replaceAll(RegExp(r'\D'), ''),
+                                  'phone': provider.phoneController.text
+                                      .replaceAll(RegExp(r'\D'), ''),
                                   'email': provider.email.fieldController.text,
                                   'location': locationId
                                 };

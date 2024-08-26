@@ -169,6 +169,7 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                             hoverColor: const Color.fromARGB(
                                                 255, 138, 199, 248),
                                             iconBtn1: Icons.location_city,
+                                            actionBtn1: false,
                                             callIconBtn1: () {},
                                             callIconBtn2: () {},
                                             callMain: () async {

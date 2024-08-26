@@ -17,7 +17,7 @@ class MyTextField extends StatelessWidget {
     required this.listInputFormat,
   });
 
-  final TextEditingController fieldController = TextEditingController();
+  TextEditingController fieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

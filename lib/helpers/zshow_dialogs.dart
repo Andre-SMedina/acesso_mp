@@ -2,7 +2,6 @@ import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
@@ -12,16 +11,6 @@ class ZshowDialogs {
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
-
-      Future<dynamic> getOperator(int idOperator) async {
-        SupabaseClient supabase = Supabase.instance.client;
-        var operator = await supabase
-            .from('operator')
-            .select('*, operators(name)')
-            .eq('id_operator', idOperator);
-
-        return operator;
-      }
 
       await showDialog(
         context: context,
@@ -38,37 +27,37 @@ class ZshowDialogs {
                       visitorHistoric.length, // Número de elementos na lista
                   itemBuilder: (context, index) {
                     String operator = '';
+                    String location = '';
                     List operators = MyFunctons.getHive('operators');
 
                     for (var i = 0; i < operators.length; i++) {
                       if (operators[i]['id'] ==
                           visitorHistoric[index]['id_operator']) {
                         operator = operators[i]['name'];
+                        location = operators[i]['locations']['name'];
                       }
                     }
 
-                    // getOperator(visitorHistoric[index]['id_operator'])
-                    //     .then((e) {
-                    //   print(e);
-                    // });
+                    TextSpan myText(String text) {
+                      return TextSpan(
+                          text: '$text: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    }
+
                     return ListTile(
                         leading: const Icon(Icons
                             .check_circle_outline_outlined), // Ícone opcional para cada item
                         title: RichText(
                           text: TextSpan(
                             children: [
-                              TextSpan(text: 'Operador: $operator '),
-                              TextSpan(
-                                text: '${visitorHistoric[index]['date']}',
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 119, 0, 152)),
-                              ),
-                              TextSpan(
-                                text: ' - ${visitorHistoric[index]['goal']}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 21, 0, 209)),
-                              ),
+                              myText('Operador'),
+                              TextSpan(text: operator),
+                              myText('\nLocal'),
+                              TextSpan(text: location),
+                              myText('\nData'),
+                              TextSpan(text: visitorHistoric[index]['date']),
+                              myText('\nFinalidade: '),
+                              TextSpan(text: visitorHistoric[index]['goal'])
                             ],
                           ),
                         ));
@@ -176,7 +165,10 @@ class ZshowDialogs {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(title),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+            ),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
