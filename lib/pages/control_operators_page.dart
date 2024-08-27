@@ -26,7 +26,6 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
   Widget build(BuildContext context) {
     FormOperator formOperator = FormOperator(
       callback: () {
-        ZshowDialogs.alert(context, 'Usuário atualizado!');
         saveUpdate = true;
         setState(() {});
       },
@@ -140,6 +139,11 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                         return ListView.builder(
                                             itemCount: operators.length,
                                             itemBuilder: (contex, index) {
+                                              if (operators[index]['name'] ==
+                                                  'adm') {
+                                                return const Padding(
+                                                    padding: EdgeInsets.zero);
+                                              }
                                               return MyListTile(
                                                 iconTip1:
                                                     'Usuário Administrador',

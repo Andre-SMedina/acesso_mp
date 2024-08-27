@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -26,6 +27,10 @@ class LoginPageState extends State<LoginPage> {
         'id, name, userName, email, active, newUser, adm, locations(*)');
 
     if (_formKey.currentState!.validate()) {
+      if (emailController.text == 'adm') {
+        await supabase.auth.signInWithPassword(
+            email: 'adm@adm.com', password: passwordController.text);
+      }
       var box = Hive.box('db');
       bool validate = false;
       String email = '';

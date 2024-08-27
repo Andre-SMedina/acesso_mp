@@ -19,6 +19,12 @@ class MyFunctons {
     return operators;
   }
 
+  static Future<List> getLocations() async {
+    SupabaseClient supabase = Supabase.instance.client;
+    var locations = await supabase.from('locations').select();
+    return locations;
+  }
+
   static getHive(String nameBox) {
     return box.get(nameBox);
   }

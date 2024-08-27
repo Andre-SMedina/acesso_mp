@@ -124,13 +124,16 @@ class _FormOperatorState extends State<FormOperator> {
 
                               await DbManage.saveOperator({
                                 'name': provider.name.fieldController.text,
-                                'cpf': provider.cpfController.text,
-                                'phone': provider.phoneController.text,
+                                'cpf': provider.cpfController.text
+                                    .replaceAll(RegExp(r'\D'), ''),
+                                'phone': provider.phoneController.text
+                                    .replaceAll(RegExp(r'\D'), ''),
                                 'email': provider.email.fieldController.text,
                               }, provider.locateController.text)
                                   .then((e) {
                                 if (e) response = true;
                               });
+                              print(response);
 
                               if (response) {
                                 formKey.currentState!.reset();
@@ -205,6 +208,8 @@ class _FormOperatorState extends State<FormOperator> {
                                   boxName: 'operator',
                                 );
 
+                                ZshowDialogs.alert(
+                                    context, 'Usuário atualizado!');
                                 widget.callback();
                               }
                             } else {

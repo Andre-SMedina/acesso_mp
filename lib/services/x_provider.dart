@@ -77,6 +77,7 @@ class XProvider with ChangeNotifier {
     listInputFormat: const [],
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
+      //TODO: se colocar um nome e um espaço na hora de cadastrar o nome, dá erro
       (v) => v!.split(' ').length >= 2
           ? null
           : 'O nome deve ter nome e sobrenome!',

@@ -7,11 +7,16 @@ class ZshowDialogs {
   static Future<void> historic(
       BuildContext context, List<String> visitor) async {
     var checked = MyFunctons.getHive('visitor');
+    List locations = [];
+    await MyFunctons.getLocations().then((e) {
+      locations = e;
+    });
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
 
       await showDialog(
+        // ignore: use_build_context_synchronously
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -29,11 +34,16 @@ class ZshowDialogs {
                     String location = '';
                     List operators = MyFunctons.getHive('operators');
 
+                    for (var i in locations) {
+                      if (i['id'] == visitorHistoric[index]['id_location']) {
+                        location = i['name'];
+                      }
+                    }
+
                     for (var i = 0; i < operators.length; i++) {
                       if (operators[i]['id'] ==
                           visitorHistoric[index]['id_operator']) {
                         operator = operators[i]['name'];
-                        location = operators[i]['locations']['name'];
                       }
                     }
 

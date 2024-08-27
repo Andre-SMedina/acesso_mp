@@ -35,6 +35,8 @@ class DbManage {
       var box = Hive.box('db');
       Map profile = box.get('profile');
 
+      if (profile['name'] == 'adm') return true;
+
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
@@ -55,6 +57,7 @@ class DbManage {
       List getLocate =
           await supabase.from('locations').select().eq('name', locate);
       int locateId = getLocate[0]['id'];
+      print(dataOperator);
 
       Map operator = dataOperator;
       operator['location'] = locateId.toString();
