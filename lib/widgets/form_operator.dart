@@ -133,7 +133,6 @@ class _FormOperatorState extends State<FormOperator> {
                                   .then((e) {
                                 if (e) response = true;
                               });
-                              print(response);
 
                               if (response) {
                                 formKey.currentState!.reset();

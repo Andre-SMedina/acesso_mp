@@ -44,6 +44,20 @@ class MyDrawer extends StatelessWidget {
             MyListTile(
               iconTip1: '',
               iconTip2: '',
+              iconBtn1: Icons.access_time,
+              title: 'Histórico de visitas',
+              hoverColor: const Color.fromARGB(255, 97, 6, 182),
+              callMain: () {
+                context.read<XProvider>().clearFields();
+                Navigator.pushReplacementNamed(context, '/history');
+              },
+              actionBtn1: false,
+              callIconBtn1: () {},
+              callIconBtn2: () {},
+            ),
+            MyListTile(
+              iconTip1: '',
+              iconTip2: '',
               iconBtn1: Icons.person,
               title: 'Controle de operadores',
               hoverColor: const Color.fromARGB(255, 97, 6, 182),

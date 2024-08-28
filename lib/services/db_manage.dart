@@ -57,7 +57,6 @@ class DbManage {
       List getLocate =
           await supabase.from('locations').select().eq('name', locate);
       int locateId = getLocate[0]['id'];
-      print(dataOperator);
 
       Map operator = dataOperator;
       operator['location'] = locateId.toString();

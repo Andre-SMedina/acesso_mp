@@ -20,6 +20,7 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final MaskedTextController testeController =
       MaskedTextController(mask: '000.000.000-00');
+  final FocusNode emailFocus = FocusNode();
 
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
@@ -95,11 +96,28 @@ class LoginPageState extends State<LoginPage> {
         MyFunctons.getOperators().then((e) {
           MyFunctons.putHive('operators', e);
         });
+        if (!mounted) return;
+        emailFocus.dispose();
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
     }
+  }
+
+  @override
+  void dispose() {
+    // emailFocus.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //aguarda a montagem do widget para depois requisitar o foco
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) emailFocus.requestFocus();
+    });
   }
 
   @override
@@ -146,6 +164,7 @@ class LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: emailController,
+                      focusNode: emailFocus,
                       decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,

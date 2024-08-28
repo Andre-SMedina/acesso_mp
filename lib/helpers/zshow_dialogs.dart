@@ -56,8 +56,8 @@ class ZshowDialogs {
                     return Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons
-                              .check_circle_outline_outlined), // Ícone opcional para cada item
+                          leading:
+                              const Icon(Icons.check_circle_outline_outlined),
                           title: RichText(
                             text: TextSpan(
                               children: [
@@ -67,8 +67,12 @@ class ZshowDialogs {
                                 TextSpan(text: location),
                                 myText('\nData'),
                                 TextSpan(text: visitorHistoric[index]['date']),
-                                myText('\nFinalidade: '),
-                                TextSpan(text: visitorHistoric[index]['goal'])
+                                myText('\nFinalidade '),
+                                TextSpan(text: visitorHistoric[index]['goal']),
+                                myText('\nAutorizado por '),
+                                TextSpan(
+                                    text: visitorHistoric[index]
+                                        ['authorizedBy']),
                               ],
                             ),
                           ),
@@ -137,59 +141,59 @@ class ZshowDialogs {
     String goalText = '';
     String whoAuth = '';
 
+    void focusDispose() {
+      focusNode.dispose();
+    }
+
     await showDialog(
       context: context,
       builder: (context) {
+        focusNode.requestFocus();
         return AlertDialog(
           title: const Text('Informações sobre o acesso.'),
-          content: Builder(builder: (BuildContext context) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              FocusScope.of(context).requestFocus(focusNode);
-            });
-
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 140),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: 250,
-                    child: TextField(
-                      maxLines: 2,
-                      decoration:
-                          const InputDecoration(labelText: 'Finalidade'),
-                      focusNode: focusNode,
-                      controller: textController1,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 140),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 250,
+                  child: TextField(
+                    maxLines: 2,
+                    decoration: const InputDecoration(labelText: 'Finalidade'),
+                    focusNode: focusNode,
+                    controller: textController1,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 250,
+                  child: TextField(
+                    controller: textController2,
+                    onSubmitted: (v) {
+                      if (textController1.text != '') {
+                        focusDispose();
+                        whoAuth = textController2.text;
+                        goalText = textController1.text;
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Quem autorizou',
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: 250,
-                    child: TextField(
-                      controller: textController2,
-                      onSubmitted: (v) {
-                        if (textController1.text != '') {
-                          whoAuth = textController2.text;
-                          goalText = textController1.text;
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Quem autorizou',
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          }),
+                )
+              ],
+            ),
+          ),
           actions: [
             Center(
               child: ElevatedButton(
                 child: const Text('OK'),
                 onPressed: () {
                   if (textController1.text != '') {
+                    focusDispose();
                     goalText = textController1.text;
                     whoAuth = textController2.text;
                     Navigator.of(context).pop();
@@ -247,58 +251,57 @@ class ZshowDialogs {
     TextEditingController fieldController =
         TextEditingController(text: oldName);
     FocusNode focusNode = FocusNode();
+    focusNode.requestFocus();
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-              title: const Text(
-                'Alterar lotação',
-                textAlign: TextAlign.center,
-              ),
-              content: Builder(builder: (BuildContext context) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  FocusScope.of(context).requestFocus(focusNode);
-                });
-                return SizedBox(
-                  height: 130,
-                  width: 400,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        validator: Validatorless.multiple(
-                            [Validatorless.required('Campo obrgatório!')]),
-                        controller: fieldController,
-                        focusNode: focusNode,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Novo nome',
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            if (fieldController.text.isNotEmpty) {
-                              await DbManage.update(
-                                  column: 'name',
-                                  data: {'name': fieldController.text},
-                                  table: 'locations',
-                                  find: oldName,
-                                  boxName: '');
-                              validate = true;
-                            }
-
-                            // ignore: use_build_context_synchronously
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Salvar alteração')),
-                    ],
+            title: const Text(
+              'Alterar lotação',
+              textAlign: TextAlign.center,
+            ),
+            content: SizedBox(
+              height: 130,
+              width: 400,
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: Validatorless.multiple(
+                        [Validatorless.required('Campo obrgatório!')]),
+                    controller: fieldController,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: 'Novo nome',
+                    ),
                   ),
-                );
-              }));
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (fieldController.text.isNotEmpty) {
+                          await DbManage.update(
+                              column: 'name',
+                              data: {'name': fieldController.text},
+                              table: 'locations',
+                              find: oldName,
+                              boxName: '');
+                          validate = true;
+                        }
+
+                        focusNode.dispose();
+
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Salvar alteração')),
+                ],
+              ),
+            ),
+          );
         });
 
     return validate;
