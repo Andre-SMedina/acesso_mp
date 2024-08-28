@@ -14,6 +14,7 @@ class ZshowDialogs {
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
+      List operators = MyFunctons.getHive('operators');
 
       await showDialog(
         // ignore: use_build_context_synchronously
@@ -32,7 +33,6 @@ class ZshowDialogs {
                   itemBuilder: (context, index) {
                     String operator = '';
                     String location = '';
-                    List operators = MyFunctons.getHive('operators');
 
                     for (var i in locations) {
                       if (i['id'] == visitorHistoric[index]['id_location']) {

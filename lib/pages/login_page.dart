@@ -96,8 +96,6 @@ class LoginPageState extends State<LoginPage> {
         MyFunctons.getOperators().then((e) {
           MyFunctons.putHive('operators', e);
         });
-        if (!mounted) return;
-        emailFocus.dispose();
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
@@ -107,16 +105,16 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // emailFocus.dispose();
+    emailFocus.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    //aguarda a montagem do widget para depois requisitar o foco
+    // aguarda a montagem do widget para depois requisitar o foco
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) emailFocus.requestFocus();
+      // if (mounted) emailFocus.requestFocus();
     });
   }
 
@@ -131,82 +129,78 @@ class LoginPageState extends State<LoginPage> {
               opacity: 0.2),
         ),
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                width: 500,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
+          child: Form(
+            key: _formKey,
+            child: Container(
+              width: 500,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal[700],
                     ),
-                  ],
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal[700],
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: emailController,
+                    focusNode: emailFocus,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'Usuário',
+                        helperText: ''),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira seu usuário';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    onFieldSubmitted: (e) => _login(context),
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'Senha',
+                        helperText: ''),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira sua senha';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => _login(context),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        textStyle: const TextStyle(fontSize: 18),
                       ),
+                      child: const Text('Logar'),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: emailController,
-                      focusNode: emailFocus,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Usuário',
-                          helperText: ''),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira seu usuário';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      onFieldSubmitted: (e) => _login(context),
-                      controller: passwordController,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Senha',
-                          helperText: ''),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira sua senha';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => _login(context),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          textStyle: const TextStyle(fontSize: 18),
-                        ),
-                        child: const Text('Logar'),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
