@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyFunctons {
@@ -22,16 +22,14 @@ class MyFunctons {
     return locations;
   }
 
-  static Future<List> getVisits(int locationId) async {
+  static Future<List> getVisits(int locationId, {String date = ''}) async {
+    String dateNow = DateFormat('yyyy/MM/dd').format(DateTime.now());
     List visits = await supabase
         .from('visits')
-        .select(
-            'goal, date, authorizedBy, locations(name), operators(name), visitors(name)')
-        .eq(
-          'id_location',
-          locationId,
-        );
-    print(visits);
+        .select('*, locations(name), operators(name), visitors(name)')
+        .eq('id_location', locationId)
+        .eq('date', (date.isNotEmpty) ? date : dateNow)
+        .order('time');
 
     return visits;
   }

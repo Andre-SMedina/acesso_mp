@@ -10,6 +10,8 @@ class DbManage {
 
   static Future<bool> save(ModelVisitors data, List<String> auth) async {
     String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+    String date = dateNow.split(' ')[0];
+    String time = dateNow.split(' ')[1];
     bool response = false;
 
     try {
@@ -40,7 +42,8 @@ class DbManage {
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
-        'date': dateNow,
+        'date': date,
+        'time': time,
         'id_visitor': visitor[0]['id'],
         'id_location': profile['locations']['id'],
         'id_operator': profile['id']

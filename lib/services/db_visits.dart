@@ -19,7 +19,9 @@ class DbVisits {
         return false;
       }
 
-      String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+      String dateNow = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
+      String date = dateNow.split(' ')[0];
+      String time = dateNow.split(' ')[1];
 
       SupabaseClient supabase = Supabase.instance.client;
       Map profile = MyFunctons.getHive('profile');
@@ -29,7 +31,8 @@ class DbVisits {
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
-        'date': dateNow,
+        'date': date,
+        'time': time,
         'id_visitor': checked['id'],
         'id_location': profile['locations']['id'],
         'id_operator': profile['id']

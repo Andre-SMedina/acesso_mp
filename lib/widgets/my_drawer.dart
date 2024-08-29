@@ -1,6 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
-import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +71,7 @@ class MyDrawer extends StatelessWidget {
                     operatorControl();
                   });
                 } else {
-                  ZshowDialogs.alert(
-                      context, 'Você não tem perfil administrador.');
+                  ZshowDialogs.alert(context, 'Acesso não autorizado.');
                 }
               },
               actionBtn1: false,
@@ -91,8 +89,7 @@ class MyDrawer extends StatelessWidget {
                   context.read<XProvider>().clearFields();
                   Navigator.pushReplacementNamed(context, '/controlLocates');
                 } else {
-                  ZshowDialogs.alert(
-                      context, 'Você não tem perfil administrador.');
+                  ZshowDialogs.alert(context, 'Acesso não autorizado.');
                 }
               },
               actionBtn1: false,

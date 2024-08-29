@@ -1,4 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
@@ -16,29 +17,43 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   TextStyle title = const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
   var profile = MyFunctons.getHive('profile');
-  List locations = [];
+  List locationsName = [];
   int locationId = 0;
   TextEditingController dropController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   var box = Hive.box('db');
 
-  // @override
-  // void initState() {
-  //   MyFunctons.getVisits(profile['locations']['id']);
-  //   super.initState();
-  // }
+  void loadLocation(String locationName) {
+    List locations = MyFunctons.getHive('locations');
+    for (var location in locations) {
+      if (location['name'] == locationName) {
+        locationId = location['id'];
+      }
+      setState(() {});
+    }
+  }
 
-  void loadLocationId(int id) {
-    locationId = id;
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (picked != null && picked != DateTime.now()) {
+      String date = Convert.formatDate(picked.toString().split(' ')[0]);
+      dateController.text = date;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    locations = MyFunctons.getHive('locations', names: true);
+    locationsName = MyFunctons.getHive('locations', names: true);
     var visits = [];
-    if (locationId == 0) locationId = profile['locations']['id'];
-    // visits = MyFunctons.getHive('visits');
-    // box.delete('visits');
-    // print(visits);
+    if (locationId == 0) {
+      locationId = profile['locations']['id'];
+    } else {}
 
     if (Supabase.instance.client.auth.currentUser == null) {
       return Scaffold(
@@ -80,25 +95,18 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Align(
             alignment: Alignment.topCenter,
             child: Container(
-              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 1500),
+              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 600),
               margin: const EdgeInsets.only(top: 50),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 3),
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromRGBO(255, 255, 255, 0.7)),
+                  color: const Color.fromRGBO(255, 255, 255, 0.8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Spacer(
-                    flex: 1,
-                  ),
                   Column(
                     children: [
-                      const Text(
-                        'Histórico de hoje',
-                        style: TextStyle(fontSize: 24),
-                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -124,7 +132,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                       ),
                                     ),
                                     border: OutlineInputBorder(),
-                                    labelText: 'Pesquisar local'),
+                                    labelText: 'Visitas de hoje em...'),
                               );
                             },
                             itemBuilder: (context, suggestion) {
@@ -133,10 +141,10 @@ class _HistoryPageState extends State<HistoryPage> {
                               );
                             },
                             suggestionsCallback: (search) {
-                              if (search.isEmpty) locations;
+                              if (search.isEmpty) locationsName;
                               List<String> filter = [];
 
-                              for (var i in locations) {
+                              for (var i in locationsName) {
                                 if (i
                                     .toLowerCase()
                                     .contains(search.toLowerCase())) {
@@ -149,74 +157,107 @@ class _HistoryPageState extends State<HistoryPage> {
                               dropController.text = suggestion;
                             }),
                       ),
-                      const SizedBox(
-                        height: 40,
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        // height: 85,
+                        width: 300,
+                        child: Form(
+                          child: TextFormField(
+                            controller: dateController,
+                            decoration: const InputDecoration(
+                                label: Text('Data específica')),
+                            onTap: () {
+                              // FocusScope.of(context).requestFocus(FocusNode());
+                              selectDate(context);
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              loadLocation(dropController.text);
+                            },
+                            child: const Text('Buscar')),
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black)),
+                            border: Border.all(color: Colors.black, width: 2)),
                         height: 400,
                         width: 400,
                         child: FutureBuilder(
-                          future: MyFunctons.getVisits(locationId),
+                          future: MyFunctons.getVisits(locationId,
+                              date: (dateController.text.isNotEmpty)
+                                  ? Convert.formatDate(dateController.text,
+                                      br: true)
+                                  : ''),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               visits = snapshot.data!;
                             }
 
-                            return ListView.builder(
-                              itemCount: visits.length,
-                              itemBuilder: (context, index) {
-                                TextSpan myText(String text) {
-                                  return TextSpan(
-                                      text: '$text: ',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold));
-                                }
+                            return (visits.isEmpty)
+                                ? const Text('Nenhum resultado encontrado!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 18))
+                                : ListView.builder(
+                                    itemCount: visits.length,
+                                    itemBuilder: (context, index) {
+                                      TextSpan myText(String text) {
+                                        return TextSpan(
+                                            text: '$text: ',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold));
+                                      }
 
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      title: RichText(
-                                          text: TextSpan(children: [
-                                        myText('Operador'),
-                                        TextSpan(
-                                            text: visits[index]['operators']
-                                                ['name']),
-                                        myText('\nData'),
-                                        TextSpan(text: visits[index]['date']),
-                                        myText('\nFinalidade'),
-                                        TextSpan(text: visits[index]['goal']),
-                                        myText('\nAutorizado por'),
-                                        TextSpan(
-                                            text: visits[index]
-                                                ['authorizedBy']),
-                                      ])),
-                                    ),
-                                    if (index < visits.length) const Divider()
-                                  ],
-                                );
-                              },
-                            );
+                                      return Column(
+                                        children: [
+                                          if (index == 0)
+                                            Text(
+                                              "${visits[0]['locations']['name']} (Visitantes: ${visits.length})",
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ListTile(
+                                            title: RichText(
+                                                text: TextSpan(children: [
+                                              myText('Operador'),
+                                              TextSpan(
+                                                  text: visits[index]
+                                                      ['operators']['name']),
+                                              myText('\nVisitante'),
+                                              TextSpan(
+                                                  text: visits[index]
+                                                      ['visitors']['name']),
+                                              myText('\nData'),
+                                              TextSpan(
+                                                  text: Convert.formatDate(
+                                                      visits[index]['date'])),
+                                              myText('\nHora'),
+                                              TextSpan(
+                                                  text: visits[index]['time']),
+                                              myText('\nFinalidade'),
+                                              TextSpan(
+                                                  text: visits[index]['goal']),
+                                              myText('\nAutorizado por'),
+                                              TextSpan(
+                                                  text: visits[index]
+                                                      ['authorizedBy']),
+                                            ])),
+                                          ),
+                                          if (index < visits.length)
+                                            const Divider()
+                                        ],
+                                      );
+                                    },
+                                  );
                           },
                         ),
                       )
                     ],
-                  ),
-                  const Spacer(
-                    flex: 3,
-                  ),
-                  const Column(
-                    children: [
-                      Text(
-                        'Consulta personalizada',
-                        style: TextStyle(fontSize: 24),
-                      )
-                    ],
-                  ),
-                  const Spacer(
-                    flex: 1,
                   ),
                 ],
               ),
