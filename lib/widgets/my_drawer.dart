@@ -63,12 +63,12 @@ class MyDrawer extends StatelessWidget {
               hoverColor: const Color.fromARGB(255, 97, 6, 182),
               callMain: () async {
                 if (box.get('profile')['adm']) {
-                  await DbManage.getLocations().then((value) {
+                  await MyFunctons.getLocations().then((value) {
                     List listFull = value.map((e) {
                       return e['name'];
                     }).toList();
-                    box.put('locations', listFull);
-                    box.put('locationsId', value);
+                    box.put('locationsName', listFull);
+                    box.put('locationsFull', value);
                     operatorControl();
                   });
                 } else {

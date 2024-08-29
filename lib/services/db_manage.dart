@@ -42,8 +42,7 @@ class DbManage {
         'authorizedBy': auth[1],
         'date': dateNow,
         'id_visitor': visitor[0]['id'],
-        //TODO: colocar id no lugar do nome do local
-        'location': profile['locations']['id'],
+        'id_location': profile['locations']['id'],
         'id_operator': profile['id']
       });
     }
@@ -92,20 +91,6 @@ class DbManage {
     }
 
     return response;
-  }
-
-  static Future<dynamic> getLocations() async {
-    List<Map> locations = [];
-    try {
-      locations = await supabase
-          .from('locations')
-          .select()
-          .order('name', ascending: true);
-    } catch (err) {
-      debugPrint(err.toString());
-    }
-
-    return locations;
   }
 
   static Future<dynamic> getJoin(

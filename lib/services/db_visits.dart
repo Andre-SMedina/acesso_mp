@@ -31,7 +31,7 @@ class DbVisits {
         'authorizedBy': auth[1],
         'date': dateNow,
         'id_visitor': checked['id'],
-        'location': profile['locations']['id'],
+        'id_location': profile['locations']['id'],
         'id_operator': profile['id']
       });
 

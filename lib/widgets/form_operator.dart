@@ -28,7 +28,7 @@ class _FormOperatorState extends State<FormOperator> {
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('db');
-    listFull = box.get('locations');
+    listFull = box.get('locationsName');
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Form(
@@ -179,7 +179,7 @@ class _FormOperatorState extends State<FormOperator> {
                               }
 
                               if (validate) {
-                                List locationsId = box.get('locationsId');
+                                List locationsId = box.get('locationsFull');
 
                                 int locationId = 0;
                                 for (var e in locationsId) {

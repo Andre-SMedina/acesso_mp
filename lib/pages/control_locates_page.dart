@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
@@ -156,10 +157,10 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                 constraints: const BoxConstraints(
                                     maxHeight: 400, maxWidth: 300),
                                 child: FutureBuilder(
-                                  future: DbManage.getLocations(),
+                                  future: MyFunctons.getLocations(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      locations = snapshot.data;
+                                      locations = snapshot.data!;
                                     }
                                     return ListView.builder(
                                         itemCount: locations.length,

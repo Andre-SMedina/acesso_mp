@@ -143,47 +143,66 @@ class _ControlOperatorsPageState extends State<ControlOperatorsPage> {
                                                 return const Padding(
                                                     padding: EdgeInsets.zero);
                                               }
-                                              return MyListTile(
-                                                iconTip1:
-                                                    'Usuário Administrador',
-                                                iconTip2: 'Usuário Comum',
-                                                title: operators[index]['name'],
-                                                hoverColor:
-                                                    const Color.fromARGB(
-                                                        255, 138, 199, 248),
-                                                iconBtn1: (operators[index]
-                                                        ['adm'])
-                                                    ? Icons.admin_panel_settings
-                                                    : Icons
-                                                        .person_outline_outlined,
-                                                iconBtn2: operators[index]
-                                                        ['active']
-                                                    ? Icons.assignment_ind_sharp
-                                                    : Icons
-                                                        .do_not_disturb_alt_outlined,
-                                                callMain: () {
-                                                  box.put('operator',
-                                                      operators[index]);
-                                                  saveUpdate = false;
-                                                  setState(() {});
-                                                  contex
-                                                      .read<XProvider>()
-                                                      .loadOperatorField(
+                                              return Column(
+                                                children: [
+                                                  MyListTile(
+                                                    iconTip1:
+                                                        'Usuário Administrador',
+                                                    iconTip2: 'Usuário Comum',
+                                                    title: operators[index]
+                                                        ['name'],
+                                                    subtitle: operators[index]
+                                                        ['locations']['name'],
+                                                    hoverColor:
+                                                        const Color.fromARGB(
+                                                            255, 138, 199, 248),
+                                                    iconBtn1: (operators[index]
+                                                            ['adm'])
+                                                        ? Icons
+                                                            .admin_panel_settings
+                                                        : Icons
+                                                            .person_outline_outlined,
+                                                    iconBtn2: operators[index]
+                                                            ['active']
+                                                        ? Icons
+                                                            .assignment_ind_sharp
+                                                        : Icons
+                                                            .do_not_disturb_alt_outlined,
+                                                    callMain: () {
+                                                      box.put('operator',
                                                           operators[index]);
-                                                },
-                                                actionBtn1: true,
-                                                callIconBtn1: () {
-                                                  updateProfile({
-                                                    'adm': !operators[index]
-                                                        ['adm']
-                                                  }, operators[index]['cpf']);
-                                                },
-                                                callIconBtn2: () {
-                                                  updateProfile({
-                                                    'active': !operators[index]
-                                                        ['active']
-                                                  }, operators[index]['cpf']);
-                                                },
+                                                      saveUpdate = false;
+                                                      setState(() {});
+                                                      contex
+                                                          .read<XProvider>()
+                                                          .loadOperatorField(
+                                                              operators[index]);
+                                                    },
+                                                    actionBtn1: true,
+                                                    callIconBtn1: () {
+                                                      updateProfile(
+                                                          {
+                                                            'adm': !operators[
+                                                                index]['adm']
+                                                          },
+                                                          operators[index]
+                                                              ['cpf']);
+                                                    },
+                                                    callIconBtn2: () {
+                                                      updateProfile(
+                                                          {
+                                                            'active':
+                                                                !operators[
+                                                                        index]
+                                                                    ['active']
+                                                          },
+                                                          operators[index]
+                                                              ['cpf']);
+                                                    },
+                                                  ),
+                                                  if (index < operators.length)
+                                                    const Divider()
+                                                ],
                                               );
                                             });
                                       },

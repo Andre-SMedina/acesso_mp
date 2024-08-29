@@ -3,6 +3,7 @@ import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -14,12 +15,30 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   TextStyle title = const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
+  var profile = MyFunctons.getHive('profile');
   List locations = [];
+  int locationId = 0;
   TextEditingController dropController = TextEditingController();
+  var box = Hive.box('db');
+
+  // @override
+  // void initState() {
+  //   MyFunctons.getVisits(profile['locations']['id']);
+  //   super.initState();
+  // }
+
+  void loadLocationId(int id) {
+    locationId = id;
+  }
 
   @override
   Widget build(BuildContext context) {
-    locations = MyFunctons.getHive('locations');
+    locations = MyFunctons.getHive('locations', names: true);
+    var visits = [];
+    if (locationId == 0) locationId = profile['locations']['id'];
+    // visits = MyFunctons.getHive('visits');
+    // box.delete('visits');
+    // print(visits);
 
     if (Supabase.instance.client.auth.currentUser == null) {
       return Scaffold(
@@ -105,7 +124,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                       ),
                                     ),
                                     border: OutlineInputBorder(),
-                                    labelText: 'Escolha o local'),
+                                    labelText: 'Pesquisar local'),
                               );
                             },
                             itemBuilder: (context, suggestion) {
@@ -134,26 +153,51 @@ class _HistoryPageState extends State<HistoryPage> {
                         height: 40,
                       ),
                       Container(
+                        padding: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.black)),
                         height: 400,
                         width: 400,
-                        child: ListView.builder(
-                          itemCount: 4,
-                          itemBuilder: (context, index) {
-                            TextSpan myText(String text) {
-                              return TextSpan(
-                                  text: '$text: ',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold));
+                        child: FutureBuilder(
+                          future: MyFunctons.getVisits(locationId),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              visits = snapshot.data!;
                             }
 
-                            return ListTile(
-                              title: RichText(
-                                  text: TextSpan(children: [
-                                myText('Operador'),
-                                const TextSpan(text: '')
-                              ])),
+                            return ListView.builder(
+                              itemCount: visits.length,
+                              itemBuilder: (context, index) {
+                                TextSpan myText(String text) {
+                                  return TextSpan(
+                                      text: '$text: ',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold));
+                                }
+
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      title: RichText(
+                                          text: TextSpan(children: [
+                                        myText('Operador'),
+                                        TextSpan(
+                                            text: visits[index]['operators']
+                                                ['name']),
+                                        myText('\nData'),
+                                        TextSpan(text: visits[index]['date']),
+                                        myText('\nFinalidade'),
+                                        TextSpan(text: visits[index]['goal']),
+                                        myText('\nAutorizado por'),
+                                        TextSpan(
+                                            text: visits[index]
+                                                ['authorizedBy']),
+                                      ])),
+                                    ),
+                                    if (index < visits.length) const Divider()
+                                  ],
+                                );
+                              },
                             );
                           },
                         ),

@@ -141,10 +141,6 @@ class ZshowDialogs {
     String goalText = '';
     String whoAuth = '';
 
-    void focusDispose() {
-      focusNode.dispose();
-    }
-
     await showDialog(
       context: context,
       builder: (context) {
@@ -173,7 +169,6 @@ class ZshowDialogs {
                     controller: textController2,
                     onSubmitted: (v) {
                       if (textController1.text != '') {
-                        focusDispose();
                         whoAuth = textController2.text;
                         goalText = textController1.text;
                         Navigator.of(context).pop();
@@ -193,7 +188,6 @@ class ZshowDialogs {
                 child: const Text('OK'),
                 onPressed: () {
                   if (textController1.text != '') {
-                    focusDispose();
                     goalText = textController1.text;
                     whoAuth = textController2.text;
                     Navigator.of(context).pop();
@@ -291,8 +285,6 @@ class ZshowDialogs {
                               boxName: '');
                           validate = true;
                         }
-
-                        focusNode.dispose();
 
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context);

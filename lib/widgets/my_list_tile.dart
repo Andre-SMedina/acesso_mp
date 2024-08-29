@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class MyListTile extends StatefulWidget {
   final String title;
+  final String? subtitle;
   final String iconTip1;
   final String iconTip2;
   final bool actionBtn1;
@@ -15,6 +16,7 @@ class MyListTile extends StatefulWidget {
   const MyListTile(
       {super.key,
       required this.title,
+      this.subtitle,
       required this.hoverColor,
       required this.iconBtn1,
       required this.callIconBtn2,
@@ -119,6 +121,7 @@ class _MyListTileState extends State<MyListTile> {
           ),
         ),
       ),
+      subtitle: (widget.subtitle != null) ? Text(widget.subtitle ?? '') : null,
     );
   }
 }
