@@ -67,6 +67,8 @@ class ZshowDialogs {
                                 TextSpan(text: location),
                                 myText('\nData'),
                                 TextSpan(text: visitorHistoric[index]['date']),
+                                myText('\nHora'),
+                                TextSpan(text: visitorHistoric[index]['time']),
                                 myText('\nFinalidade '),
                                 TextSpan(text: visitorHistoric[index]['goal']),
                                 myText('\nAutorizado por '),

@@ -20,7 +20,7 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final MaskedTextController testeController =
       MaskedTextController(mask: '000.000.000-00');
-  final FocusNode emailFocus = FocusNode();
+  // final FocusNode emailFocus = FocusNode();
 
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
@@ -99,27 +99,27 @@ class LoginPageState extends State<LoginPage> {
         MyFunctons.getLocations().then((e) {
           MyFunctons.putHive('locations', e);
         });
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
     }
   }
 
-  @override
-  void dispose() {
-    emailFocus.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   emailFocus.dispose();
+  //   super.dispose();
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    // aguarda a montagem do widget para depois requisitar o foco
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // if (mounted) emailFocus.requestFocus();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // aguarda a montagem do widget para depois requisitar o foco
+  // WidgetsBinding.instance.addPostFrameCallback((_) {
+  // if (mounted) emailFocus.requestFocus();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +162,7 @@ class LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: emailController,
-                    focusNode: emailFocus,
+                    // focusNode: emailFocus,
                     decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
