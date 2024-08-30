@@ -1,19 +1,27 @@
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:hive/hive.dart';
 import 'package:validatorless/validatorless.dart';
 
 class XProvider with ChangeNotifier {
+  bool enableField = true;
   String? errorText;
   TextEditingController locateController = TextEditingController();
-  bool enableField = true;
+  MaskedTextController cpfController = MaskedTextController(
+    mask: '000.000.000-00',
+  );
+  MaskedTextController phoneController = MaskedTextController(
+    mask: '(00) 0 0000-0000',
+  );
+  bool validate = true;
   bool get enableField2 => enableField;
   String? get errorText2 => errorText;
-  MyTextField get name2 => name;
-  MyTextField get cpf2 => cpf;
-  MyTextField get phone2 => phone;
   TextEditingController get locateCotroller2 => locateController;
+  MaskedTextController get cpfController2 => cpfController;
+  bool get validate2 => validate;
+  MyTextField get name2 => name;
 
   void changeText() {
     errorText = 'Digite o nome da lotação para pesquisar, e escolha uma!';
@@ -27,27 +35,27 @@ class XProvider with ChangeNotifier {
 
   void loadVisitorsField(Map<String, dynamic> visitor) {
     name.fieldController.text = visitor['name'];
-    cpf.fieldController.text = "${visitor['cpf'].substring(0, 5)}...";
+    cpfController.text = "${visitor['cpf'].substring(0, 5)}...";
     rg.fieldController.text = visitor['rg'];
-    phone.fieldController.text = visitor['phone'];
+    phoneController.text = visitor['phone'];
     job.fieldController.text = visitor['job'];
-    cpf.enableField = false;
+    enableField = false;
     rg.enableField = false;
-    cpf.listValidator[0] = Validatorless.multiple([]);
+    validate = false;
     notifyListeners();
   }
 
   void clearFields() {
     name.fieldController.text = '';
-    cpf.fieldController.text = '';
+    cpfController.text = '';
     rg.fieldController.text = '';
-    phone.fieldController.text = '';
+    phoneController.text = '';
     job.fieldController.text = '';
     email.fieldController.text = '';
     locateController.text = '';
-    cpf.enableField = true;
+    enableField = true;
     rg.enableField = true;
-    cpf.listValidator[0] = Validatorless.cpf('CPF inválido!');
+    validate = true;
     var box = Hive.box('db');
     box.putAll({'visitor': '', 'image': ''});
     notifyListeners();
@@ -56,10 +64,10 @@ class XProvider with ChangeNotifier {
   void loadOperatorField(Map operator) {
     locateController.text = operator['locations']['name'];
     name.fieldController.text = operator['name'];
-    cpf.fieldController.text = operator['cpf'].toString();
-    phone.fieldController.text = operator['phone'].toString();
+    cpfController.text = operator['cpf'].toString();
+    phoneController.text = operator['phone'].toString();
     email.fieldController.text = operator['email'];
-    cpf.enableField = false;
+    enableField = false;
 
     notifyListeners();
   }
@@ -69,23 +77,35 @@ class XProvider with ChangeNotifier {
     listInputFormat: const [],
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
+      //TODO: se colocar um nome e um espaço na hora de cadastrar o nome, dá erro
       (v) => v!.split(' ').length >= 2
           ? null
           : 'O nome deve ter nome e sobrenome!',
     ],
   );
 
-  MyTextField cpf = MyTextField(
-    text: 'CPF',
-    listValidator: [
-      Validatorless.cpf('CPF inválido!'),
-      Validatorless.required('Campo obrigatório!')
-    ],
-    listInputFormat: [
-      FilteringTextInputFormatter.digitsOnly,
-      LengthLimitingTextInputFormatter(11)
-    ],
-  );
+  TextFormField cpfWidget() {
+    return TextFormField(
+      controller: cpfController,
+      decoration: const InputDecoration(
+        labelText: 'CPF',
+        filled: true,
+        fillColor: Colors.white,
+        helperText: '',
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(11)
+      ],
+      validator: (validate)
+          ? Validatorless.multiple([
+              Validatorless.cpf('CPF inválido!'),
+              Validatorless.required('Campo obrigatório!')
+            ])
+          : null,
+      enabled: enableField,
+    );
+  }
 
   MyTextField rg = MyTextField(
     text: 'RG',
@@ -95,13 +115,21 @@ class XProvider with ChangeNotifier {
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
 
-  MyTextField phone = MyTextField(
-    text: 'Telefone',
-    listInputFormat: [
-      FilteringTextInputFormatter.digitsOnly,
-    ],
-    listValidator: [Validatorless.required('Campo obrigatório!')],
-  );
+  TextFormField phoneWidget() {
+    return TextFormField(
+      controller: phoneController,
+      decoration: const InputDecoration(
+        labelText: 'Telefone',
+        filled: true,
+        fillColor: Colors.white,
+        helperText: '',
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      validator: Validatorless.required('Campo obrigatório!'),
+    );
+  }
 
   MyTextField job = MyTextField(
     text: 'Profissão',

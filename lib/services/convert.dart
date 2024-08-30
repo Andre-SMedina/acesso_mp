@@ -62,4 +62,13 @@ class Convert {
 
     return newName;
   }
+
+  static String formatDate(String date, {bool br = false}) {
+    if (br) {
+      List<String> dateList = date.split('/');
+      return "${dateList[2]}-${dateList[1]}-${dateList[0]}";
+    }
+    List<String> dateList = date.split('-');
+    return "${dateList[2]}/${dateList[1]}/${dateList[0]}";
+  }
 }

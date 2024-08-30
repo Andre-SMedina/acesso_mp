@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
@@ -62,10 +63,12 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
       return Scaffold(
         drawer: const MyDrawer(),
         appBar: myAppbar(context, 'Controle de Lotações'),
-        body: Center(
+        body: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 900),
             child: Container(
+              padding: const EdgeInsets.only(top: 50),
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage('assets/manut.jpg'),
@@ -154,10 +157,10 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                 constraints: const BoxConstraints(
                                     maxHeight: 400, maxWidth: 300),
                                 child: FutureBuilder(
-                                  future: DbManage.getLocations(),
+                                  future: MyFunctons.getLocations(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      locations = snapshot.data;
+                                      locations = snapshot.data!;
                                     }
                                     return ListView.builder(
                                         itemCount: locations.length,
@@ -169,6 +172,7 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
                                             hoverColor: const Color.fromARGB(
                                                 255, 138, 199, 248),
                                             iconBtn1: Icons.location_city,
+                                            actionBtn1: false,
                                             callIconBtn1: () {},
                                             callIconBtn2: () {},
                                             callMain: () async {

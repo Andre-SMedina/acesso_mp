@@ -1,29 +1,23 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/db_manage.dart';
-import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ZshowDialogs {
   static Future<void> historic(
       BuildContext context, List<String> visitor) async {
     var checked = MyFunctons.getHive('visitor');
+    List locations = [];
+    await MyFunctons.getLocations().then((e) {
+      locations = e;
+    });
 
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
-
-      Future<dynamic> getOperator(int idOperator) async {
-        SupabaseClient supabase = Supabase.instance.client;
-        var operator = await supabase
-            .from('operator')
-            .select('*, operators(name)')
-            .eq('id_operator', idOperator);
-
-        return operator;
-      }
+      List operators = MyFunctons.getHive('operators');
 
       await showDialog(
+        // ignore: use_build_context_synchronously
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -38,7 +32,13 @@ class ZshowDialogs {
                       visitorHistoric.length, // Número de elementos na lista
                   itemBuilder: (context, index) {
                     String operator = '';
-                    List operators = MyFunctons.getHive('operators');
+                    String location = '';
+
+                    for (var i in locations) {
+                      if (i['id'] == visitorHistoric[index]['id_location']) {
+                        location = i['name'];
+                      }
+                    }
 
                     for (var i = 0; i < operators.length; i++) {
                       if (operators[i]['id'] ==
@@ -47,31 +47,39 @@ class ZshowDialogs {
                       }
                     }
 
-                    // getOperator(visitorHistoric[index]['id_operator'])
-                    //     .then((e) {
-                    //   print(e);
-                    // });
-                    return ListTile(
-                        leading: const Icon(Icons
-                            .check_circle_outline_outlined), // Ícone opcional para cada item
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(text: 'Operador: $operator '),
-                              TextSpan(
-                                text: '${visitorHistoric[index]['date']}',
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 119, 0, 152)),
-                              ),
-                              TextSpan(
-                                text: ' - ${visitorHistoric[index]['goal']}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 21, 0, 209)),
-                              ),
-                            ],
+                    TextSpan myText(String text) {
+                      return TextSpan(
+                          text: '$text: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold));
+                    }
+
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading:
+                              const Icon(Icons.check_circle_outline_outlined),
+                          title: RichText(
+                            text: TextSpan(
+                              children: [
+                                myText('Operador'),
+                                TextSpan(text: operator),
+                                myText('\nLocal'),
+                                TextSpan(text: location),
+                                myText('\nData'),
+                                TextSpan(text: visitorHistoric[index]['date']),
+                                myText('\nFinalidade '),
+                                TextSpan(text: visitorHistoric[index]['goal']),
+                                myText('\nAutorizado por '),
+                                TextSpan(
+                                    text: visitorHistoric[index]
+                                        ['authorizedBy']),
+                              ],
+                            ),
                           ),
-                        ));
+                        ),
+                        if (index < visitorHistoric.length - 1) const Divider()
+                      ],
+                    );
                   },
                 ),
               ),
@@ -126,36 +134,62 @@ class ZshowDialogs {
     );
   }
 
-  static Future<String> visited(BuildContext context) async {
-    late TextEditingController textController = TextEditingController();
+  static Future<List<String>> visited(BuildContext context) async {
+    late TextEditingController textController1 = TextEditingController();
+    late TextEditingController textController2 = TextEditingController();
     FocusNode focusNode = FocusNode();
+    String goalText = '';
+    String whoAuth = '';
 
     await showDialog(
       context: context,
       builder: (context) {
+        focusNode.requestFocus();
         return AlertDialog(
-          title: const Text('Finalidade do acesso.'),
-          content: Builder(builder: (BuildContext context) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              FocusScope.of(context).requestFocus(focusNode);
-            });
-
-            return TextField(
-              onSubmitted: (v) {
-                if (textController.text != '') {
-                  Navigator.of(context).pop();
-                }
-              },
-              focusNode: focusNode,
-              controller: textController,
-            );
-          }),
+          title: const Text('Informações sobre o acesso.'),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 140),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 250,
+                  child: TextField(
+                    maxLines: 2,
+                    decoration: const InputDecoration(labelText: 'Finalidade'),
+                    focusNode: focusNode,
+                    controller: textController1,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 250,
+                  child: TextField(
+                    controller: textController2,
+                    onSubmitted: (v) {
+                      if (textController1.text != '') {
+                        whoAuth = textController2.text;
+                        goalText = textController1.text;
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Quem autorizou',
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
           actions: [
             Center(
               child: ElevatedButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  if (textController.text != '') {
+                  if (textController1.text != '') {
+                    goalText = textController1.text;
+                    whoAuth = textController2.text;
                     Navigator.of(context).pop();
                   }
                 },
@@ -166,7 +200,7 @@ class ZshowDialogs {
       },
     );
 
-    return textController.text;
+    return [goalText, whoAuth];
   }
 
   static Future<bool> confirm(BuildContext context, String title) async {
@@ -176,7 +210,10 @@ class ZshowDialogs {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(title),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+            ),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -205,10 +242,10 @@ class ZshowDialogs {
   static Future<bool> updateLocate(BuildContext context, String oldName) async {
     bool validate = false;
 
-    MyTextField nameField = MyTextField(
-        text: 'Novo nome',
-        listValidator: [Validatorless.required('Campo obrgatório!')],
-        listInputFormat: const []);
+    TextEditingController fieldController =
+        TextEditingController(text: oldName);
+    FocusNode focusNode = FocusNode();
+    focusNode.requestFocus();
 
     await showDialog(
         context: context,
@@ -223,15 +260,26 @@ class ZshowDialogs {
               width: 400,
               child: Column(
                 children: [
-                  nameField,
+                  TextFormField(
+                    validator: Validatorless.multiple(
+                        [Validatorless.required('Campo obrgatório!')]),
+                    controller: fieldController,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: 'Novo nome',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
                       onPressed: () async {
-                        String newName = nameField.fieldController.text;
-
-                        if (newName.isNotEmpty) {
+                        if (fieldController.text.isNotEmpty) {
                           await DbManage.update(
                               column: 'name',
-                              data: {'name': newName},
+                              data: {'name': fieldController.text},
                               table: 'locations',
                               find: oldName,
                               boxName: '');

@@ -1,6 +1,5 @@
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:acesso_mp/services/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -9,8 +8,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbManage {
   static final SupabaseClient supabase = Supabase.instance.client;
 
-  static Future<bool> save(ModelVisitors data, String goal) async {
+  static Future<bool> save(ModelVisitors data, List<String> auth) async {
     String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+    String date = dateNow.split(' ')[0];
+    String time = dateNow.split(' ')[1];
     bool response = false;
 
     try {
@@ -36,11 +37,15 @@ class DbManage {
       var box = Hive.box('db');
       Map profile = box.get('profile');
 
+      if (profile['name'] == 'adm') return true;
+
       await supabase.from('visits').insert({
-        'goal': goal,
-        'date': dateNow,
+        'goal': auth[0],
+        'authorizedBy': auth[1],
+        'date': date,
+        'time': time,
         'id_visitor': visitor[0]['id'],
-        'location': profile['locations']['name'],
+        'id_location': profile['locations']['id'],
         'id_operator': profile['id']
       });
     }
@@ -91,20 +96,6 @@ class DbManage {
     return response;
   }
 
-  static Future<dynamic> getLocations() async {
-    List<Map> locations = [];
-    try {
-      locations = await supabase
-          .from('locations')
-          .select()
-          .order('name', ascending: true);
-    } catch (err) {
-      debugPrint(err.toString());
-    }
-
-    return locations;
-  }
-
   static Future<dynamic> getJoin(
       {required String findTb1,
       required String columnTb1,
@@ -131,12 +122,11 @@ class DbManage {
 
       data['cpf'] = oldData['cpf'];
       if (data['rg'] != null) data['rg'] = oldData['rg'];
-
-      try {
-        await supabase.from(table).update(data).eq(column, find);
-      } catch (err) {
-        debugPrint(err.toString());
-      }
+    }
+    try {
+      await supabase.from(table).update(data).eq(column, find);
+    } catch (err) {
+      debugPrint(err.toString());
     }
   }
 }

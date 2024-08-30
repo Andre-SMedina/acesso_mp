@@ -9,7 +9,7 @@ import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
-import 'package:acesso_mp/services/data_manage.dart';
+import 'package:acesso_mp/services/db_visits.dart';
 import 'package:acesso_mp/widgets/camera.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:camera/camera.dart';
@@ -46,9 +46,17 @@ class _HomePageState extends State<HomePage> {
 
     return [
       context.read<XProvider>().name.fieldController.text,
-      context.read<XProvider>().cpf.fieldController.text,
+      context
+          .read<XProvider>()
+          .cpfController
+          .text
+          .replaceAll(RegExp(r'\D'), ''),
       context.read<XProvider>().rg.fieldController.text,
-      context.read<XProvider>().phone.fieldController.text,
+      context
+          .read<XProvider>()
+          .phoneController
+          .text
+          .replaceAll(RegExp(r'\D'), ''),
       context.read<XProvider>().job.fieldController.text,
       img,
     ];
@@ -83,7 +91,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   alertVisited() async {
-    String visited = '';
+    List<String> visited = [];
     await ZshowDialogs.visited(context).then((v) => visited = v);
 
     return visited;
@@ -164,9 +172,9 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   children: [
                                     provider.name,
-                                    provider.cpf,
+                                    provider.cpfWidget(),
                                     provider.rg,
-                                    provider.phone,
+                                    provider.phoneWidget(),
                                     provider.job,
                                     const SizedBox(
                                       height: 20,
@@ -376,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   ElevatedButton(
                                       onPressed: () async {
-                                        ManageData manageDate = ManageData(
+                                        DbVisits manageDate = DbVisits(
                                           alert: alertAuth,
                                           alertVisited: alertVisited,
                                         );

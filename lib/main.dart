@@ -1,3 +1,4 @@
+import 'package:acesso_mp/pages/history_page.dart';
 import 'package:acesso_mp/pages/login_page.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/pages/control_locates_page.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
+        '/history': (context) => const HistoryPage(),
         '/controlLocates': (context) => const ControlLocatesPage(),
         '/controlOperators': (context) => const ControlOperatorsPage(),
       },

@@ -1,5 +1,7 @@
+import 'package:acesso_mp/services/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 PreferredSizeWidget? myAppbar(BuildContext context, String title) {
@@ -39,10 +41,10 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
             IconButton(
                 padding: const EdgeInsets.only(right: 30, left: 10),
                 onPressed: () async {
+                  context.read<XProvider>().clearFields();
+                  Navigator.pushReplacementNamed(context, '/');
                   var supabase = Supabase.instance.client;
                   await supabase.auth.signOut();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushReplacementNamed(context, '/');
                 },
                 icon: const Icon(
                   Icons.logout,
