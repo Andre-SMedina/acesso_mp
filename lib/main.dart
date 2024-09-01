@@ -1,4 +1,5 @@
 import 'package:acesso_mp/pages/history_page.dart';
+import 'package:acesso_mp/pages/home_page2.dart';
 import 'package:acesso_mp/pages/login_page2.dart';
 import 'package:acesso_mp/pages/login_page.dart';
 import 'package:acesso_mp/services/x_provider.dart';
@@ -81,8 +82,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginPage2(),
-        '/home': (context) => HomePage(
-              cameras: cameras,
+        '/home': (context) => const HomePage2(
+            // cameras: cameras,
             ),
         '/history': (context) => const HistoryPage(),
         '/controlLocates': (context) => const ControlLocatesPage(),

@@ -9,8 +9,27 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
   Map profile = box.get('profile');
   return AppBar(
       iconTheme: const IconThemeData(color: Colors.white),
-      title: Text(title),
+      title: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: 100,
+              height: 50,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/miniLogo.png'))),
+            ),
+          ),
+          Expanded(flex: 2, child: Text(title)),
+        ],
+      ),
       centerTitle: true,
+      // leading: Container(
+      //   width: 100,
+      //   decoration: BoxDecoration(
+      //       image: DecorationImage(image: AssetImage('assets/logo.png'))),
+      // ),
       actions: [
         Row(
           children: [

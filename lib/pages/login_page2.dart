@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/x_provider.dart';
@@ -93,7 +95,7 @@ class LoginPage2 extends StatelessWidget {
         MyFunctons.getLocations().then((e) {
           MyFunctons.putHive('locations', e);
         });
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
