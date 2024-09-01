@@ -16,12 +16,20 @@ class XProvider with ChangeNotifier {
     mask: '(00) 0 0000-0000',
   );
   bool validate = true;
+  bool passwd = true;
+  Icon passwdIcon = const Icon(
+    Icons.visibility_off_outlined,
+    color: Color.fromARGB(255, 116, 116, 116),
+    size: 27,
+  );
   bool get enableField2 => enableField;
   String? get errorText2 => errorText;
   TextEditingController get locateCotroller2 => locateController;
   MaskedTextController get cpfController2 => cpfController;
   bool get validate2 => validate;
+  bool get passwd2 => passwd;
   MyTextField get name2 => name;
+  Icon get passwdIcon2 => passwdIcon;
 
   void changeText() {
     errorText = 'Digite o nome da lotação para pesquisar, e escolha uma!';
@@ -30,6 +38,28 @@ class XProvider with ChangeNotifier {
 
   void cleanText() {
     errorText = null;
+    notifyListeners();
+  }
+
+  void passwdChange() {
+    passwd = !passwd;
+    notifyListeners();
+  }
+
+  void passwdIconChange() {
+    if (!passwd) {
+      passwdIcon = const Icon(
+        Icons.visibility_outlined,
+        color: Color.fromARGB(255, 116, 116, 116),
+        size: 27,
+      );
+    } else {
+      passwdIcon = const Icon(
+        Icons.visibility_off_outlined,
+        color: Color.fromARGB(255, 116, 116, 116),
+        size: 27,
+      );
+    }
     notifyListeners();
   }
 
@@ -147,8 +177,9 @@ class XProvider with ChangeNotifier {
   );
 }
 
+
 // Consumer<XProvider>(
-//  builder: (context, xProvider, child) {
+//  builder: (context, provider, child) {
 //    return Text(xProvider.text,
 //      style: const TextStyle(
 //        fontSize: 16));

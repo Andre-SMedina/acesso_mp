@@ -1,5 +1,5 @@
 import 'package:acesso_mp/pages/history_page.dart';
-import 'package:acesso_mp/pages/home_page2.dart';
+import 'package:acesso_mp/pages/login_page2.dart';
 import 'package:acesso_mp/pages/login_page.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/pages/control_locates_page.dart';
@@ -55,8 +55,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF053F63),
-                side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+                // backgroundColor: const Color(0xFF053F63),
+                // side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                 elevation: 3,
                 textStyle: const TextStyle(
                     color: Color.fromARGB(255, 255, 255, 255)))),
@@ -64,23 +64,23 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
           backgroundColor: Color.fromARGB(255, 14, 0, 167),
         ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(borderSide: BorderSide()),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
-          ),
-        ),
+        // inputDecorationTheme: const InputDecorationTheme(
+        //   border: OutlineInputBorder(borderSide: BorderSide()),
+        //   enabledBorder: OutlineInputBorder(
+        //     borderSide: BorderSide(),
+        //   ),
+        //   focusedBorder: OutlineInputBorder(
+        //     borderSide:
+        //         BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
+        //   ),
+        // ),
         textTheme: const TextTheme(
             headlineLarge:
                 TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
+        '/': (context) => LoginPage2(),
         '/home': (context) => HomePage(
               cameras: cameras,
             ),
