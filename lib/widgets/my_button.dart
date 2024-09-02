@@ -14,9 +14,13 @@ class MyButton extends StatelessWidget {
             backgroundColor: WidgetStateProperty.resolveWith<Color>(
                 (Set<WidgetState> states) {
               if (states.contains(WidgetState.hovered)) {
-                return const Color(0xFFB4B4B4);
+                return (text == 'Limpar')
+                    ? Color.fromARGB(255, 244, 41, 41)
+                    : const Color(0xFFB4B4B4);
               }
-              return const Color(0xFF053F63);
+              return (text == 'Limpar')
+                  ? const Color.fromARGB(255, 197, 0, 0)
+                  : const Color(0xFF053F63);
             })),
         onPressed: callback,
         child: Text(text, style: const TextStyle(color: Colors.white)));

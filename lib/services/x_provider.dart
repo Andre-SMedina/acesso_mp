@@ -1,3 +1,4 @@
+import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,7 @@ class XProvider with ChangeNotifier {
   MaskedTextController get cpfController2 => cpfController;
   bool get validate2 => validate;
   bool get passwd2 => passwd;
-  MyTextField get name2 => name;
+  MyHomeFormfield get name2 => name;
   Icon get passwdIcon2 => passwdIcon;
 
   void changeText() {
@@ -102,70 +103,116 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  MyTextField name = MyTextField(
-    text: 'Nome',
-    listInputFormat: const [],
+  MyHomeFormfield name = MyHomeFormfield(
+    labelText: 'Nome do visitante',
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
-      //TODO: se colocar um nome e um espaço na hora de cadastrar o nome, dá erro
       (v) => v!.split(' ').length >= 2
           ? null
           : 'O nome deve ter nome e sobrenome!',
     ],
   );
 
-  TextFormField cpfWidget() {
-    return TextFormField(
-      controller: cpfController,
-      decoration: const InputDecoration(
-        labelText: 'CPF',
-        filled: true,
-        fillColor: Colors.white,
-        helperText: '',
-      ),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(11)
+  // MyTextField name = MyTextField(
+  //   text: 'Nome',
+  //   listInputFormat: const [],
+  //   listValidator: [
+  //     Validatorless.required('Campo obrigatório!'),
+  //TODO: se colocar um nome e um espaço na hora de cadastrar o nome, dá erro
+  //     (v) => v!.split(' ').length >= 2
+  //         ? null
+  //         : 'O nome deve ter nome e sobrenome!',
+  //   ],
+  // );
+
+  Widget cpfWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'CPF',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 105, 105, 105)),
+        ),
+        TextFormField(
+          controller: cpfController,
+          decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              helperText: '',
+              border: OutlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(11)
+          ],
+          validator: (validate)
+              ? Validatorless.multiple([
+                  Validatorless.cpf('CPF inválido!'),
+                  Validatorless.required('Campo obrigatório!')
+                ])
+              : null,
+          enabled: enableField,
+        ),
       ],
-      validator: (validate)
-          ? Validatorless.multiple([
-              Validatorless.cpf('CPF inválido!'),
-              Validatorless.required('Campo obrigatório!')
-            ])
-          : null,
-      enabled: enableField,
     );
   }
 
-  MyTextField rg = MyTextField(
-    text: 'RG',
+  MyHomeFormfield rg = MyHomeFormfield(
+    labelText: 'RG',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
+  // MyTextField rg = MyTextField(
+  //   text: 'RG',
+  //   listInputFormat: [
+  //     FilteringTextInputFormatter.digitsOnly,
+  //   ],
+  //   listValidator: [Validatorless.required('Campo obrigatório!')],
+  // );
 
-  TextFormField phoneWidget() {
-    return TextFormField(
-      controller: phoneController,
-      decoration: const InputDecoration(
-        labelText: 'Telefone',
-        filled: true,
-        fillColor: Colors.white,
-        helperText: '',
-      ),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
+  Widget phoneWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Telefone',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 105, 105, 105)),
+        ),
+        TextFormField(
+          controller: phoneController,
+          decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              helperText: '',
+              border: OutlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          validator: Validatorless.required('Campo obrigatório!'),
+        ),
       ],
-      validator: Validatorless.required('Campo obrigatório!'),
     );
   }
 
-  MyTextField job = MyTextField(
-    text: 'Profissão',
+  MyHomeFormfield job = MyHomeFormfield(
+    labelText: 'Profissão',
     listValidator: [Validatorless.required('Campo obrigatório!')],
-    listInputFormat: const [],
   );
+
+  // MyTextField job = MyTextField(
+  //   text: 'Profissão',
+  //   listValidator: [Validatorless.required('Campo obrigatório!')],
+  //   listInputFormat: const [],
+  // );
 
   MyTextField email = MyTextField(
     text: 'Email',

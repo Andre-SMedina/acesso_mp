@@ -8,47 +8,60 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
   var box = Hive.box('db');
   Map profile = box.get('profile');
   return AppBar(
+      automaticallyImplyLeading: false,
+      toolbarHeight: 80,
+      backgroundColor: const Color(0xFF053F63),
       iconTheme: const IconThemeData(color: Colors.white),
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              width: 100,
-              height: 50,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/miniLogo.png'))),
-            ),
+          Container(
+            width: 150,
+            height: 100,
+            decoration: const BoxDecoration(
+                image:
+                    DecorationImage(image: AssetImage('assets/miniLogo.png'))),
           ),
-          Expanded(flex: 2, child: Text(title)),
+          Text(title),
+          Row(
+            children: [
+              const Icon(
+                Icons.account_circle,
+                size: 50,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    profile['name'],
+                    style: const TextStyle(color: Colors.white, fontSize: 17),
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_outlined),
+                      Text(
+                        profile['locations']['name'],
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 13, height: 0),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          )
         ],
       ),
-      centerTitle: true,
-      // leading: Container(
-      //   width: 100,
-      //   decoration: BoxDecoration(
-      //       image: DecorationImage(image: AssetImage('assets/logo.png'))),
-      // ),
       actions: [
         Row(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  profile['name'],
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 237, 79), fontSize: 17),
-                ),
-                Text(
-                  profile['locations']['name'],
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 15, 244, 160),
-                      fontSize: 13,
-                      height: 0),
-                )
-              ],
+            const VerticalDivider(
+              endIndent: 20,
+              indent: 20,
+              thickness: 2,
             ),
             const SizedBox(
               width: 25,

@@ -57,7 +57,7 @@ class MyDropdownState extends State<MyDropdown> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 25),
       child: TypeAheadField(
         controller: searchController,
         emptyBuilder: (context) => const Padding(
@@ -68,17 +68,21 @@ class MyDropdownState extends State<MyDropdown> {
           return TextFormField(
             controller: controller,
             focusNode: focusNode,
-            autofocus: true,
             decoration: const InputDecoration(
+                suffixIcon: Icon(
+                  Icons.search,
+                  size: 30,
+                  color: Color.fromARGB(255, 105, 105, 105),
+                ),
                 filled: true,
                 fillColor: Colors.white,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    color: Color.fromARGB(255, 105, 105, 105),
                   ),
                 ),
                 border: OutlineInputBorder(),
-                labelText: 'Pesquisar'),
+                labelText: 'Digite o nome do visitante'),
           );
         },
         itemBuilder: (context, suggestion) {

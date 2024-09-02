@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MyFormfield extends StatelessWidget {
+class MyFormfieldLogin extends StatelessWidget {
   final void Function(String) call;
   final TextEditingController controller;
   final String text;
@@ -8,7 +8,7 @@ class MyFormfield extends StatelessWidget {
   final bool passwd;
   final IconButton? iconBtn;
   final Icon? icon;
-  const MyFormfield(
+  const MyFormfieldLogin(
       {super.key,
       required this.text,
       this.iconBtn,

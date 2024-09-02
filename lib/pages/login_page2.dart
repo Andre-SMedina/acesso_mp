@@ -4,7 +4,7 @@ import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
-import 'package:acesso_mp/widgets/my_formfield.dart';
+import 'package:acesso_mp/widgets/my_formfield_login.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -155,7 +155,7 @@ class LoginPage2 extends StatelessWidget {
                       ),
                       SizedBox(
                           width: 450,
-                          child: MyFormfield(
+                          child: MyFormfieldLogin(
                             call: (String value) {},
                             erroText: 'Por favor, insira seu usuário',
                             controller: userController,
@@ -171,7 +171,7 @@ class LoginPage2 extends StatelessWidget {
                       ),
                       SizedBox(
                           width: 450,
-                          child: MyFormfield(
+                          child: MyFormfieldLogin(
                             call: (String value) {
                               _login(context);
                             },
