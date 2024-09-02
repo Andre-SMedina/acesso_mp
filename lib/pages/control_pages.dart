@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/pages/home_page2.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_list_tile_menu.dart';
@@ -56,14 +57,16 @@ class _ControlPagesState extends State<ControlPages> {
     } else {
       homePage();
       return Scaffold(
+        backgroundColor: Colors.white,
         appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.only(top: 10),
               height: double.infinity,
               width: 300,
-              color: const Color.fromARGB(255, 225, 225, 225),
+              color: StdValues.bkgGrey,
               child: Column(
                 children: [
                   MyListTile2(
@@ -89,7 +92,7 @@ class _ControlPagesState extends State<ControlPages> {
                     selectedIndex: selectedIndex,
                     onSelect: onSelect,
                     title: 'Controle de Operadores',
-                    icon: Icons.supervisor_account,
+                    icon: Icons.supervisor_account_outlined,
                     callMain: () {},
                   ),
                   MyListTile2(

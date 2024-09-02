@@ -1,3 +1,5 @@
+import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/home/my_home_fields.dart';
@@ -22,7 +24,6 @@ class _HomePage2State extends State<HomePage2> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void loadData() {
-    print('zzzz');
     var box = Hive.box('db');
     var visitor = box.get('visitor');
 
@@ -34,8 +35,8 @@ class _HomePage2State extends State<HomePage2> {
     context.read<XProvider>().loadVisitorsField(visitor);
   }
 
-  void reload() {
-    setState(() {});
+  alertCamera() {
+    ZshowDialogs.alert(context, 'A aplicação apresentou erro');
   }
 
   @override
@@ -50,13 +51,13 @@ class _HomePage2State extends State<HomePage2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('VISITANTE',
+                Text('VISITANTE',
                     style: TextStyle(
-                        color: Color(0xFF053F63),
+                        color: StdValues.bkgBlue,
                         fontSize: 20,
                         fontWeight: FontWeight.bold)),
-                const Divider(
-                  color: Color.fromARGB(255, 172, 172, 172),
+                Divider(
+                  color: StdValues.dividerGrey,
                   height: 20,
                   thickness: 2,
                 ),
@@ -82,12 +83,13 @@ class _HomePage2State extends State<HomePage2> {
             height: 10,
           ),
           MyHomeFields(
+            visitor: visitor,
             formKey: formKey,
             context: context,
             cameras: cameras,
             image: image,
             loadImage: loadImage,
-            reload: reload,
+            alertCamera: alertCamera,
           )
         ],
       ),

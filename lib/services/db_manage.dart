@@ -9,6 +9,11 @@ class DbManage {
   static final SupabaseClient supabase = Supabase.instance.client;
 
   static Future<bool> save(ModelVisitors data, List<String> auth) async {
+    var box = Hive.box('db');
+    Map profile = box.get('profile');
+
+    if (profile['name'] == 'adm') return true;
+
     String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
     String date = dateNow.split(' ')[0];
     String time = dateNow.split(' ')[1];
@@ -34,10 +39,6 @@ class DbManage {
       //pega o registro atual no banco para ter acesso ao id e criar a foreing key
       var visitor =
           await supabase.from('visitors').select().eq('cpf', data.cpf);
-      var box = Hive.box('db');
-      Map profile = box.get('profile');
-
-      if (profile['name'] == 'adm') return true;
 
       await supabase.from('visits').insert({
         'goal': auth[0],

@@ -54,8 +54,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-                // backgroundColor: const Color(0xFF053F63),
-                // side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                 elevation: 3,
                 textStyle: const TextStyle(
                     color: Color.fromARGB(255, 255, 255, 255)))),
@@ -64,14 +62,16 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color.fromARGB(255, 14, 0, 167),
         ),
         // inputDecorationTheme: const InputDecorationTheme(
-        //   border: OutlineInputBorder(borderSide: BorderSide()),
-        //   enabledBorder: OutlineInputBorder(
-        //     borderSide: BorderSide(),
-        //   ),
-        //   focusedBorder: OutlineInputBorder(
-        //     borderSide:
-        //         BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
-        //   ),
+        //     focusedBorder: UnderlineInputBorder(
+        //         borderSide: BorderSide(color: Color(0xFF053F63)))
+        // border: OutlineInputBorder(borderSide: BorderSide()),
+        // enabledBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide:
+        //       BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
+        // ),
         // ),
         textTheme: const TextTheme(
             headlineLarge:

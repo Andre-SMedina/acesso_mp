@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
 
 class MyFormfieldLogin extends StatelessWidget {
@@ -29,7 +30,7 @@ class MyFormfieldLogin extends StatelessWidget {
         helperText: '',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 116, 116, 116)),
         suffixIcon: (icon != null) ? icon : iconBtn,
-        fillColor: const Color.fromARGB(255, 234, 234, 234),
+        fillColor: StdValues.bkgFieldGrey,
         filled: true,
         border: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),

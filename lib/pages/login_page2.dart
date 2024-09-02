@@ -120,6 +120,7 @@ class LoginPage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Row(
         children: [
           SizedBox(
@@ -130,20 +131,19 @@ class LoginPage2 extends StatelessWidget {
                 return Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: 300,
-                        height: 200,
+                        width: 350,
+                        height: 163,
                         decoration: const BoxDecoration(
                             image: DecorationImage(
-                          image: AssetImage('assets/logo.png'),
-                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                          image: AssetImage('assets/logo2.png'),
                         )),
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 50,
                       ),
                       const Text('Bem vindo(a) ao Sistema AcessoMP',
                           style: TextStyle(
@@ -208,9 +208,9 @@ class LoginPage2 extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 2,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/entrada.jpg'),
+                    image: AssetImage('assets/entrada.jpeg'),
                     fit: BoxFit.cover,
-                    opacity: .75)),
+                    opacity: 1)),
           )
         ],
       ),

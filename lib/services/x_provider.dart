@@ -71,7 +71,6 @@ class XProvider with ChangeNotifier {
     phoneController.text = visitor['phone'];
     job.fieldController.text = visitor['job'];
     enableField = false;
-    rg.enableField = false;
     validate = false;
     notifyListeners();
   }
@@ -85,7 +84,6 @@ class XProvider with ChangeNotifier {
     email.fieldController.text = '';
     locateController.text = '';
     enableField = true;
-    rg.enableField = true;
     validate = true;
     var box = Hive.box('db');
     box.putAll({'visitor': '', 'image': ''});
@@ -135,26 +133,30 @@ class XProvider with ChangeNotifier {
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
         ),
-        TextFormField(
-          controller: cpfController,
-          decoration: const InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              helperText: '',
-              border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(11)
-          ],
-          validator: (validate)
-              ? Validatorless.multiple([
-                  Validatorless.cpf('CPF inválido!'),
-                  Validatorless.required('Campo obrigatório!')
-                ])
-              : null,
-          enabled: enableField,
+        SizedBox(
+          height: 65,
+          child: TextFormField(
+            controller: cpfController,
+            decoration: const InputDecoration(
+                filled: true,
+                contentPadding: EdgeInsets.only(left: 8),
+                fillColor: Colors.white,
+                helperText: '',
+                border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(11)
+            ],
+            validator: (validate)
+                ? Validatorless.multiple([
+                    Validatorless.cpf('CPF inválido!'),
+                    Validatorless.required('Campo obrigatório!')
+                  ])
+                : null,
+            enabled: enableField,
+          ),
         ),
       ],
     );
@@ -185,19 +187,23 @@ class XProvider with ChangeNotifier {
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
         ),
-        TextFormField(
-          controller: phoneController,
-          decoration: const InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              helperText: '',
-              border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          validator: Validatorless.required('Campo obrigatório!'),
+        SizedBox(
+          height: 65,
+          child: TextFormField(
+            controller: phoneController,
+            decoration: const InputDecoration(
+                filled: true,
+                contentPadding: EdgeInsets.only(left: 8),
+                fillColor: Colors.white,
+                helperText: '',
+                border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            validator: Validatorless.required('Campo obrigatório!'),
+          ),
         ),
       ],
     );

@@ -70,6 +70,8 @@ class CameraAppState extends State<CameraApp> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -83,8 +85,8 @@ class CameraAppState extends State<CameraApp> {
             const SizedBox(),
           if (capturedImage != null && controller == null)
             SizedBox(
-              height: 300,
-              width: 400,
+              height: screenHeight - 550,
+              width: screenWidth - 1500,
               child: Image.memory(
                 capturedImage!,
                 fit: BoxFit.cover,

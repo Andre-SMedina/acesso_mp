@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
 
 class MyListTile2 extends StatefulWidget {
@@ -24,7 +25,6 @@ class MyListTile2 extends StatefulWidget {
 
 class _MyListTile2State extends State<MyListTile2> {
   bool isHover = false;
-  Color? colorSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +41,15 @@ class _MyListTile2State extends State<MyListTile2> {
       },
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: (widget.selectedIndex == widget.index)
+            ? const Duration(milliseconds: 0)
+            : const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: (widget.selectedIndex == widget.index)
-              ? const Color(0xFF053F63)
+              ? StdValues.bkgBlue
               : (isHover)
-                  ? const Color.fromARGB(255, 152, 152, 152)
-                  : colorSelect,
+                  ? StdValues.hoverGrey
+                  : null,
         ),
         child: ListTile(
           onTap: () {
