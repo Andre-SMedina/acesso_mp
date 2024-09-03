@@ -10,6 +10,7 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
+            minimumSize: WidgetStateProperty.all(const Size(150, 50)),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
             backgroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -22,6 +23,7 @@ class MyButton extends StatelessWidget {
               return StdValues.btnBlue;
             })),
         onPressed: callback,
-        child: Text(text, style: const TextStyle(color: Colors.white)));
+        child: Text(text,
+            style: const TextStyle(color: Colors.white, fontSize: 16)));
   }
 }

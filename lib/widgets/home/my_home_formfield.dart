@@ -44,6 +44,7 @@ class MyHomeFormfield extends StatelessWidget {
                   helperText: '',
                   fillColor: Colors.white,
                   border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                           color: Color.fromARGB(255, 105, 105, 105)))),
             ),

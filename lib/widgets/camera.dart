@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -71,26 +72,37 @@ class CameraAppState extends State<CameraApp> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.sizeOf(context).height;
     double screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         children: [
           if (controller != null && controller!.value.isInitialized)
             SizedBox(
-              height: 250, // Definindo a altura explicitamente
-              width: 300, // Definindo a largura explicitamente
+              height: StdValues.imgHeight1, // Definindo a altura explicitamente
+              width: StdValues.imgWidth1, // Definindo a largura explicitamente
               child: CameraPreview(controller!),
             ),
           if (capturedImage == null && controller == null)
-            const Icon(
-              Icons.person_outline_outlined,
-              size: 200,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(width: 2),
+                    borderRadius: BorderRadius.circular(10)),
+                // color: Colors.amber,
+                height: StdValues.imgHeight1,
+                width: StdValues.imgWidth2,
+                child: const Icon(
+                  Icons.person_outline_outlined,
+                  size: 200,
+                ),
+              ),
             ),
           if (capturedImage != null && controller == null)
             SizedBox(
-              height: 250,
-              width: 300,
+              height: StdValues.imgHeight1,
+              width: StdValues.imgWidth2,
               child: Image.memory(
                 capturedImage!,
                 fit: BoxFit.cover,

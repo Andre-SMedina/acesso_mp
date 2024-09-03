@@ -65,7 +65,7 @@ class _HomePage2State extends State<HomePage2> {
                   height: 10,
                 ),
                 const Text(
-                  'Pesquisar por visitante',
+                  '  Pesquisar por visitante',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color.fromARGB(255, 105, 105, 105)),

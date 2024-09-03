@@ -77,11 +77,13 @@ class MyDropdownState extends State<MyDropdown> {
                 filled: true,
                 fillColor: Colors.white,
                 enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(
                     color: Color.fromARGB(255, 105, 105, 105),
                   ),
                 ),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: 'Digite o nome do visitante'),
           );
         },

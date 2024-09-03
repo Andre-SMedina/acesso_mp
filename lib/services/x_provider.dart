@@ -102,7 +102,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield name = MyHomeFormfield(
-    labelText: 'Nome do visitante',
+    labelText: '  Nome do visitante',
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
       (v) => v!.split(' ').length >= 2
@@ -128,7 +128,7 @@ class XProvider with ChangeNotifier {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'CPF',
+          '  CPF',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
@@ -143,6 +143,7 @@ class XProvider with ChangeNotifier {
                 fillColor: Colors.white,
                 helperText: '',
                 border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
             inputFormatters: [
@@ -163,7 +164,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield rg = MyHomeFormfield(
-    labelText: 'RG',
+    labelText: '  RG',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
@@ -182,7 +183,7 @@ class XProvider with ChangeNotifier {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Telefone',
+          '  Telefone',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
@@ -197,6 +198,7 @@ class XProvider with ChangeNotifier {
                 fillColor: Colors.white,
                 helperText: '',
                 border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
             inputFormatters: [
@@ -210,7 +212,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield job = MyHomeFormfield(
-    labelText: 'Profissão',
+    labelText: '  Profissão',
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
 
