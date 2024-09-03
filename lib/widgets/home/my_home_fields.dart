@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
+import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/camera.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
@@ -91,6 +92,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
     );
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
     var functions = MyHomeFunctions(
         clearFields: clearFields,
         formKey: widget.formKey,
@@ -113,160 +115,161 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
               height: 20,
               thickness: 2,
             ),
-            Row(
-              children: [
-                Form(
-                  key: widget.formKey,
-                  child: Column(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxHeight: screenHeight - 400, maxWidth: 700),
-                        child: Consumer<XProvider>(
-                          builder: (context, provider, child) {
-                            return Column(
-                              children: [
-                                const Spacer(flex: 1),
-                                provider.name,
-                                const Spacer(flex: 1),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                        width: 300,
-                                        child: provider.cpfWidget()),
-                                    SizedBox(width: 300, child: provider.rg),
-                                  ],
-                                ),
-                                const Spacer(flex: 1),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(width: 300, child: provider.job),
-                                    SizedBox(
-                                        width: 300,
-                                        child: provider.phoneWidget()),
-                                  ],
-                                ),
-                                const Spacer(flex: 1),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    MyButton(
-                                        callback: () {
-                                          functions.register();
-                                        },
-                                        text: 'Cadastrar'),
-                                    MyButton(
-                                        callback: () {
-                                          clearFields();
-                                        },
-                                        text: 'Limpar'),
-                                    MyButton(
-                                        callback: () {
-                                          functions.update();
-                                        },
-                                        text: 'Atualizar'),
-                                    MyButton(
-                                        callback: () {
-                                          ZshowDialogs.historic(
-                                              context, widget.visitor);
-                                        },
-                                        text: 'Histórico'),
-                                  ],
-                                ),
-                                const Spacer(flex: 1),
-                                MyButton(
-                                    callback: () {},
-                                    text: 'Registrar novo acesso'),
-                              ],
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const Spacer(
-                  flex: 1,
-                ),
-                Column(
-                  children: [
-                    const Text(
-                      'Foto de Identificação',
-                      style: TextStyle(
-                          fontSize: 19,
-                          color: Color.fromARGB(255, 105, 105, 105)),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        height: screenHeight - 550,
-                        width: screenWidth - 1500,
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                  blurRadius: 2,
-                                  spreadRadius: 2,
-                                  offset: Offset(0, 3),
-                                  color: Colors.grey)
-                            ],
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
-                        child: Center(
-                          child: (widget.loadImage)
-                              ? Column(
-                                  children: [
-                                    Expanded(
-                                      child: (widget.image == '')
-                                          ? const Icon(
-                                              Icons
-                                                  .image_not_supported_outlined,
-                                              size: 200,
-                                            )
-                                          : Image.memory(
-                                              base64Decode(widget.image),
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              widget.loadImage = false;
-                                            });
+            Flexible(
+              flex: 1,
+              child: Row(
+                children: [
+                  Form(
+                    key: widget.formKey,
+                    child: Column(
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight - 400,
+                            maxWidth: screenWidth - 900,
+                          ),
+                          child: Consumer<XProvider>(
+                            builder: (context, provider, child) {
+                              return Column(
+                                children: [
+                                  const Spacer(flex: 1),
+                                  provider.name,
+                                  const Spacer(flex: 1),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                          width: 300,
+                                          child: provider.cpfWidget()),
+                                      SizedBox(width: 300, child: provider.rg),
+                                    ],
+                                  ),
+                                  const Spacer(flex: 1),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(width: 300, child: provider.job),
+                                      SizedBox(
+                                          width: 300,
+                                          child: provider.phoneWidget()),
+                                    ],
+                                  ),
+                                  const Spacer(flex: 1),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      MyButton(
+                                          callback: () {
+                                            functions.register();
                                           },
-                                          child: const Text('Capturar')),
-                                    )
-                                  ],
+                                          text: 'Cadastrar'),
+                                      MyButton(
+                                          callback: () {
+                                            clearFields();
+                                          },
+                                          text: 'Limpar'),
+                                      MyButton(
+                                          callback: () {
+                                            functions.update();
+                                          },
+                                          text: 'Atualizar'),
+                                      MyButton(
+                                          callback: () {
+                                            ZshowDialogs.historic(
+                                                context, widget.visitor);
+                                          },
+                                          text: 'Histórico'),
+                                    ],
+                                  ),
+                                  const Spacer(flex: 1),
+                                  MyButton(
+                                      callback: () {},
+                                      text: 'Registrar novo acesso'),
+                                ],
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const Spacer(
+                    flex: 3,
+                  ),
+                  Flexible(
+                    flex: 5,
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Foto de Identificação',
+                          style: TextStyle(
+                              fontSize: 19,
+                              color: Color.fromARGB(255, 105, 105, 105)),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: (widget.loadImage)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                    height: 250,
+                                    width: 300,
+                                    child: Column(
+                                      children: [
+                                        (widget.image == '')
+                                            ? const Icon(
+                                                Icons.person_outline_outlined,
+                                                size: 200,
+                                              )
+                                            : Image.memory(
+                                                base64Decode(widget.image),
+                                                fit: BoxFit.cover,
+                                              ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: MyButton(
+                                              callback: () {
+                                                setState(() {
+                                                  widget.loadImage = false;
+                                                });
+                                              },
+                                              text: 'Alterar Foto'),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 )
                               : (widget.cameras.isEmpty)
                                   ? const Text('Câmera não encontrada!')
-                                  : camera,
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: SizedBox(
+                                        height: 300,
+                                        width: 300,
+                                        child: CameraApp(
+                                          alert: widget.alertCamera,
+                                          cameras: cameras,
+                                        ),
+                                      ),
+                                    ),
                         ),
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    MyButton(callback: () {}, text: 'Tirar Foto'),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-                const Spacer(
-                  flex: 1,
-                )
-              ],
+                  ),
+                  const Spacer(
+                    flex: 1,
+                  )
+                ],
+              ),
             ),
           ],
         ));

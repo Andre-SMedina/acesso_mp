@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:hive/hive.dart';
@@ -77,16 +78,19 @@ class CameraAppState extends State<CameraApp> {
         children: [
           if (controller != null && controller!.value.isInitialized)
             SizedBox(
-              height: 300, // Definindo a altura explicitamente
-              width: 400, // Definindo a largura explicitamente
+              height: 250, // Definindo a altura explicitamente
+              width: 300, // Definindo a largura explicitamente
               child: CameraPreview(controller!),
-            )
-          else
-            const SizedBox(),
+            ),
+          if (capturedImage == null && controller == null)
+            const Icon(
+              Icons.person_outline_outlined,
+              size: 200,
+            ),
           if (capturedImage != null && controller == null)
             SizedBox(
-              height: screenHeight - 550,
-              width: screenWidth - 1500,
+              height: 250,
+              width: 300,
               child: Image.memory(
                 capturedImage!,
                 fit: BoxFit.cover,
@@ -94,16 +98,15 @@ class CameraAppState extends State<CameraApp> {
             ),
           Padding(
             padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
-            child: ElevatedButton(
-              onPressed: () {
+            child: MyButton(
+              callback: () {
                 if (controller == null) {
                   initializeCamera();
                 } else {
                   captureImage(context);
                 }
               },
-              child:
-                  Text(controller == null ? 'Ligar Câmera' : 'Capturar Imagem'),
+              text: controller == null ? 'Ligar Câmera' : 'Capturar Imagem',
             ),
           ),
         ],

@@ -25,6 +25,11 @@ class Camera2 {
   }
 
   CameraPreview cameraPreview() {
+    initializeCamera();
     return CameraPreview(controller!);
+  }
+
+  int numb() {
+    return 1;
   }
 }

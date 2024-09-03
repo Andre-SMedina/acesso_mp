@@ -22,7 +22,7 @@ class MyHomeContainer extends StatelessWidget {
       padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
       margin: const EdgeInsets.only(left: 12, right: 20),
       width: screenWidth,
-      height: difHeight != null ? screenHeight - difHeight! : null,
+      height: difHeight != null ? screenHeight : null,
       child: child,
     );
   }
