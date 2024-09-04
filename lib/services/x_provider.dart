@@ -103,7 +103,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield name = MyHomeFormfield(
-    labelText: '  Nome do visitante',
+    labelTitle: '  Nome do visitante',
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
       (v) => v!.split(' ').length >= 2
@@ -168,7 +168,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield rg = MyHomeFormfield(
-    labelText: '  RG',
+    labelTitle: '  RG',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
     ],
@@ -219,7 +219,7 @@ class XProvider with ChangeNotifier {
   }
 
   MyHomeFormfield job = MyHomeFormfield(
-    labelText: '  Profissão',
+    labelTitle: '  Profissão',
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
 

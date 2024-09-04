@@ -2,9 +2,11 @@ import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
+  const MyButton(
+      {super.key, required this.callback, required this.text, this.icon});
   final void Function() callback;
   final String text;
-  const MyButton({super.key, required this.callback, required this.text});
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,23 @@ class MyButton extends StatelessWidget {
               return StdValues.btnBlue;
             })),
         onPressed: callback,
-        child: Text(text,
-            style: const TextStyle(color: Colors.white, fontSize: 16)));
+        child: (icon != null)
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    icon,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(text,
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 16)),
+                ],
+              )
+            : Text(text,
+                style: const TextStyle(color: Colors.white, fontSize: 16)));
   }
 }

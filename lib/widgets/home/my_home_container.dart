@@ -8,8 +8,8 @@ class MyHomeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width - 340;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.sizeOf(context).width - 340;
+    double screenHeight = MediaQuery.sizeOf(context).height;
 
     return Container(
       decoration: BoxDecoration(boxShadow: [

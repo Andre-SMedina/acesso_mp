@@ -7,15 +7,19 @@ import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
 class MyHomeFormfield extends StatelessWidget {
-  final String labelText;
-  final List<TextInputFormatter>? listInputFormat;
-  final List<FormFieldValidator<String>> listValidator;
   MyHomeFormfield({
     super.key,
-    required this.labelText,
+    required this.labelTitle,
     this.listInputFormat,
     required this.listValidator,
+    this.icon,
+    this.labelText,
   });
+  final String labelTitle;
+  final String? labelText;
+  final Icon? icon;
+  final List<TextInputFormatter>? listInputFormat;
+  final List<FormFieldValidator<String>> listValidator;
 
   TextEditingController fieldController = TextEditingController();
   bool enableField = true;
@@ -27,7 +31,7 @@ class MyHomeFormfield extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            labelText,
+            labelTitle,
             style: TextStyle(
                 fontWeight: FontWeight.bold, color: StdValues.labelGrey),
           ),
@@ -38,8 +42,10 @@ class MyHomeFormfield extends StatelessWidget {
               inputFormatters: listInputFormat,
               validator: Validatorless.multiple(listValidator),
               decoration: InputDecoration(
+                  hintText: labelText,
+                  prefixIcon: icon,
                   contentPadding: const EdgeInsets.only(left: 8),
-                  enabled: (labelText == 'RG') ? provider.enableField : true,
+                  enabled: (labelTitle == 'RG') ? provider.enableField : true,
                   filled: true,
                   helperText: '',
                   fillColor: Colors.white,

@@ -80,7 +80,10 @@ class CameraAppState extends State<CameraApp> {
             ImageBorder(
                 height: StdValues.imgHeight1,
                 width: StdValues.imgWidth1,
-                widget: CameraPreview(controller!)),
+                widget: SizedBox(
+                    height: StdValues.imgHeight1,
+                    width: StdValues.imgWidth1,
+                    child: CameraPreview(controller!))),
           if (capturedImage == null && controller == null)
             ImageBorder(
               height: StdValues.imgHeight1,
@@ -88,7 +91,7 @@ class CameraAppState extends State<CameraApp> {
               widget: Container(
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                  image: AssetImage('assets/noImage.png'),
+                  image: AssetImage('assets/cam.png'),
                 )),
               ),
             ),
@@ -101,9 +104,11 @@ class CameraAppState extends State<CameraApp> {
                 fit: BoxFit.cover,
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: (controller == null) ? 180 : 210,
             child: MyButton(
+              icon: Icons.camera_alt_outlined,
               callback: () {
                 if (controller == null) {
                   initializeCamera();

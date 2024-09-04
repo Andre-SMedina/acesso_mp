@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
 
 class ImageBorder extends StatelessWidget {
@@ -15,13 +16,14 @@ class ImageBorder extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 2),
-              borderRadius: BorderRadius.circular(10)),
-          height: height,
-          width: width,
-          child: widget),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(width: 1, color: StdValues.borderFieldGrey),
+            borderRadius: BorderRadius.circular(40)),
+        height: height,
+        width: width,
+        child: widget,
+      ),
     );
   }
 }

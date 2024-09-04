@@ -3,6 +3,7 @@ import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/home/my_home_fields.dart';
+import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +44,6 @@ class _HomePage2State extends State<HomePage2> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 10,
-        ),
         MyHomeContainer(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,11 +53,7 @@ class _HomePage2State extends State<HomePage2> {
                       color: StdValues.bkgBlue,
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
-              Divider(
-                color: StdValues.dividerGrey,
-                height: 20,
-                thickness: 2,
-              ),
+              const MyDivider(),
               const SizedBox(
                 height: 10,
               ),

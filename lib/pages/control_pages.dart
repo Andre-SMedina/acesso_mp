@@ -1,4 +1,8 @@
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/pages/control_locates2.dart';
+import 'package:acesso_mp/pages/control_operators2.dart';
+import 'package:acesso_mp/pages/history_page.dart';
+import 'package:acesso_mp/pages/history_page2.dart';
 import 'package:acesso_mp/pages/home_page2.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_list_tile_menu.dart';
@@ -16,7 +20,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget? page;
+  Widget loadPage = const HistoryPage2();
 
   void onSelect(int index) {
     setState(() {
@@ -24,8 +28,8 @@ class _ControlPagesState extends State<ControlPages> {
     });
   }
 
-  void homePage() {
-    page = const HomePage2();
+  void changePage(Widget page) {
+    loadPage = page;
   }
 
   @override
@@ -55,7 +59,7 @@ class _ControlPagesState extends State<ControlPages> {
         ),
       );
     } else {
-      homePage();
+      // changePage(const HomePage2());
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
@@ -76,7 +80,9 @@ class _ControlPagesState extends State<ControlPages> {
                     title: 'Painel Principal',
                     icon: Icons.home_outlined,
                     callMain: () {
-                      homePage();
+                      setState(() {
+                        changePage(const HomePage2());
+                      });
                     },
                   ),
                   MyListTile2(
@@ -85,7 +91,11 @@ class _ControlPagesState extends State<ControlPages> {
                     onSelect: onSelect,
                     title: 'Histórico de Visita',
                     icon: Icons.access_time,
-                    callMain: () {},
+                    callMain: () {
+                      setState(() {
+                        loadPage = const HistoryPage2();
+                      });
+                    },
                   ),
                   MyListTile2(
                     index: 2,
@@ -93,7 +103,11 @@ class _ControlPagesState extends State<ControlPages> {
                     onSelect: onSelect,
                     title: 'Controle de Operadores',
                     icon: Icons.supervisor_account_outlined,
-                    callMain: () {},
+                    callMain: () {
+                      setState(() {
+                        loadPage = const ControlOperators2();
+                      });
+                    },
                   ),
                   MyListTile2(
                     index: 3,
@@ -101,12 +115,18 @@ class _ControlPagesState extends State<ControlPages> {
                     onSelect: onSelect,
                     title: 'Controle de Lotação',
                     icon: Icons.maps_home_work_outlined,
-                    callMain: () {},
+                    callMain: () {
+                      setState(() {
+                        loadPage = const ControlLocates2();
+                      });
+                    },
                   ),
                 ],
               ),
             ),
-            page!
+            SingleChildScrollView(
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 25), child: loadPage))
           ],
         ),
       );

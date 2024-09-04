@@ -80,9 +80,10 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       );
     } else {
+      return Text('Histórico');
       return Scaffold(
-        drawer: const MyDrawer(),
-        appBar: myAppbar(context, 'Histórico de Visitas'),
+        // drawer: const MyDrawer(),
+        // appBar: myAppbar(context, 'Histórico de Visitas'),
         body: Container(
           height: double.infinity,
           width: double.infinity,
