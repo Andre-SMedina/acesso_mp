@@ -41,58 +41,56 @@ class _HomePage2State extends State<HomePage2> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          MyHomeContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('VISITANTE',
-                    style: TextStyle(
-                        color: StdValues.bkgBlue,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold)),
-                Divider(
-                  color: StdValues.dividerGrey,
-                  height: 20,
-                  thickness: 2,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  '  Pesquisar por visitante',
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        MyHomeContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('VISITANTE',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 105, 105, 105)),
-                ),
-                SizedBox(
-                  width: 500,
-                  child: MyDropdown(loadData: () {
-                    loadData();
-                  }),
-                )
-              ],
-            ),
+                      color: StdValues.bkgBlue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)),
+              Divider(
+                color: StdValues.dividerGrey,
+                height: 20,
+                thickness: 2,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                '  Pesquisar por visitante',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 105, 105, 105)),
+              ),
+              SizedBox(
+                width: 500,
+                child: MyDropdown(loadData: () {
+                  loadData();
+                }),
+              )
+            ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          MyHomeFields(
-            visitor: visitor,
-            formKey: formKey,
-            context: context,
-            cameras: cameras,
-            image: image,
-            loadImage: loadImage,
-            alertCamera: alertCamera,
-          )
-        ],
-      ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        MyHomeFields(
+          visitor: visitor,
+          formKey: formKey,
+          context: context,
+          cameras: cameras,
+          image: image,
+          loadImage: loadImage,
+          alertCamera: alertCamera,
+        )
+      ],
     );
   }
 }

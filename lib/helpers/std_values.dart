@@ -8,6 +8,9 @@ class StdValues {
   static Color dividerGrey = const Color(0xFFB5B5B5);
   static Color hoverGrey = const Color(0xFFB4B4B4);
   static Color bkgFieldGrey = const Color(0xFFF5F5F5);
+  static Color borderFieldGrey = const Color.fromARGB(255, 105, 105, 105);
+  static Color labelGrey = const Color.fromARGB(255, 105, 105, 105);
+  static Color shadowGrey = const Color.fromARGB(255, 178, 178, 178);
   //Sizes
   static double imgHeight1 = 400;
   static double imgHeight2 = 460;

@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
@@ -68,21 +69,24 @@ class MyDropdownState extends State<MyDropdown> {
           return TextFormField(
             controller: controller,
             focusNode: focusNode,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
                 suffixIcon: Icon(
                   Icons.search,
                   size: 30,
-                  color: Color.fromARGB(255, 105, 105, 105),
+                  color: StdValues.labelGrey,
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: StdValues.borderFieldGrey)),
+                enabledBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(
                     color: Color.fromARGB(255, 105, 105, 105),
                   ),
                 ),
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: 'Digite o nome do visitante'),
           );

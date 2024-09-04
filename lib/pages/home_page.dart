@@ -10,7 +10,7 @@ import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
 import 'package:acesso_mp/services/db_visits.dart';
-import 'package:acesso_mp/widgets/camera.dart';
+import 'package:acesso_mp/widgets/home/camera.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';

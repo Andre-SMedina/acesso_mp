@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
@@ -137,12 +138,15 @@ class XProvider with ChangeNotifier {
           height: 65,
           child: TextFormField(
             controller: cpfController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
                 filled: true,
-                contentPadding: EdgeInsets.only(left: 8),
+                contentPadding: const EdgeInsets.only(left: 8),
                 fillColor: Colors.white,
                 helperText: '',
-                border: OutlineInputBorder(
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: StdValues.borderFieldGrey)),
+                border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
@@ -192,12 +196,15 @@ class XProvider with ChangeNotifier {
           height: 65,
           child: TextFormField(
             controller: phoneController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
                 filled: true,
-                contentPadding: EdgeInsets.only(left: 8),
+                contentPadding: const EdgeInsets.only(left: 8),
                 fillColor: Colors.white,
                 helperText: '',
-                border: OutlineInputBorder(
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: StdValues.borderFieldGrey)),
+                border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),

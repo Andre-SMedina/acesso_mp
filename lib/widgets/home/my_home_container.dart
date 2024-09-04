@@ -12,12 +12,12 @@ class MyHomeContainer extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      decoration: BoxDecoration(boxShadow: const [
+      decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-            color: Color.fromARGB(255, 178, 178, 178),
+            color: StdValues.shadowGrey,
             spreadRadius: 1,
             blurRadius: 2,
-            offset: Offset(0, 5))
+            offset: const Offset(0, 5))
       ], color: StdValues.bkgGrey, borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
       margin: const EdgeInsets.only(left: 12, right: 20),

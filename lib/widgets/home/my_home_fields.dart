@@ -4,7 +4,8 @@ import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
-import 'package:acesso_mp/widgets/camera.dart';
+import 'package:acesso_mp/widgets/home/camera.dart';
+import 'package:acesso_mp/widgets/home/image_border.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:acesso_mp/widgets/home/my_home_functions.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
@@ -86,8 +87,6 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
     var functions = MyHomeFunctions(
         clearFields: clearFields,
         formKey: widget.formKey,
@@ -97,193 +96,198 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
 
     return MyHomeContainer(
         difHeight: 300,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('INFORMAÇÕES DO VISITANTE',
-                style: TextStyle(
-                    color: StdValues.bkgBlue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Divider(
-              color: StdValues.dividerGrey,
-              height: 20,
-              thickness: 2,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Form(
-                  key: widget.formKey,
-                  child: Column(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: screenHeight - 400,
-                          maxWidth: 700,
-                        ),
-                        child: Consumer<XProvider>(
-                          builder: (context, provider, child) {
-                            return Column(
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                provider.name,
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  children: [
-                                    Flexible(child: provider.cpfWidget()),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Flexible(child: provider.rg),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Flexible(child: provider.phoneWidget()),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(child: provider.job),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    MyButton(
-                                        callback: () {
-                                          clearFields();
-                                        },
-                                        text: 'Limpar'),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    MyButton(
-                                        callback: () {
-                                          functions.update();
-                                        },
-                                        text: 'Atualizar'),
-                                  ],
-                                ),
-                                const Divider(
-                                  height: 150,
-                                  thickness: 2,
-                                ),
-                                const Spacer(flex: 1),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    MyButton(
-                                        callback: () {
-                                          functions.register();
-                                        },
-                                        text: 'Cadastrar'),
-                                    MyButton(
-                                        callback: () {},
-                                        text: 'Registrar novo acesso'),
-                                    MyButton(
-                                        callback: () {
-                                          ZshowDialogs.historic(
-                                              context, widget.visitor);
-                                        },
-                                        text: 'Histórico'),
-                                  ],
-                                ),
-                                const Spacer(flex: 10),
-                              ],
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const Spacer(
-                  flex: 1,
-                ),
-                Column(
-                  children: [
-                    const Text(
-                      'Foto de Identificação',
-                      style: TextStyle(
-                          fontSize: 19,
-                          color: Color.fromARGB(255, 105, 105, 105)),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    (widget.loadImage)
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: SizedBox(
-                              height: StdValues.imgHeight2,
-                              width: StdValues.imgWidth1,
-                              child: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('INFORMAÇÕES DO VISITANTE',
+                  style: TextStyle(
+                      color: StdValues.bkgBlue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)),
+              Divider(
+                color: StdValues.dividerGrey,
+                height: 20,
+                thickness: 2,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Form(
+                    key: widget.formKey,
+                    child: Column(
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 550,
+                            maxWidth: 700,
+                          ),
+                          child: Consumer<XProvider>(
+                            builder: (context, provider, child) {
+                              return Column(
                                 children: [
-                                  (widget.image == '')
-                                      ? SizedBox(
-                                          height: StdValues.imgHeight1,
-                                          width: StdValues.imgWidth1,
-                                          child: const Icon(
-                                            Icons.person_outline_outlined,
-                                            size: 200,
-                                          ),
-                                        )
-                                      : SizedBox(
-                                          height: StdValues.imgHeight1,
-                                          width: StdValues.imgWidth1,
-                                          child: Image.memory(
-                                            base64Decode(widget.image),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: MyButton(
-                                        callback: () {
-                                          setState(() {
-                                            widget.loadImage = false;
-                                          });
-                                        },
-                                        text: 'Alterar Foto'),
-                                  )
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  provider.name,
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Flexible(child: provider.cpfWidget()),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(child: provider.rg),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(child: provider.phoneWidget()),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(child: provider.job),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      MyButton(
+                                          callback: () {
+                                            clearFields();
+                                          },
+                                          text: 'Limpar'),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      MyButton(
+                                          callback: () {
+                                            functions.update();
+                                          },
+                                          text: 'Atualizar'),
+                                    ],
+                                  ),
+                                  const Divider(
+                                    height: 150,
+                                    thickness: 2,
+                                  ),
+                                  const Spacer(flex: 1),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      MyButton(
+                                          callback: () {
+                                            functions.register();
+                                          },
+                                          text: 'Cadastrar'),
+                                      MyButton(
+                                          callback: () {},
+                                          text: 'Registrar novo acesso'),
+                                      MyButton(
+                                          callback: () {
+                                            ZshowDialogs.historic(
+                                                context, widget.visitor);
+                                          },
+                                          text: 'Histórico'),
+                                    ],
+                                  ),
+                                  const Spacer(flex: 10),
                                 ],
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  Column(
+                    children: [
+                      const Text(
+                        'Foto de Identificação',
+                        style: TextStyle(
+                            fontSize: 19,
+                            color: Color.fromARGB(255, 105, 105, 105)),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      (widget.loadImage)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                height: StdValues.imgHeight2,
+                                width: StdValues.imgWidth1,
+                                child: Column(
+                                  children: [
+                                    (widget.image == '')
+                                        ? ImageBorder(
+                                            height: StdValues.imgHeight1,
+                                            width: StdValues.imgWidth1,
+                                            widget: Container(
+                                              decoration: const BoxDecoration(
+                                                  image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/noImage.png'),
+                                              )),
+                                            ),
+                                          )
+                                        : ImageBorder(
+                                            height: StdValues.imgHeight1,
+                                            width: StdValues.imgWidth1,
+                                            widget: Image.memory(
+                                              base64Decode(widget.image),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: MyButton(
+                                          callback: () {
+                                            setState(() {
+                                              widget.loadImage = false;
+                                            });
+                                          },
+                                          text: 'Alterar Foto'),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        : (widget.cameras.isEmpty)
-                            ? const Text('Câmera não encontrada!')
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: SizedBox(
-                                  height: StdValues.imgHeight2,
-                                  width: StdValues.imgWidth1,
-                                  child: CameraApp(
-                                    alert: widget.alertCamera,
-                                    cameras: cameras,
+                            )
+                          : (widget.cameras.isEmpty)
+                              ? const Text('Câmera não encontrada!')
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                    height: StdValues.imgHeight2,
+                                    width: StdValues.imgWidth1,
+                                    child: CameraApp(
+                                      alert: widget.alertCamera,
+                                      cameras: cameras,
+                                    ),
                                   ),
                                 ),
-                              ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-                const Spacer(
-                  flex: 1,
-                )
-              ],
-            ),
-          ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                  const Spacer(
+                    flex: 1,
+                  )
+                ],
+              ),
+            ],
+          ),
         ));
   }
 }

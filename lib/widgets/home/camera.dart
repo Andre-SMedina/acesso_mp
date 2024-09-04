@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/widgets/home/image_border.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -72,38 +73,30 @@ class CameraAppState extends State<CameraApp> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.sizeOf(context).height;
-    double screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         children: [
           if (controller != null && controller!.value.isInitialized)
-            SizedBox(
-              height: StdValues.imgHeight1, // Definindo a altura explicitamente
-              width: StdValues.imgWidth1, // Definindo a largura explicitamente
-              child: CameraPreview(controller!),
-            ),
-          if (capturedImage == null && controller == null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(width: 2),
-                    borderRadius: BorderRadius.circular(10)),
-                // color: Colors.amber,
+            ImageBorder(
                 height: StdValues.imgHeight1,
-                width: StdValues.imgWidth2,
-                child: const Icon(
-                  Icons.person_outline_outlined,
-                  size: 200,
-                ),
+                width: StdValues.imgWidth1,
+                widget: CameraPreview(controller!)),
+          if (capturedImage == null && controller == null)
+            ImageBorder(
+              height: StdValues.imgHeight1,
+              width: StdValues.imgWidth2,
+              widget: Container(
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage('assets/noImage.png'),
+                )),
               ),
             ),
           if (capturedImage != null && controller == null)
-            SizedBox(
+            ImageBorder(
               height: StdValues.imgHeight1,
               width: StdValues.imgWidth2,
-              child: Image.memory(
+              widget: Image.memory(
                 capturedImage!,
                 fit: BoxFit.cover,
               ),
