@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
   const MyButton(
-      {super.key, required this.callback, required this.text, this.icon});
+      {super.key,
+      required this.callback,
+      required this.text,
+      this.icon,
+      this.btnWidth});
   final void Function() callback;
   final String text;
   final IconData? icon;
+  final double? btnWidth;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            minimumSize: WidgetStateProperty.all(const Size(150, 50)),
+            minimumSize: WidgetStateProperty.all(
+                Size((btnWidth == null) ? 150 : btnWidth!, 50)),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
             backgroundColor: WidgetStateProperty.resolveWith<Color>(

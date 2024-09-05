@@ -10,6 +10,7 @@ class StdValues {
   static Color bkgFieldGrey = const Color(0xFFF5F5F5);
   static Color borderFieldGrey = const Color.fromARGB(255, 105, 105, 105);
   static Color labelGrey = const Color.fromARGB(255, 105, 105, 105);
+  static Color textGrey = const Color(0xFF7D7D7D);
   static Color shadowGrey = const Color.fromARGB(255, 178, 178, 178);
   //Sizes
   static double imgHeight1 = 400;

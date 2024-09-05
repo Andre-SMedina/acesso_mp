@@ -53,7 +53,7 @@ class _HistoryPageState extends State<HistoryPage> {
     var visits = [];
     if (locationId == 0) {
       locationId = profile['locations']['id'];
-    } else {}
+    }
 
     if (Supabase.instance.client.auth.currentUser == null) {
       return Scaffold(
@@ -80,7 +80,6 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       );
     } else {
-      return Text('Histórico');
       return Scaffold(
         // drawer: const MyDrawer(),
         // appBar: myAppbar(context, 'Histórico de Visitas'),

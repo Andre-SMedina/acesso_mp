@@ -12,12 +12,14 @@ class MyHomeFormfield extends StatelessWidget {
     required this.labelTitle,
     this.listInputFormat,
     required this.listValidator,
-    this.icon,
+    this.prefixIcon,
     this.labelText,
+    this.sufixIcon,
   });
   final String labelTitle;
   final String? labelText;
-  final Icon? icon;
+  final Icon? prefixIcon;
+  final Icon? sufixIcon;
   final List<TextInputFormatter>? listInputFormat;
   final List<FormFieldValidator<String>> listValidator;
 
@@ -35,6 +37,9 @@ class MyHomeFormfield extends StatelessWidget {
             style: TextStyle(
                 fontWeight: FontWeight.bold, color: StdValues.labelGrey),
           ),
+          const SizedBox(
+            height: 6,
+          ),
           SizedBox(
             height: 65,
             child: TextFormField(
@@ -43,7 +48,8 @@ class MyHomeFormfield extends StatelessWidget {
               validator: Validatorless.multiple(listValidator),
               decoration: InputDecoration(
                   hintText: labelText,
-                  prefixIcon: icon,
+                  prefixIcon: prefixIcon,
+                  suffixIcon: sufixIcon,
                   contentPadding: const EdgeInsets.only(left: 8),
                   enabled: (labelTitle == 'RG') ? provider.enableField : true,
                   filled: true,

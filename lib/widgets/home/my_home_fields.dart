@@ -274,7 +274,12 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                               ),
                             )
                           : (widget.cameras.isEmpty)
-                              ? const Text('Câmera não encontrada!')
+                              ? ImageBorder(
+                                  height: StdValues.imgHeight1,
+                                  width: StdValues.imgWidth1,
+                                  widget: const Center(
+                                      child: Text('Câmera não encontrada!',
+                                          style: TextStyle(fontSize: 20))))
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: SizedBox(
