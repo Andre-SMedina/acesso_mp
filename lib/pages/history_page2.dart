@@ -6,6 +6,7 @@ import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
 
 class HistoryPage2 extends StatefulWidget {
@@ -55,7 +56,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
   }
 
   Widget tableText(String text,
-      {double? size, bool? bold = false, bool? grey = false}) {
+      {double? size, bool? bold = false, bool color = true}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Text(text,
@@ -63,7 +64,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
           style: TextStyle(
               fontWeight: bold! ? FontWeight.bold : FontWeight.normal,
               fontSize: (size != null) ? size : 16,
-              color: (grey!) ? StdValues.textGrey : Colors.black)),
+              color: (color) ? Colors.black : Colors.white)),
     );
   }
 
@@ -72,15 +73,30 @@ class _HistoryPage2State extends State<HistoryPage2> {
       30, // Substitua com o tamanho da sua lista de dados
       (index) => TableRow(
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
           color: index % 2 == 0 ? StdValues.bkgFieldGrey : Colors.white,
         ),
         children: [
-          tableText('Maria de Jesus Carvalho'),
-          tableText('Pedro Alvarre Cabal'),
-          tableText('22/07/2024'),
-          tableText('22:50'),
-          tableText('Ana Beatri Melo de Sousa '),
-          tableText('Ir na 12prm falar com o José'),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('Maria de Jesus Carvalho')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('Pedro Alvarre Cabal')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('22/07/2024')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('22:50')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('Ana Beatri Melo de Sousa ')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText(
+                'Ir na 12prm falar com o José aldjihalk jdhal kdal dkhja',
+              )),
         ],
       ),
     );
@@ -89,10 +105,20 @@ class _HistoryPage2State extends State<HistoryPage2> {
   @override
   Widget build(BuildContext context) {
     locationsName = MyFunctons.getHive('locations', names: true);
+    MyHomeFormfield dateField = MyHomeFormfield(
+        handleTap: () => selectDate(context),
+        prefixIcon: Icon(
+          Icons.calendar_month,
+          color: StdValues.labelGrey,
+        ),
+        labelTitle: '  Data',
+        labelText: '  Selecione uma Data',
+        listValidator: const []);
     var visits = [];
     if (locationId == 0) {
       locationId = profile['locations']['id'];
     }
+
     return MyHomeContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,29 +136,88 @@ class _HistoryPage2State extends State<HistoryPage2> {
             children: [
               Flexible(
                 flex: 2,
-                child: MyHomeFormfield(
-                    sufixIcon: Icon(
-                      Icons.search,
-                      color: StdValues.labelGrey,
-                      size: 30,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '  Visitas de Hoje',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: StdValues.labelGrey),
                     ),
-                    labelText: '  Selecione uma Cidade',
-                    labelTitle: '  Visitas de Hoje',
-                    listValidator: const []),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    TypeAheadField(
+                        constraints: const BoxConstraints(maxHeight: 150),
+                        controller: dropController,
+                        emptyBuilder: (context) => const Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Text('Nenhum resultado encontrado'),
+                            ),
+                        builder: (context, controller, focusNode) {
+                          return SizedBox(
+                            height: 42,
+                            child: TextFormField(
+                              controller: controller,
+                              focusNode: focusNode,
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(
+                                  Icons.search,
+                                  color: StdValues.textGrey,
+                                  size: 35,
+                                ),
+                                hintText: 'Selecione uma Cidade',
+                                fillColor: Colors.white,
+                                filled: true,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: StdValues.borderFieldGrey)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: StdValues.borderFieldGrey,
+                                  ),
+                                ),
+                                border: const OutlineInputBorder(),
+                              ),
+                            ),
+                          );
+                        },
+                        itemBuilder: (context, suggestion) {
+                          return ListTile(
+                            tileColor: Colors.white,
+                            mouseCursor: MouseCursor.defer,
+                            title: Text(suggestion),
+                          );
+                        },
+                        suggestionsCallback: (search) {
+                          if (search.isEmpty) locationsName;
+                          List<String> filter = [];
+
+                          for (var i in locationsName) {
+                            if (i
+                                .toLowerCase()
+                                .contains(search.toLowerCase())) {
+                              filter.add(i);
+                            }
+                          }
+                          return filter;
+                        },
+                        onSelected: (suggestion) {
+                          dropController.text = suggestion;
+                        }),
+                    const SizedBox(
+                      height: 23,
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 width: 50,
               ),
-              Flexible(
-                  flex: 1,
-                  child: MyHomeFormfield(
-                      prefixIcon: Icon(
-                        Icons.calendar_month,
-                        color: StdValues.labelGrey,
-                      ),
-                      labelTitle: '  Data',
-                      labelText: '  Selecione uma Data',
-                      listValidator: const [])),
+              Flexible(flex: 1, child: dateField),
               const SizedBox(
                 width: 50,
               ),
@@ -164,15 +249,22 @@ class _HistoryPage2State extends State<HistoryPage2> {
                     3: FixedColumnWidth(80),
                   },
                   children: [
-                    TableRow(children: [
-                      tableText('Operador', grey: true, bold: true, size: 18),
-                      tableText('Visitante', grey: true, bold: true, size: 18),
-                      tableText('Data', grey: true, bold: true, size: 18),
-                      tableText('Hora', grey: true, bold: true, size: 18),
-                      tableText('Autorizado por',
-                          grey: true, bold: true, size: 18),
-                      tableText('Finalidade', grey: true, bold: true, size: 18),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(
+                            color: StdValues.bkgBlue,
+                            borderRadius: BorderRadius.circular(6)),
+                        children: [
+                          tableText('Operador',
+                              color: false, bold: true, size: 18),
+                          tableText('Visitante',
+                              color: false, bold: true, size: 18),
+                          tableText('Data', color: false, bold: true, size: 18),
+                          tableText('Hora', color: false, bold: true, size: 18),
+                          tableText('Autorizado por',
+                              color: false, bold: true, size: 18),
+                          tableText('Finalidade',
+                              color: false, bold: true, size: 18),
+                        ]),
                     ...buildTableRows()
                   ],
                 ),

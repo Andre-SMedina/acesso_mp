@@ -1,7 +1,6 @@
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/pages/control_locates2.dart';
 import 'package:acesso_mp/pages/control_operators2.dart';
-import 'package:acesso_mp/pages/history_page.dart';
 import 'package:acesso_mp/pages/history_page2.dart';
 import 'package:acesso_mp/pages/home_page2.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';

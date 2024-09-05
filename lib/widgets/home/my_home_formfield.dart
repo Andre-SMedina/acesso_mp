@@ -15,11 +15,13 @@ class MyHomeFormfield extends StatelessWidget {
     this.prefixIcon,
     this.labelText,
     this.sufixIcon,
+    this.handleTap,
   });
   final String labelTitle;
   final String? labelText;
   final Icon? prefixIcon;
   final Icon? sufixIcon;
+  final Function()? handleTap;
   final List<TextInputFormatter>? listInputFormat;
   final List<FormFieldValidator<String>> listValidator;
 
@@ -43,6 +45,7 @@ class MyHomeFormfield extends StatelessWidget {
           SizedBox(
             height: 65,
             child: TextFormField(
+              onTap: handleTap,
               controller: fieldController,
               inputFormatters: listInputFormat,
               validator: Validatorless.multiple(listValidator),
