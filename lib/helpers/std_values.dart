@@ -1,6 +1,10 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class StdValues {
+  static double Function(BuildContext) screenWidth =
+      (BuildContext context) => MediaQuery.sizeOf(context).width;
   //Colors
   static Color bkgBlue = const Color(0xFF004A7C);
   static Color btnBlue = const Color(0xFF053F63);

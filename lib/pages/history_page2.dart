@@ -6,6 +6,7 @@ import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
 
@@ -26,8 +27,8 @@ class _HistoryPage2State extends State<HistoryPage2> {
   int locationId = 0;
 
   TextEditingController dropController = TextEditingController();
-
-  TextEditingController dateController = TextEditingController();
+  MaskedTextController dateController =
+      MaskedTextController(mask: '00/00/0000');
 
   var box = Hive.box('db');
 
@@ -68,9 +69,9 @@ class _HistoryPage2State extends State<HistoryPage2> {
     );
   }
 
-  List<TableRow> buildTableRows() {
+  List<TableRow> buildTableRows(int qtdRows, List visitsData) {
     return List.generate(
-      30, // Substitua com o tamanho da sua lista de dados
+      qtdRows, // Substitua com o tamanho da sua lista de dados
       (index) => TableRow(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
@@ -79,23 +80,23 @@ class _HistoryPage2State extends State<HistoryPage2> {
         children: [
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('Maria de Jesus Carvalho')),
+              child: tableText(visitsData[index]['operators']['name'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('Pedro Alvarre Cabal')),
+              child: tableText(visitsData[index]['visitors']['name'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('22/07/2024')),
+              child: tableText(Convert.formatDate(visitsData[index]['date']))),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('22:50')),
+              child: tableText(visitsData[index]['time'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('Ana Beatri Melo de Sousa ')),
+              child: tableText(visitsData[index]['authorizedBy'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: tableText(
-                'Ir na 12prm falar com o José aldjihalk jdhal kdal dkhja',
+                visitsData[index]['goal'],
               )),
         ],
       ),
@@ -104,16 +105,19 @@ class _HistoryPage2State extends State<HistoryPage2> {
 
   @override
   Widget build(BuildContext context) {
-    locationsName = MyFunctons.getHive('locations', names: true);
     MyHomeFormfield dateField = MyHomeFormfield(
-        handleTap: () => selectDate(context),
-        prefixIcon: Icon(
-          Icons.calendar_month,
+        dateController: dateController,
+        // handleTap: () => selectDate(context),
+        prefixIconBtn: IconButton(
+          onPressed: () => selectDate(context),
+          icon: const Icon(Icons.calendar_month),
           color: StdValues.labelGrey,
         ),
         labelTitle: '  Data',
         labelText: '  Selecione uma Data',
         listValidator: const []);
+    locationsName = MyFunctons.getHive('locations', names: true);
+
     var visits = [];
     if (locationId == 0) {
       locationId = profile['locations']['id'];
@@ -159,6 +163,12 @@ class _HistoryPage2State extends State<HistoryPage2> {
                           return SizedBox(
                             height: 42,
                             child: TextFormField(
+                              onTap: () {
+                                dropController.selection = TextSelection(
+                                  baseOffset: 0,
+                                  extentOffset: dropController.text.length,
+                                );
+                              },
                               controller: controller,
                               focusNode: focusNode,
                               decoration: InputDecoration(
@@ -224,7 +234,9 @@ class _HistoryPage2State extends State<HistoryPage2> {
               Flexible(
                   flex: 2,
                   child: MyButton(
-                    callback: () {},
+                    callback: () {
+                      loadLocation(dropController.text);
+                    },
                     text: 'Buscar',
                     btnWidth: double.infinity,
                   ))
@@ -242,35 +254,54 @@ class _HistoryPage2State extends State<HistoryPage2> {
             ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
             child: SizedBox(
               height: 500,
+              width: double.infinity,
               child: SingleChildScrollView(
-                child: Table(
-                  columnWidths: const {
-                    2: FixedColumnWidth(120),
-                    3: FixedColumnWidth(80),
+                child: FutureBuilder(
+                  future: MyFunctons.getVisits(locationId,
+                      date: (dateController.text.isNotEmpty)
+                          ? Convert.formatDate(dateController.text, br: true)
+                          : ''),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      visits = snapshot.data!;
+                    }
+
+                    return (visits.isEmpty)
+                        ? const Text('Nenhum resultado encontrado!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 18))
+                        : Table(
+                            columnWidths: const {
+                              2: FixedColumnWidth(120),
+                              3: FixedColumnWidth(80),
+                            },
+                            children: [
+                              TableRow(
+                                  decoration: BoxDecoration(
+                                      color: StdValues.bkgBlue,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  children: [
+                                    tableText('Operador',
+                                        color: false, bold: true, size: 18),
+                                    tableText('Visitante',
+                                        color: false, bold: true, size: 18),
+                                    tableText('Data',
+                                        color: false, bold: true, size: 18),
+                                    tableText('Hora',
+                                        color: false, bold: true, size: 18),
+                                    tableText('Autorizado por',
+                                        color: false, bold: true, size: 18),
+                                    tableText('Finalidade',
+                                        color: false, bold: true, size: 18),
+                                  ]),
+                              ...buildTableRows(visits.length, visits)
+                            ],
+                          );
                   },
-                  children: [
-                    TableRow(
-                        decoration: BoxDecoration(
-                            color: StdValues.bkgBlue,
-                            borderRadius: BorderRadius.circular(6)),
-                        children: [
-                          tableText('Operador',
-                              color: false, bold: true, size: 18),
-                          tableText('Visitante',
-                              color: false, bold: true, size: 18),
-                          tableText('Data', color: false, bold: true, size: 18),
-                          tableText('Hora', color: false, bold: true, size: 18),
-                          tableText('Autorizado por',
-                              color: false, bold: true, size: 18),
-                          tableText('Finalidade',
-                              color: false, bold: true, size: 18),
-                        ]),
-                    ...buildTableRows()
-                  ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

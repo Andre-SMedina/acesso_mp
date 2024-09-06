@@ -16,11 +16,15 @@ class MyHomeFormfield extends StatelessWidget {
     this.labelText,
     this.sufixIcon,
     this.handleTap,
+    this.dateController,
+    this.prefixIconBtn,
   });
   final String labelTitle;
   final String? labelText;
   final Icon? prefixIcon;
+  final IconButton? prefixIconBtn;
   final Icon? sufixIcon;
+  final TextEditingController? dateController;
   final Function()? handleTap;
   final List<TextInputFormatter>? listInputFormat;
   final List<FormFieldValidator<String>> listValidator;
@@ -46,12 +50,13 @@ class MyHomeFormfield extends StatelessWidget {
             height: 65,
             child: TextFormField(
               onTap: handleTap,
-              controller: fieldController,
+              controller:
+                  (dateController != null) ? dateController : fieldController,
               inputFormatters: listInputFormat,
               validator: Validatorless.multiple(listValidator),
               decoration: InputDecoration(
                   hintText: labelText,
-                  prefixIcon: prefixIcon,
+                  prefixIcon: (prefixIcon != null) ? prefixIcon : prefixIconBtn,
                   suffixIcon: sufixIcon,
                   contentPadding: const EdgeInsets.only(left: 8),
                   enabled: (labelTitle == 'RG') ? provider.enableField : true,

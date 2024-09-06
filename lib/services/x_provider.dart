@@ -134,6 +134,9 @@ class XProvider with ChangeNotifier {
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
         ),
+        const SizedBox(
+          height: 5,
+        ),
         SizedBox(
           height: 65,
           child: TextFormField(
@@ -191,6 +194,9 @@ class XProvider with ChangeNotifier {
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 105, 105, 105)),
+        ),
+        const SizedBox(
+          height: 6,
         ),
         SizedBox(
           height: 65,

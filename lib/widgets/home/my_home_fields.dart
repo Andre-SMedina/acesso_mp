@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
+import 'package:acesso_mp/services/db_visits.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/home/camera.dart';
 import 'package:acesso_mp/widgets/home/image_border.dart';
@@ -67,6 +68,10 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
     ];
   }
 
+  alertAuth() {
+    ZshowDialogs.alert(context, 'Autorização registrada!');
+  }
+
   alertVisited() async {
     List<String> visited = [];
     await ZshowDialogs.visited(widget.context).then((v) => visited = v);
@@ -89,12 +94,32 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
 
   @override
   Widget build(BuildContext context) {
+    bool sizeValidate =
+        (MediaQuery.sizeOf(context).width <= 1600) ? false : true;
+
     var functions = MyHomeFunctions(
         clearFields: clearFields,
         formKey: widget.formKey,
         getDataVisitor: getDataVisitor,
         context: context,
         alertVisited: alertVisited);
+
+    Widget authButton = MyButton(
+        icon: Icons.door_back_door_outlined,
+        callback: () async {
+          DbVisits manageDate = DbVisits(
+            alert: alertAuth,
+            alertVisited: alertVisited,
+          );
+
+          bool success = false;
+          await manageDate.authorized().then((v) => success = v);
+
+          if (success) {
+            clearFields();
+          }
+        },
+        text: 'Registrar novo Acesso');
 
     return MyHomeContainer(
         difHeight: 300,
@@ -171,8 +196,8 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                             text: 'Atualizar'),
                                       ],
                                     ),
-                                    const Divider(
-                                      height: 150,
+                                    Divider(
+                                      height: sizeValidate ? 150 : 30,
                                       thickness: 2,
                                     ),
                                     const Spacer(flex: 1),
@@ -189,10 +214,9 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                               functions.register();
                                             },
                                             text: 'Cadastrar Visitante'),
-                                        MyButton(
-                                            icon: Icons.door_back_door_outlined,
-                                            callback: () {},
-                                            text: 'Registrar novo Acesso'),
+                                        (sizeValidate)
+                                            ? authButton
+                                            : const SizedBox(),
                                         MyButton(
                                             icon: Icons.access_time_outlined,
                                             callback: () {
@@ -205,6 +229,13 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    sizeValidate
+                                        ? const SizedBox()
+                                        : SizedBox(
+                                            width: 250, child: authButton),
                                     const Spacer(flex: 10),
                                   ],
                                 );

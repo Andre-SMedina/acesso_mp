@@ -3,10 +3,12 @@ import 'package:acesso_mp/pages/control_locates2.dart';
 import 'package:acesso_mp/pages/control_operators2.dart';
 import 'package:acesso_mp/pages/history_page2.dart';
 import 'package:acesso_mp/pages/home_page2.dart';
+import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_list_tile_menu.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControlPages extends StatefulWidget {
@@ -19,7 +21,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget loadPage = const HistoryPage2();
+  Widget loadPage = const HomePage2();
 
   void onSelect(int index) {
     setState(() {
@@ -91,6 +93,7 @@ class _ControlPagesState extends State<ControlPages> {
                     title: 'Histórico de Visita',
                     icon: Icons.access_time,
                     callMain: () {
+                      context.read<XProvider>().clearFields();
                       setState(() {
                         loadPage = const HistoryPage2();
                       });
