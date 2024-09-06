@@ -13,17 +13,15 @@ class ImageBorder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(width: 1, color: StdValues.borderFieldGrey),
-            borderRadius: BorderRadius.circular(40)),
-        height: height,
-        width: width,
-        child: widget,
-      ),
+    return Container(
+      padding: const EdgeInsets.only(top: 0.5),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(width: 2, color: StdValues.borderFieldGrey),
+          borderRadius: BorderRadius.circular(40)),
+      height: height,
+      width: width,
+      child: widget,
     );
   }
 }

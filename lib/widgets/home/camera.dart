@@ -55,19 +55,14 @@ class CameraAppState extends State<CameraApp> {
       var box = Hive.box('db');
       box.put('image', base64Image);
 
-      // final prefs = await SharedPreferences.getInstance();
-      // await prefs.setString('capturedImage', base64Image);
-
       setState(() {
         capturedImage = bytes;
       });
 
-      // **Descartar o controlador após capturar a imagem**
       controller!.dispose();
       controller = null;
-    } catch (e) {
-      // ZshowDialogs.alert(context, 'A aplicação apresentou erro');
-      widget.alert();
+    } catch (err) {
+      debugPrint(err.toString());
     }
   }
 
@@ -83,7 +78,9 @@ class CameraAppState extends State<CameraApp> {
                 widget: SizedBox(
                     height: StdValues.imgHeight1,
                     width: StdValues.imgWidth1,
-                    child: CameraPreview(controller!))),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(35),
+                        child: CameraPreview(controller!)))),
           if (capturedImage == null && controller == null)
             ImageBorder(
               height: StdValues.imgHeight1,
@@ -98,10 +95,13 @@ class CameraAppState extends State<CameraApp> {
           if (capturedImage != null && controller == null)
             ImageBorder(
               height: StdValues.imgHeight1,
-              width: StdValues.imgWidth2,
-              widget: Image.memory(
-                capturedImage!,
-                fit: BoxFit.cover,
+              width: StdValues.imgWidth1,
+              widget: ClipRRect(
+                borderRadius: BorderRadius.circular(35),
+                child: Image.memory(
+                  capturedImage!,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           Container(

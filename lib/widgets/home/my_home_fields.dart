@@ -95,7 +95,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
   @override
   Widget build(BuildContext context) {
     bool sizeValidate =
-        (MediaQuery.sizeOf(context).width <= 1600) ? false : true;
+        (MediaQuery.sizeOf(context).width <= 1700) ? false : true;
 
     var functions = MyHomeFunctions(
         clearFields: clearFields,
@@ -283,9 +283,13 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                         : ImageBorder(
                                             height: StdValues.imgHeight1,
                                             width: StdValues.imgWidth1,
-                                            widget: Image.memory(
-                                              base64Decode(widget.image),
-                                              fit: BoxFit.cover,
+                                            widget: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(35),
+                                              child: Image.memory(
+                                                base64Decode(widget.image),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
                                     Container(
@@ -311,15 +315,12 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                   widget: const Center(
                                       child: Text('Câmera não encontrada!',
                                           style: TextStyle(fontSize: 20))))
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                    height: StdValues.imgHeight2,
-                                    width: StdValues.imgWidth1,
-                                    child: CameraApp(
-                                      alert: widget.alertCamera,
-                                      cameras: cameras,
-                                    ),
+                              : SizedBox(
+                                  height: StdValues.imgHeight2,
+                                  width: StdValues.imgWidth1,
+                                  child: CameraApp(
+                                    alert: widget.alertCamera,
+                                    cameras: cameras,
                                   ),
                                 ),
                       const SizedBox(

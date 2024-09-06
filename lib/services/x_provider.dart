@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
@@ -67,11 +68,13 @@ class XProvider with ChangeNotifier {
 
   void loadVisitorsField(Map<String, dynamic> visitor) {
     name.fieldController.text = visitor['name'];
-    cpfController.text = "${visitor['cpf'].substring(0, 5)}...";
+    cpfController.text = (MyFunctons.getHive('profile')['adm'])
+        ? "${visitor['cpf']}"
+        : "${visitor['cpf'].substring(0, 6)}...";
     rg.fieldController.text = visitor['rg'];
     phoneController.text = visitor['phone'];
     job.fieldController.text = visitor['job'];
-    enableField = false;
+    enableField = (MyFunctons.getHive('profile')['adm']) ? true : false;
     validate = false;
     notifyListeners();
   }
@@ -145,6 +148,7 @@ class XProvider with ChangeNotifier {
                 filled: true,
                 contentPadding: const EdgeInsets.only(left: 8),
                 fillColor: Colors.white,
+                hoverColor: Colors.white,
                 helperText: '',
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -153,10 +157,6 @@ class XProvider with ChangeNotifier {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 105, 105, 105)))),
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(11)
-            ],
             validator: (validate)
                 ? Validatorless.multiple([
                     Validatorless.cpf('CPF inválido!'),
@@ -206,6 +206,7 @@ class XProvider with ChangeNotifier {
                 filled: true,
                 contentPadding: const EdgeInsets.only(left: 8),
                 fillColor: Colors.white,
+                hoverColor: Colors.white,
                 helperText: '',
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -244,7 +245,6 @@ class XProvider with ChangeNotifier {
     listInputFormat: const [],
   );
 }
-
 
 // Consumer<XProvider>(
 //  builder: (context, provider, child) {

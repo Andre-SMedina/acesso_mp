@@ -1,6 +1,8 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/convert.dart';
+import 'package:acesso_mp/widgets/history/history_functions.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
+import 'package:validatorless/validatorless.dart';
 
 class HistoryPage2 extends StatefulWidget {
   const HistoryPage2({super.key});
@@ -21,14 +24,13 @@ class _HistoryPage2State extends State<HistoryPage2> {
   TextStyle title = const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 
   var profile = MyFunctons.getHive('profile');
-
   List locationsName = [];
-
   int locationId = 0;
 
   TextEditingController dropController = TextEditingController();
   MaskedTextController dateController =
       MaskedTextController(mask: '00/00/0000');
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   var box = Hive.box('db');
 
@@ -54,53 +56,6 @@ class _HistoryPage2State extends State<HistoryPage2> {
       String date = Convert.formatDate(picked.toString().split(' ')[0]);
       dateController.text = date;
     }
-  }
-
-  Widget tableText(String text,
-      {double? size, bool? bold = false, bool color = true}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Text(text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontWeight: bold! ? FontWeight.bold : FontWeight.normal,
-              fontSize: (size != null) ? size : 16,
-              color: (color) ? Colors.black : Colors.white)),
-    );
-  }
-
-  List<TableRow> buildTableRows(int qtdRows, List visitsData) {
-    return List.generate(
-      qtdRows, // Substitua com o tamanho da sua lista de dados
-      (index) => TableRow(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          color: index % 2 == 0 ? StdValues.bkgFieldGrey : Colors.white,
-        ),
-        children: [
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(visitsData[index]['operators']['name'])),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(visitsData[index]['visitors']['name'])),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(Convert.formatDate(visitsData[index]['date']))),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(visitsData[index]['time'])),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(visitsData[index]['authorizedBy'])),
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText(
-                visitsData[index]['goal'],
-              )),
-        ],
-      ),
-    );
   }
 
   @override
@@ -162,35 +117,39 @@ class _HistoryPage2State extends State<HistoryPage2> {
                         builder: (context, controller, focusNode) {
                           return SizedBox(
                             height: 42,
-                            child: TextFormField(
-                              onTap: () {
-                                dropController.selection = TextSelection(
-                                  baseOffset: 0,
-                                  extentOffset: dropController.text.length,
-                                );
-                              },
-                              controller: controller,
-                              focusNode: focusNode,
-                              decoration: InputDecoration(
-                                suffixIcon: Icon(
-                                  Icons.search,
-                                  color: StdValues.textGrey,
-                                  size: 35,
-                                ),
-                                hintText: 'Selecione uma Cidade',
-                                fillColor: Colors.white,
-                                filled: true,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: StdValues.borderFieldGrey)),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    width: 1,
-                                    color: StdValues.borderFieldGrey,
+                            child: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                onTap: () {
+                                  dropController.selection = TextSelection(
+                                    baseOffset: 0,
+                                    extentOffset: dropController.text.length,
+                                  );
+                                },
+                                controller: controller,
+                                focusNode: focusNode,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.search,
+                                    color: StdValues.textGrey,
+                                    size: 35,
                                   ),
+                                  hintText: 'Selecione uma Cidade',
+                                  fillColor: Colors.white,
+                                  hoverColor: Colors.white,
+                                  filled: true,
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: StdValues.borderFieldGrey)),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      width: 1,
+                                      color: StdValues.borderFieldGrey,
+                                    ),
+                                  ),
+                                  border: const OutlineInputBorder(),
                                 ),
-                                border: const OutlineInputBorder(),
                               ),
                             ),
                           );
@@ -235,7 +194,11 @@ class _HistoryPage2State extends State<HistoryPage2> {
                   flex: 2,
                   child: MyButton(
                     callback: () {
-                      loadLocation(dropController.text);
+                      if (dropController.text != '') {
+                        loadLocation(dropController.text);
+                      } else {
+                        ZshowDialogs.alert(context, 'Escolha uma Cidade!');
+                      }
                     },
                     text: 'Buscar',
                     btnWidth: double.infinity,
@@ -276,25 +239,9 @@ class _HistoryPage2State extends State<HistoryPage2> {
                               3: FixedColumnWidth(80),
                             },
                             children: [
-                              TableRow(
-                                  decoration: BoxDecoration(
-                                      color: StdValues.bkgBlue,
-                                      borderRadius: BorderRadius.circular(6)),
-                                  children: [
-                                    tableText('Operador',
-                                        color: false, bold: true, size: 18),
-                                    tableText('Visitante',
-                                        color: false, bold: true, size: 18),
-                                    tableText('Data',
-                                        color: false, bold: true, size: 18),
-                                    tableText('Hora',
-                                        color: false, bold: true, size: 18),
-                                    tableText('Autorizado por',
-                                        color: false, bold: true, size: 18),
-                                    tableText('Finalidade',
-                                        color: false, bold: true, size: 18),
-                                  ]),
-                              ...buildTableRows(visits.length, visits)
+                              HistoryFunctions.tableColumns(),
+                              ...HistoryFunctions.buildTableRows(
+                                  visits.length, visits)
                             ],
                           );
                   },

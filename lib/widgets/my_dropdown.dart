@@ -77,6 +77,7 @@ class MyDropdownState extends State<MyDropdown> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
+                hoverColor: Colors.white,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(color: StdValues.borderFieldGrey)),
@@ -93,6 +94,8 @@ class MyDropdownState extends State<MyDropdown> {
         },
         itemBuilder: (context, suggestion) {
           return ListTile(
+            // tileColor: Colors.white,
+            mouseCursor: MouseCursor.defer,
             title: Text(suggestion),
           );
         },

@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:flutter/material.dart';
@@ -121,8 +122,10 @@ class DbManage {
     if (boxName != '') {
       var oldData = box.get(boxName);
 
-      data['cpf'] = oldData['cpf'];
-      if (data['rg'] != null) data['rg'] = oldData['rg'];
+      if (!MyFunctons.getHive('profile')['adm']) {
+        data['cpf'] = oldData['cpf'];
+        if (data['rg'] != null) data['rg'] = oldData['rg'];
+      }
     }
     try {
       await supabase.from(table).update(data).eq(column, find);

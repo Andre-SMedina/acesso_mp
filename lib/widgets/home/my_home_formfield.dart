@@ -59,10 +59,11 @@ class MyHomeFormfield extends StatelessWidget {
                   prefixIcon: (prefixIcon != null) ? prefixIcon : prefixIconBtn,
                   suffixIcon: sufixIcon,
                   contentPadding: const EdgeInsets.only(left: 8),
-                  enabled: (labelTitle == 'RG') ? provider.enableField : true,
+                  enabled: (labelTitle == '  RG') ? provider.enableField : true,
                   filled: true,
                   helperText: '',
                   fillColor: Colors.white,
+                  hoverColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: StdValues.borderFieldGrey)),
