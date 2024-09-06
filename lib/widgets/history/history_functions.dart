@@ -39,6 +39,9 @@ class HistoryFunctions {
               child: tableText(visitsData[index]['time'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
+              child: tableText('Promotoria de justiça')),
+          TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
               child: tableText(visitsData[index]['authorizedBy'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
@@ -55,10 +58,11 @@ class HistoryFunctions {
         decoration: BoxDecoration(
             color: StdValues.bkgBlue, borderRadius: BorderRadius.circular(6)),
         children: [
-          tableText('Operador', color: false, bold: true, size: 18),
+          tableText('Atendente', color: false, bold: true, size: 18),
           tableText('Visitante', color: false, bold: true, size: 18),
           tableText('Data', color: false, bold: true, size: 18),
           tableText('Hora', color: false, bold: true, size: 18),
+          tableText('Local', color: false, bold: true, size: 18),
           tableText('Autorizado por', color: false, bold: true, size: 18),
           tableText('Finalidade', color: false, bold: true, size: 18),
         ]);

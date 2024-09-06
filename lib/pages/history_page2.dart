@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
-import 'package:validatorless/validatorless.dart';
 
 class HistoryPage2 extends StatefulWidget {
   const HistoryPage2({super.key});
@@ -62,7 +61,6 @@ class _HistoryPage2State extends State<HistoryPage2> {
   Widget build(BuildContext context) {
     MyHomeFormfield dateField = MyHomeFormfield(
         dateController: dateController,
-        // handleTap: () => selectDate(context),
         prefixIconBtn: IconButton(
           onPressed: () => selectDate(context),
           icon: const Icon(Icons.calendar_month),
@@ -236,7 +234,8 @@ class _HistoryPage2State extends State<HistoryPage2> {
                         : Table(
                             columnWidths: const {
                               2: FixedColumnWidth(120),
-                              3: FixedColumnWidth(80),
+                              3: FixedColumnWidth(120),
+                              4: FixedColumnWidth(180),
                             },
                             children: [
                               HistoryFunctions.tableColumns(),

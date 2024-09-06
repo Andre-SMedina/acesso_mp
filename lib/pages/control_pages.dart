@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/pages/control_locates2.dart';
 import 'package:acesso_mp/pages/control_operators2.dart';
@@ -81,6 +82,10 @@ class _ControlPagesState extends State<ControlPages> {
                     title: 'Painel Principal',
                     icon: Icons.home_outlined,
                     callMain: () {
+                      MyFunctons.getOperators().then((e) {
+                        MyFunctons.putHive('operators', e);
+                      });
+                      context.read<XProvider>().clearFields();
                       setState(() {
                         changePage(const HomePage2());
                       });

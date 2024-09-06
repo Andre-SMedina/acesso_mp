@@ -71,9 +71,17 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
             const SizedBox(
               width: 25,
             ),
-            const Text(
-              'Sair',
-              style: TextStyle(color: Colors.white),
+            TextButton(
+              onPressed: () async {
+                context.read<XProvider>().clearFields();
+                Navigator.pushReplacementNamed(context, '/');
+                var supabase = Supabase.instance.client;
+                await supabase.auth.signOut();
+              },
+              child: const Text(
+                'Sair',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             IconButton(
                 padding: const EdgeInsets.only(right: 30, left: 10),

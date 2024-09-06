@@ -15,14 +15,14 @@ class DbManage {
 
     if (profile['name'] == 'adm') return true;
 
-    String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+    String dateNow = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     String date = dateNow.split(' ')[0];
     String time = dateNow.split(' ')[1];
     bool response = false;
 
     try {
       await supabase.from('visitors').insert({
-        'name': data.name,
+        'name': Convert.firstUpper(data.name),
         'consult': Convert.removeAccent(data.name).toLowerCase(),
         'cpf': data.cpf,
         'rg': data.rg,
