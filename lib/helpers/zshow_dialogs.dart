@@ -1,4 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
@@ -66,7 +67,11 @@ class ZshowDialogs {
                                 myText('\nLocal'),
                                 TextSpan(text: location),
                                 myText('\nData'),
-                                TextSpan(text: visitorHistoric[index]['date']),
+                                TextSpan(
+                                    text: Convert.formatDate(
+                                        visitorHistoric[index]['date'])),
+                                myText('\nHora'),
+                                TextSpan(text: visitorHistoric[index]['time']),
                                 myText('\nFinalidade '),
                                 TextSpan(text: visitorHistoric[index]['goal']),
                                 myText('\nAutorizado por '),
