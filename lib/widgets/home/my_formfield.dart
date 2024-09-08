@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
-class MyHomeFormfield extends StatelessWidget {
-  MyHomeFormfield({
+class MyFormfield extends StatelessWidget {
+  MyFormfield({
     super.key,
     required this.labelTitle,
     this.listInputFormat,
@@ -18,14 +18,18 @@ class MyHomeFormfield extends StatelessWidget {
     this.handleTap,
     this.dateController,
     this.prefixIconBtn,
+    this.focusNode,
+    this.submit,
   });
   final String labelTitle;
   final String? labelText;
   final Icon? prefixIcon;
   final IconButton? prefixIconBtn;
   final Icon? sufixIcon;
+  final FocusNode? focusNode;
   final TextEditingController? dateController;
   final Function()? handleTap;
+  final Function(String)? submit;
   final List<TextInputFormatter>? listInputFormat;
   final List<FormFieldValidator<String>> listValidator;
 
@@ -50,10 +54,12 @@ class MyHomeFormfield extends StatelessWidget {
             height: 65,
             child: TextFormField(
               onTap: handleTap,
+              onFieldSubmitted: submit,
               controller:
                   (dateController != null) ? dateController : fieldController,
               inputFormatters: listInputFormat,
               validator: Validatorless.multiple(listValidator),
+              focusNode: focusNode,
               decoration: InputDecoration(
                   hintText: labelText,
                   prefixIcon: (prefixIcon != null) ? prefixIcon : prefixIconBtn,

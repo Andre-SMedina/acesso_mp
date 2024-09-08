@@ -1,6 +1,6 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
-import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
+import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +31,7 @@ class XProvider with ChangeNotifier {
   MaskedTextController get cpfController2 => cpfController;
   bool get validate2 => validate;
   bool get passwd2 => passwd;
-  MyHomeFormfield get name2 => name;
+  MyFormfield get name2 => name;
   Icon get passwdIcon2 => passwdIcon;
 
   void changeText() {
@@ -105,7 +105,7 @@ class XProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  MyHomeFormfield name = MyHomeFormfield(
+  MyFormfield name = MyFormfield(
     labelTitle: '  Nome do visitante',
     listValidator: [
       Validatorless.required('Campo obrigatório!'),
@@ -170,7 +170,7 @@ class XProvider with ChangeNotifier {
     );
   }
 
-  MyHomeFormfield rg = MyHomeFormfield(
+  MyFormfield rg = MyFormfield(
     labelTitle: '  RG',
     listInputFormat: [
       FilteringTextInputFormatter.digitsOnly,
@@ -225,7 +225,7 @@ class XProvider with ChangeNotifier {
     );
   }
 
-  MyHomeFormfield job = MyHomeFormfield(
+  MyFormfield job = MyFormfield(
     labelTitle: '  Profissão',
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
@@ -242,7 +242,6 @@ class XProvider with ChangeNotifier {
       Validatorless.required('Campo obrigatório!'),
       Validatorless.email('Email inválido!')
     ],
-    listInputFormat: const [],
   );
 }
 

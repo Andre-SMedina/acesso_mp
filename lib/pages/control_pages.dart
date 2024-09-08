@@ -1,5 +1,6 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/pages/control_locates2.dart';
 import 'package:acesso_mp/pages/control_operators2.dart';
 import 'package:acesso_mp/pages/history_page2.dart';
@@ -23,15 +24,12 @@ class ControlPages extends StatefulWidget {
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
   Widget loadPage = const HomePage2();
+  bool userProfile = MyFunctons.getHive('profile')['adm'];
 
   void onSelect(int index) {
     setState(() {
       selectedIndex = index;
     });
-  }
-
-  void changePage(Widget page) {
-    loadPage = page;
   }
 
   @override
@@ -87,7 +85,7 @@ class _ControlPagesState extends State<ControlPages> {
                       });
                       context.read<XProvider>().clearFields();
                       setState(() {
-                        changePage(const HomePage2());
+                        loadPage = const HomePage2();
                       });
                     },
                   ),
@@ -108,11 +106,15 @@ class _ControlPagesState extends State<ControlPages> {
                     index: 2,
                     selectedIndex: selectedIndex,
                     onSelect: onSelect,
-                    title: 'Controle de Operadores',
+                    title: 'Controle de Atendentes',
                     icon: Icons.supervisor_account_outlined,
                     callMain: () {
                       setState(() {
-                        loadPage = const ControlOperators2();
+                        if (userProfile) {
+                          loadPage = const ControlOperators2();
+                        } else {
+                          ZshowDialogs.alert(context, 'Acesso negado!');
+                        }
                       });
                     },
                   ),
@@ -124,7 +126,11 @@ class _ControlPagesState extends State<ControlPages> {
                     icon: Icons.maps_home_work_outlined,
                     callMain: () {
                       setState(() {
-                        loadPage = const ControlLocates2();
+                        if (userProfile) {
+                          loadPage = const ControlLocates2();
+                        } else {
+                          ZshowDialogs.alert(context, 'Acesso negado!');
+                        }
                       });
                     },
                   ),

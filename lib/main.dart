@@ -1,9 +1,6 @@
-import 'package:acesso_mp/pages/history_page.dart';
 import 'package:acesso_mp/pages/control_pages.dart';
 import 'package:acesso_mp/pages/login_page2.dart';
 import 'package:acesso_mp/services/x_provider.dart';
-import 'package:acesso_mp/pages/control_locates_page.dart';
-import 'package:acesso_mp/pages/control_operators_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -83,9 +80,9 @@ class MyApp extends StatelessWidget {
         '/home': (context) => ControlPages(
               cameras: cameras,
             ),
-        '/history': (context) => const HistoryPage(),
-        '/controlLocates': (context) => const ControlLocatesPage(),
-        '/controlOperators': (context) => const ControlOperatorsPage(),
+        // '/history': (context) => const HistoryPage(),
+        // '/controlLocates': (context) => const ControlLocatesPage(),
+        // '/controlOperators': (context) => const ControlOperatorsPage(),
       },
     );
   }

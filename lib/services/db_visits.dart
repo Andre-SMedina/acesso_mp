@@ -31,6 +31,7 @@ class DbVisits {
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
+        'sector': auth[2],
         'date': date,
         'time': time,
         'id_visitor': checked['id'],

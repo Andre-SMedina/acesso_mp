@@ -1,7 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:acesso_mp/widgets/my_appbar.dart';
-import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';

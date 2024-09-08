@@ -4,7 +4,7 @@ import 'package:acesso_mp/main.dart';
 import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/home/my_home_fields.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
-import 'package:acesso_mp/widgets/my_dropdown.dart';
+import 'package:acesso_mp/widgets/my_dropdown_home.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -65,7 +65,7 @@ class _HomePage2State extends State<HomePage2> {
               ),
               SizedBox(
                 width: 500,
-                child: MyDropdown(loadData: () {
+                child: MyDropdownHome(loadData: () {
                   loadData();
                 }),
               )

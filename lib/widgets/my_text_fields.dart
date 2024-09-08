@@ -8,13 +8,13 @@ import 'package:validatorless/validatorless.dart';
 class MyTextField extends StatelessWidget {
   final String text;
   final List<FormFieldValidator<String>> listValidator;
-  final List<TextInputFormatter> listInputFormat;
+  final List<TextInputFormatter>? listInputFormat;
   bool enableField = true;
   MyTextField({
     super.key,
     required this.text,
     required this.listValidator,
-    required this.listInputFormat,
+    this.listInputFormat,
   });
 
   TextEditingController fieldController = TextEditingController();

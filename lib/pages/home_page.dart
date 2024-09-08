@@ -11,7 +11,7 @@ import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
 import 'package:acesso_mp/services/db_visits.dart';
 import 'package:acesso_mp/widgets/home/camera.dart';
-import 'package:acesso_mp/widgets/my_dropdown.dart';
+import 'package:acesso_mp/widgets/my_dropdown_home.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 500),
-                        child: MyDropdown(
+                        child: MyDropdownHome(
                           loadData: () {
                             loadData();
                           },

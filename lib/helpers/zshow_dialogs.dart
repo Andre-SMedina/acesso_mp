@@ -1,6 +1,9 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
+import 'package:acesso_mp/widgets/home/my_formfield.dart';
+import 'package:acesso_mp/widgets/my_button.dart';
+import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -62,9 +65,9 @@ class ZshowDialogs {
                           title: RichText(
                             text: TextSpan(
                               children: [
-                                myText('Operador'),
+                                myText('Atendente'),
                                 TextSpan(text: operator),
-                                myText('\nLocal'),
+                                myText('\nCidade'),
                                 TextSpan(text: location),
                                 myText('\nData'),
                                 TextSpan(
@@ -74,6 +77,9 @@ class ZshowDialogs {
                                 TextSpan(text: visitorHistoric[index]['time']),
                                 myText('\nFinalidade '),
                                 TextSpan(text: visitorHistoric[index]['goal']),
+                                myText('\nLocal '),
+                                TextSpan(
+                                    text: visitorHistoric[index]['sector']),
                                 myText('\nAutorizado por '),
                                 TextSpan(
                                     text: visitorHistoric[index]
@@ -91,9 +97,9 @@ class ZshowDialogs {
             ),
             actions: [
               Center(
-                child: ElevatedButton(
-                  child: const Text('OK'),
-                  onPressed: () {
+                child: MyButton(
+                  text: 'OK',
+                  callback: () {
                     Navigator.of(context).pop();
                   },
                 ),
@@ -140,72 +146,94 @@ class ZshowDialogs {
   }
 
   static Future<List<String>> visited(BuildContext context) async {
-    late TextEditingController textController1 = TextEditingController();
-    late TextEditingController textController2 = TextEditingController();
     FocusNode focusNode = FocusNode();
-    String goalText = '';
-    String whoAuth = '';
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    String sectorSelected = '';
+    String whoAuthSelected = '';
+
+    void submit() {
+      if (formKey.currentState!.validate() &&
+          sectorSelected.isNotEmpty &&
+          whoAuthSelected.isNotEmpty) {
+        Navigator.of(context).pop();
+      } else {
+        ZshowDialogs.alert(context, 'Preencha todos os campos!');
+      }
+    }
+
+    MyFormfield goal = MyFormfield(
+        focusNode: focusNode,
+        labelTitle: 'Finalidade',
+        listValidator: [Validatorless.required('Campo obrigatório!')]);
+    MyDropdown local = MyDropdown(
+      labelText: 'Digite o nome do setor',
+      optionsList: const [
+        'ACEMA',
+        'RTSI',
+        'DMTI',
+        'COMUN',
+        '2prm',
+        '3prm',
+        '4prm',
+        '5prm',
+        '1proc',
+        '2proc',
+        '3proc',
+        '4proc'
+      ],
+      getItemSelected: (value) {
+        sectorSelected = value;
+      },
+    );
+    MyDropdown whoAuth = MyDropdown(
+      labelText: 'Quem  autorizou',
+      optionsList: const [
+        'Maria do Rosário Fernandes',
+        'Camila Nazarena Sousa',
+        'Eduardo Pereira Junior',
+        'Sampaio dos Santos Silva',
+        'Carlos Moreira Costa',
+      ],
+      getItemSelected: (value) {
+        whoAuthSelected = value;
+      },
+    );
 
     await showDialog(
       context: context,
       builder: (context) {
         focusNode.requestFocus();
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Informações sobre o acesso.'),
           content: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 140),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: 250,
-                  child: TextField(
-                    maxLines: 2,
-                    decoration: const InputDecoration(labelText: 'Finalidade'),
-                    focusNode: focusNode,
-                    controller: textController1,
+            constraints: const BoxConstraints(maxHeight: 330, maxWidth: 400),
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    child: goal,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: 250,
-                  child: TextField(
-                    controller: textController2,
-                    onSubmitted: (v) {
-                      if (textController1.text != '') {
-                        whoAuth = textController2.text;
-                        goalText = textController1.text;
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Quem autorizou',
-                    ),
+                  SizedBox(
+                    child: local,
                   ),
-                )
-              ],
-            ),
-          ),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  if (textController1.text != '') {
-                    goalText = textController1.text;
-                    whoAuth = textController2.text;
-                    Navigator.of(context).pop();
-                  }
-                },
+                  SizedBox(
+                    child: whoAuth,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MyButton(callback: () => submit(), text: 'Registrar')
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );
 
-    return [goalText, whoAuth];
+    return [goal.fieldController.text, whoAuthSelected, sectorSelected];
   }
 
   static Future<bool> confirm(BuildContext context, String title) async {

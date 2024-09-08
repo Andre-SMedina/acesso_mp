@@ -4,7 +4,7 @@ import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/widgets/history/history_functions.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
-import 'package:acesso_mp/widgets/home/my_home_formfield.dart';
+import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
   var profile = MyFunctons.getHive('profile');
   List locationsName = [];
   int locationId = 0;
+  bool selectedLocation = false;
 
   TextEditingController dropController = TextEditingController();
   MaskedTextController dateController =
@@ -59,7 +60,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
 
   @override
   Widget build(BuildContext context) {
-    MyHomeFormfield dateField = MyHomeFormfield(
+    MyFormfield dateField = MyFormfield(
         dateController: dateController,
         prefixIconBtn: IconButton(
           onPressed: () => selectDate(context),
@@ -160,8 +161,8 @@ class _HistoryPage2State extends State<HistoryPage2> {
                           );
                         },
                         suggestionsCallback: (search) {
-                          if (search.isEmpty) locationsName;
                           List<String> filter = [];
+                          selectedLocation = false;
 
                           for (var i in locationsName) {
                             if (i
@@ -174,6 +175,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
                         },
                         onSelected: (suggestion) {
                           dropController.text = suggestion;
+                          selectedLocation = true;
                         }),
                     const SizedBox(
                       height: 23,
@@ -192,8 +194,9 @@ class _HistoryPage2State extends State<HistoryPage2> {
                   flex: 2,
                   child: MyButton(
                     callback: () {
-                      if (dropController.text != '') {
+                      if (selectedLocation) {
                         loadLocation(dropController.text);
+                        selectedLocation = false;
                       } else {
                         ZshowDialogs.alert(context, 'Escolha uma Cidade!');
                       }

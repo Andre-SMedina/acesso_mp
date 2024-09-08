@@ -44,6 +44,7 @@ class DbManage {
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
+        'sector': auth[2],
         'date': date,
         'time': time,
         'id_visitor': visitor[0]['id'],
