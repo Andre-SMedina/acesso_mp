@@ -1,79 +1,76 @@
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
+import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:hive/hive.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
-class ControlOperatorsPage2 extends StatelessWidget {
+class ControlOperatorsPage2 extends StatefulWidget {
   const ControlOperatorsPage2({super.key});
 
   @override
+  State<ControlOperatorsPage2> createState() => _ControlOperatorsPage2State();
+}
+
+class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
+  bool saveUpdate = true;
+  MyFormfield name = MyFormfield(
+      labelText: 'Digite o nome',
+      labelTitle: '  Nome',
+      listValidator: [Validatorless.required('Campo Obrigatório!')]);
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  MaskedTextController cpfController =
+      MaskedTextController(mask: '000.000.000-00');
+  MaskedTextController phoneController =
+      MaskedTextController(mask: '(00) 0 0000-0000');
+
+  MyFormfield email = MyFormfield(
+      labelTitle: '  Email',
+      labelText: 'Digite o email',
+      listValidator: [
+        Validatorless.required('Campo Obrigatório!'),
+        Validatorless.email('Email inválido!')
+      ]);
+  MyFormfield location = MyFormfield(
+      labelTitle: '  Lotação',
+      labelText: 'Escoha a lotação',
+      listValidator: [
+        Validatorless.required('Campo Obrigatório!'),
+      ]);
+
+  void loadFields(Map operator) {
+    name.fieldController.text = operator['name'];
+    cpfController.text = operator['cpf'].toString();
+    phoneController.text = operator['phone'].toString();
+    email.fieldController.text = operator['email'];
+    location.fieldController.text = operator['locations']['name'];
+    setState(() {});
+  }
+
+  void clearFields() {
+    name.fieldController.clear();
+    cpfController.clear();
+    phoneController.clear();
+    email.fieldController.clear();
+    location.fieldController.clear();
+    saveUpdate = true;
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    MaskedTextController cpfController =
-        MaskedTextController(mask: '000.000.000-00');
-    MaskedTextController phoneController =
-        MaskedTextController(mask: '(00) 0 0000-0000');
+    var supabase = Supabase.instance.client;
 
-    MyFormfield name = MyFormfield(
-        labelText: 'Digite o nome',
-        labelTitle: '  Nome',
-        listValidator: [Validatorless.required('Campo Obrigatório!')]);
-
-    MyFormfield email = MyFormfield(
-        labelTitle: '  Email',
-        labelText: 'Digite o emai',
-        listValidator: [
-          Validatorless.required('Campo Obrigatório!'),
-          Validatorless.email('Email inválido!')
-        ]);
-    MyFormfield location = MyFormfield(
-        labelTitle: '  Lotação',
-        labelText: 'Escoha a lotação',
-        listValidator: [
-          Validatorless.required('Campo Obrigatório!'),
-        ]);
-
-    List<Widget> operatorsList() {
-      List<Widget> lista = [];
-      Icon adm = Icon(
-        Icons.admin_panel_settings,
-        color: Colors.yellow,
-        size: 50,
-      );
-      Icon comum = Icon(
-        Icons.account_circle,
-        color: StdValues.bkgBlue,
-        size: 50,
-      );
-      Icon actived = Icon(
-        Icons.check_circle_outline,
-        color: StdValues.bkgBlue,
-        size: 50,
-      );
-
-      for (var i = 0; i < 15; i++) {
-        lista.add(Container(
-          margin: const EdgeInsets.only(left: 15, right: 15),
-          color: (i % 2 == 0) ? StdValues.bkgGrey : Colors.white,
-          child: ListTile(
-            leading: comum,
-            trailing: actived,
-            title: const Text('Nome do Atendente',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: const Text(
-              'Cidade',
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ));
-      }
-
-      return lista;
+    List operators = [];
+    void updateProfile(Map data, int cpf) async {
+      await supabase.from('operators').update(data).eq('cpf', cpf);
+      setState(() {});
     }
 
     return MyHomeContainer(
@@ -106,7 +103,9 @@ class ControlOperatorsPage2 extends StatelessWidget {
                                   decoration: StdValues.boxBar,
                                   width: double.infinity,
                                   child: Text(
-                                    'Cadastrar Atendente',
+                                    saveUpdate
+                                        ? 'Cadastrar Atendente'
+                                        : 'Editar Atendente',
                                     textAlign: TextAlign.center,
                                     style: StdValues.titleBox,
                                   )),
@@ -151,12 +150,25 @@ class ControlOperatorsPage2 extends StatelessWidget {
                                       ),
                                       email,
                                       location,
-                                      MyButton(
-                                          callback: () {
-                                            if (formKey.currentState!
-                                                .validate()) {}
-                                          },
-                                          text: 'Cadastrar')
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          MyButton(
+                                              callback: () {
+                                                if (formKey.currentState!
+                                                    .validate()) {}
+                                              },
+                                              text: saveUpdate
+                                                  ? 'Cadastrar'
+                                                  : 'Salvar Alterações'),
+                                          MyButton(
+                                              callback: () {
+                                                clearFields();
+                                              },
+                                              text: 'Limpar')
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
@@ -184,13 +196,67 @@ class ControlOperatorsPage2 extends StatelessWidget {
                             const SizedBox(
                               height: 15,
                             ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: operatorsList(),
-                                ),
-                              ),
-                            ),
+                            FutureBuilder(
+                                future: DbManage.getOperators(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    operators = snapshot.data!;
+                                  }
+                                  return Expanded(
+                                    child: ListView.builder(
+                                        itemCount: operators.length,
+                                        itemBuilder: (contex, index) {
+                                          if (operators[index]['name'] ==
+                                              'adm') {
+                                            return const Padding(
+                                                padding: EdgeInsets.zero);
+                                          }
+                                          return Column(
+                                            children: [
+                                              MyListTile(
+                                                iconTip1:
+                                                    'Usuário Administrador',
+                                                iconTip2: 'Usuário Comum',
+                                                title: operators[index]['name'],
+                                                subtitle: operators[index]
+                                                    ['locations']['name'],
+                                                hoverColor:
+                                                    const Color.fromARGB(
+                                                        255, 138, 199, 248),
+                                                iconBtn1: (operators[index]
+                                                        ['adm'])
+                                                    ? Icons.admin_panel_settings
+                                                    : Icons.account_circle,
+                                                iconBtn2: operators[index]
+                                                        ['active']
+                                                    ? Icons.check_circle_outline
+                                                    : Icons
+                                                        .do_not_disturb_alt_outlined,
+                                                callMain: () {
+                                                  saveUpdate = false;
+                                                  loadFields(operators[index]);
+                                                },
+                                                actionBtn1: true,
+                                                callIconBtn1: () {
+                                                  updateProfile({
+                                                    'adm': !operators[index]
+                                                        ['adm']
+                                                  }, operators[index]['cpf']);
+                                                },
+                                                callIconBtn2: () {
+                                                  updateProfile({
+                                                    'active': !operators[index]
+                                                        ['active']
+                                                  }, operators[index]['cpf']);
+                                                },
+                                              ),
+                                              if (index < operators.length)
+                                                const Divider()
+                                            ],
+                                          );
+                                        }),
+                                  );
+                                }),
                           ],
                         ),
                       )

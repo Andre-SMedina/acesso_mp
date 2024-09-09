@@ -8,7 +8,8 @@ class StdValues {
   static Color btnBlue = const Color(0xFF053F63);
   static Color bkgGrey = const Color(0xFFF2F2F2);
   static Color dividerGrey = const Color(0xFFB5B5B5);
-  static Color hoverGrey = const Color(0xFFB4B4B4);
+  static Color hoverGreyBtn = const Color(0xFFB4B4B4);
+  static Color hoverGreyIcon = const Color(0xFFE0E0E0);
   static Color bkgFieldGrey = const Color(0xFFF5F5F5);
   static Color borderFieldGrey = const Color.fromARGB(255, 105, 105, 105);
   static Color labelGrey = const Color.fromARGB(255, 105, 105, 105);

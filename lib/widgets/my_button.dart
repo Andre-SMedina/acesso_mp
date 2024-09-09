@@ -24,7 +24,9 @@ class MyButton extends StatelessWidget {
             backgroundColor: WidgetStateProperty.resolveWith<Color>(
                 (Set<WidgetState> states) {
               if (states.contains(WidgetState.hovered)) {
-                return StdValues.hoverGrey;
+                return (text == 'Limpar')
+                    ? const Color.fromARGB(255, 221, 34, 21)
+                    : StdValues.hoverGreyBtn;
               }
               return StdValues.btnBlue;
             })),

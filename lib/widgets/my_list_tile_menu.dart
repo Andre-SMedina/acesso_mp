@@ -48,7 +48,7 @@ class _MyListTile2State extends State<MyListTile2> {
           color: (widget.selectedIndex == widget.index)
               ? StdValues.bkgBlue
               : (isHover)
-                  ? StdValues.hoverGrey
+                  ? StdValues.hoverGreyBtn
                   : null,
         ),
         child: ListTile(

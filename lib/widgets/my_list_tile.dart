@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:flutter/material.dart';
 
@@ -61,9 +62,10 @@ class _MyListTileState extends State<MyListTile> {
           },
           icon: Icon(
             widget.iconBtn1,
+            size: 35,
             color: (widget.iconBtn1 == Icons.admin_panel_settings)
                 ? const Color.fromARGB(255, 218, 165, 32)
-                : const Color.fromARGB(255, 18, 0, 153),
+                : StdValues.btnBlue,
           ),
         ),
       ),
@@ -87,9 +89,10 @@ class _MyListTileState extends State<MyListTile> {
                 },
                 icon: Icon(
                   widget.iconBtn2,
-                  color: (widget.iconBtn2 == Icons.do_not_disturb_alt_outlined
+                  size: 35,
+                  color: (widget.iconBtn2 == Icons.do_not_disturb_alt_outlined)
                       ? Colors.red
-                      : const Color.fromARGB(255, 18, 0, 153)),
+                      : StdValues.btnBlue,
                 ),
               ),
             )
@@ -109,19 +112,24 @@ class _MyListTileState extends State<MyListTile> {
         child: DecoratedBox(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: isHover ? const Color.fromARGB(255, 148, 198, 240) : null),
+              color: isHover ? StdValues.bkgFieldGrey : null),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(
               widget.title,
+              textAlign: TextAlign.center,
               style: const TextStyle(
+                fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
             ),
           ),
         ),
       ),
-      subtitle: (widget.subtitle != null) ? Text(widget.subtitle ?? '') : null,
+      subtitle: Text(
+        widget.subtitle ?? '',
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
