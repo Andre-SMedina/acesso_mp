@@ -19,4 +19,20 @@ class StdValues {
   static double imgHeight2 = 460;
   static double imgWidth1 = 400;
   static double imgWidth2 = 460;
+  static TextStyle title =
+      TextStyle(color: bkgBlue, fontSize: 20, fontWeight: FontWeight.bold);
+  static TextStyle titleBox =
+      TextStyle(color: Colors.white, fontSize: 18, backgroundColor: bkgBlue);
+  static BoxDecoration boxShadow = BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+            color: shadowGrey,
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 5))
+      ]);
+  static BoxDecoration boxBar =
+      BoxDecoration(color: bkgBlue, borderRadius: BorderRadius.circular(5));
 }

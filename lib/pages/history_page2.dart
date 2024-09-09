@@ -61,7 +61,7 @@ class _HistoryPage2State extends State<HistoryPage2> {
   @override
   Widget build(BuildContext context) {
     MyFormfield dateField = MyFormfield(
-        dateController: dateController,
+        maskedController: dateController,
         prefixIconBtn: IconButton(
           onPressed: () => selectDate(context),
           icon: const Icon(Icons.calendar_month),
@@ -78,14 +78,11 @@ class _HistoryPage2State extends State<HistoryPage2> {
     }
 
     return MyHomeContainer(
+      difHeight: 130,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('HISTÓRICO DE VISITAS',
-              style: TextStyle(
-                  color: StdValues.bkgBlue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
+          Text('HISTÓRICO DE VISITAS', style: StdValues.title),
           const MyDivider(),
           const SizedBox(
             height: 40,

@@ -122,7 +122,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
         text: 'Registrar novo Acesso');
 
     return MyHomeContainer(
-        difHeight: 300,
+        difHeight: 317,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

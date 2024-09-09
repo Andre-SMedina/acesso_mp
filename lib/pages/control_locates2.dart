@@ -1,5 +1,6 @@
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
+import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:flutter/material.dart';
 
 class ControlLocates2 extends StatelessWidget {
@@ -8,13 +9,16 @@ class ControlLocates2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyHomeContainer(
+        difHeight: 130,
         child: Column(
-      children: [
-        const Text('CONTROLE DE LOTAÇÕES'),
-        Divider(
-          color: StdValues.dividerGrey,
-        )
-      ],
-    ));
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'CONTROLE DE LOTAÇÕES',
+              style: StdValues.title,
+            ),
+            const MyDivider()
+          ],
+        ));
   }
 }

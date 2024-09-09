@@ -12,7 +12,7 @@ class HistoryFunctions {
           style: TextStyle(
               fontWeight: bold! ? FontWeight.bold : FontWeight.normal,
               fontSize: (size != null) ? size : 16,
-              color: (color) ? Colors.black : Colors.white)),
+              color: color ? Colors.black : Colors.white)),
     );
   }
 

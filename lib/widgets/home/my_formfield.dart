@@ -16,7 +16,7 @@ class MyFormfield extends StatelessWidget {
     this.labelText,
     this.sufixIcon,
     this.handleTap,
-    this.dateController,
+    this.maskedController,
     this.prefixIconBtn,
     this.focusNode,
     this.submit,
@@ -27,7 +27,7 @@ class MyFormfield extends StatelessWidget {
   final IconButton? prefixIconBtn;
   final Icon? sufixIcon;
   final FocusNode? focusNode;
-  final TextEditingController? dateController;
+  final TextEditingController? maskedController;
   final Function()? handleTap;
   final Function(String)? submit;
   final List<TextInputFormatter>? listInputFormat;
@@ -55,8 +55,9 @@ class MyFormfield extends StatelessWidget {
             child: TextFormField(
               onTap: handleTap,
               onFieldSubmitted: submit,
-              controller:
-                  (dateController != null) ? dateController : fieldController,
+              controller: (maskedController != null)
+                  ? maskedController
+                  : fieldController,
               inputFormatters: listInputFormat,
               validator: Validatorless.multiple(listValidator),
               focusNode: focusNode,

@@ -48,11 +48,7 @@ class _HomePage2State extends State<HomePage2> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('VISITANTE',
-                  style: TextStyle(
-                      color: StdValues.bkgBlue,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold)),
+              Text('VISITANTE', style: StdValues.title),
               const MyDivider(),
               const SizedBox(
                 height: 10,

@@ -2,7 +2,7 @@ import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/pages/control_locates2.dart';
-import 'package:acesso_mp/pages/control_operators2.dart';
+import 'package:acesso_mp/pages/control_operators_page2.dart';
 import 'package:acesso_mp/pages/history_page2.dart';
 import 'package:acesso_mp/pages/home_page2.dart';
 import 'package:acesso_mp/services/x_provider.dart';
@@ -23,7 +23,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget loadPage = const HomePage2();
+  Widget loadPage = const ControlOperatorsPage2();
   bool userProfile = MyFunctons.getHive('profile')['adm'];
 
   void onSelect(int index) {
@@ -111,7 +111,7 @@ class _ControlPagesState extends State<ControlPages> {
                     callMain: () {
                       setState(() {
                         if (userProfile) {
-                          loadPage = const ControlOperators2();
+                          loadPage = const ControlOperatorsPage2();
                         } else {
                           ZshowDialogs.alert(context, 'Acesso negado!');
                         }
