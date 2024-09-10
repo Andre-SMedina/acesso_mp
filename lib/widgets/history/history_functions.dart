@@ -39,7 +39,7 @@ class HistoryFunctions {
               child: tableText(visitsData[index]['time'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: tableText('Promotoria de justiça')),
+              child: tableText(visitsData[index]['sector'])),
           TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: tableText(visitsData[index]['authorizedBy'])),

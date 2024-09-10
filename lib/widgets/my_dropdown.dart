@@ -1,6 +1,5 @@
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MyDropdown extends StatefulWidget {

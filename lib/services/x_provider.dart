@@ -97,8 +97,8 @@ class XProvider with ChangeNotifier {
   void loadOperatorField(Map operator) {
     locateController.text = operator['locations']['name'];
     name.fieldController.text = operator['name'];
-    cpfController.text = operator['cpf'].toString();
-    phoneController.text = operator['phone'].toString();
+    cpfController.text = operator['cpf'];
+    phoneController.text = operator['phone'];
     email.fieldController.text = operator['email'];
     enableField = false;
 

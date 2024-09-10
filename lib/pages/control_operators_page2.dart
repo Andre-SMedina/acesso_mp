@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/helpers/zshow_dialogs.dart';
+import 'package:acesso_mp/pages/control_operators_functions.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
@@ -8,13 +12,14 @@ import 'package:acesso_mp/widgets/my_divider.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
+// ignore: must_be_immutable
 class ControlOperatorsPage2 extends StatefulWidget {
-  const ControlOperatorsPage2({super.key});
+  ControlOperatorsPage2({super.key});
+  FocusNode focusNode = FocusNode();
 
   @override
   State<ControlOperatorsPage2> createState() => _ControlOperatorsPage2State();
@@ -22,10 +27,11 @@ class ControlOperatorsPage2 extends StatefulWidget {
 
 class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
   bool saveUpdate = true;
-  String location = '';
+  String selectedLocation = '';
   TextEditingController searchControler = TextEditingController();
 
   MyFormfield name = MyFormfield(
+      focusNode: FocusNode(),
       labelText: 'Digite o nome',
       labelTitle: '  Nome',
       listValidator: [Validatorless.required('Campo Obrigatório!')]);
@@ -46,6 +52,7 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
   @override
   Widget build(BuildContext context) {
     var supabase = Supabase.instance.client;
+    name.focusNode!.requestFocus();
 
     List operators = [];
     List locations = MyFunctons.getHive('locationsName');
@@ -54,32 +61,48 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
         searchController: searchControler,
         optionsList: locations,
         getItemSelected: (itemSelected) {
-          location = itemSelected;
+          selectedLocation = itemSelected;
         },
         labelText: 'Selecione uma cidade');
 
     void loadFields(Map operator) {
+      formKey.currentState!.reset();
       dropdown.searchController!.text = operator['locations']['name'];
+      selectedLocation = operator['locations']['name'];
       name.fieldController.text = operator['name'];
-      cpfController.text = operator['cpf'].toString();
-      phoneController.text = operator['phone'].toString();
+      cpfController.text = operator['cpf'];
+      phoneController.text = operator['phone'];
       email.fieldController.text = operator['email'];
       setState(() {});
     }
 
     void clearFields() {
+      formKey.currentState!.reset();
       name.fieldController.clear();
       cpfController.clear();
       phoneController.clear();
       email.fieldController.clear();
       dropdown.searchController!.clear();
-      location = '';
+      selectedLocation = '';
       saveUpdate = true;
       setState(() {});
     }
 
+    Map<String, String> dataFields() {
+      return {
+        'name': name.fieldController.text,
+        'cpf': cpfController.text.replaceAll(RegExp(r'\D'), ''),
+        'phone': phoneController.text.replaceAll(RegExp(r'\D'), ''),
+        'email': email.fieldController.text
+      };
+    }
+
     void updateProfile(Map data, int cpf) async {
       await supabase.from('operators').update(data).eq('cpf', cpf);
+      setState(() {});
+    }
+
+    void reload() {
       setState(() {});
     }
 
@@ -165,14 +188,51 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           MyButton(
-                                              callback: () {
+                                              callback: () async {
                                                 if (formKey.currentState!
                                                         .validate() &&
-                                                    location.isNotEmpty) {}
+                                                    selectedLocation
+                                                        .isNotEmpty) {
+                                                  bool validate = false;
+                                                  if (saveUpdate) {
+                                                    await DbManage.saveOperator(
+                                                            dataFields(),
+                                                            selectedLocation)
+                                                        .then((e) {
+                                                      if (e) validate = true;
+                                                    });
+                                                  }
+
+                                                  if (validate) {
+                                                    clearFields();
+                                                    ZshowDialogs.alert(context,
+                                                        'Operador cadastrado com sucesso!');
+                                                    setState(() {});
+                                                  } else {
+                                                    ZshowDialogs.alert(context,
+                                                        'CPF já cadastrado.');
+                                                  }
+                                                  saveUpdate = true;
+                                                  setState(() {});
+                                                }
                                               },
-                                              text: saveUpdate
-                                                  ? 'Cadastrar'
-                                                  : 'Salvar Alterações'),
+                                              text: 'Cadastrar'),
+                                          MyButton(
+                                              callback: () async {
+                                                if (formKey.currentState!
+                                                        .validate() &&
+                                                    selectedLocation
+                                                        .isNotEmpty) {
+                                                  ControlOperatorsFunctions
+                                                      .update(
+                                                          context: context,
+                                                          reload: reload,
+                                                          data: dataFields(),
+                                                          location:
+                                                              selectedLocation);
+                                                }
+                                              },
+                                              text: 'Salvar Alterações'),
                                           MyButton(
                                               callback: () {
                                                 clearFields();

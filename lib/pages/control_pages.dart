@@ -24,7 +24,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget loadPage = const ControlOperatorsPage2();
+  Widget loadPage = ControlOperatorsPage2();
   bool userProfile = MyFunctons.getHive('profile')['adm'];
 
   void onSelect(int index) {
@@ -109,24 +109,23 @@ class _ControlPagesState extends State<ControlPages> {
                     onSelect: onSelect,
                     title: 'Controle de Atendentes',
                     icon: Icons.supervisor_account_outlined,
-                    callMain: () {
-                      setState(() async {
-                        if (userProfile) {
-                          var box = Hive.box('db');
+                    callMain: () async {
+                      if (userProfile) {
+                        var box = Hive.box('db');
 
-                          await MyFunctons.getLocations().then((value) {
-                            List listFull = value.map((e) {
-                              return e['name'];
-                            }).toList();
-                            box.put('locationsName', listFull);
-                            box.put('locationsFull', value);
-                          });
+                        await MyFunctons.getLocations().then((value) {
+                          List listFull = value.map((e) {
+                            return e['name'];
+                          }).toList();
+                          box.put('locationsName', listFull);
+                          box.put('locationsFull', value);
+                        });
 
-                          loadPage = const ControlOperatorsPage2();
-                        } else {
-                          ZshowDialogs.alert(context, 'Acesso negado!');
-                        }
-                      });
+                        loadPage = ControlOperatorsPage2();
+                      } else {
+                        ZshowDialogs.alert(context, 'Acesso negado!');
+                      }
+                      setState(() {});
                     },
                   ),
                   MyListTile2(

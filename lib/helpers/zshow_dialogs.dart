@@ -1,9 +1,11 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
+import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -150,6 +152,8 @@ class ZshowDialogs {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     String sectorSelected = '';
     String whoAuthSelected = '';
+    TextEditingController locateController = TextEditingController();
+    TextEditingController whoController = TextEditingController();
 
     void submit() {
       if (formKey.currentState!.validate() &&
@@ -166,6 +170,7 @@ class ZshowDialogs {
         labelTitle: 'Finalidade',
         listValidator: [Validatorless.required('Campo obrigatório!')]);
     MyDropdown local = MyDropdown(
+      searchController: locateController,
       labelText: 'Digite o nome do setor',
       optionsList: const [
         'ACEMA',
@@ -186,6 +191,7 @@ class ZshowDialogs {
       },
     );
     MyDropdown whoAuth = MyDropdown(
+      searchController: whoController,
       labelText: 'Quem  autorizou',
       optionsList: const [
         'Maria do Rosário Fernandes',
@@ -335,64 +341,58 @@ class ZshowDialogs {
   static Future<List> updatePassword(BuildContext context) async {
     bool validate = false;
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController passwordController = TextEditingController();
+
     var validates = [
       Validatorless.required('Campo Obrigatório'),
       Validatorless.min(6, 'A senha não pode ter menos de 6 caracteres!'),
     ];
 
+    MyFormfield passField = MyFormfield(
+      labelTitle: 'Digite uma nova senha',
+      listValidator: validates,
+    );
+
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text(
+            backgroundColor: Colors.white,
+            title: Text(
               'Atualizar senha',
+              style: StdValues.title,
               textAlign: TextAlign.center,
             ),
             content: Form(
               key: formKey,
-              child: ConstrainedBox(
+              child: Container(
+                color: Colors.white,
                 constraints:
-                    const BoxConstraints(maxHeight: 200, minWidth: 300),
+                    const BoxConstraints(maxHeight: 260, minWidth: 300),
                 child: Column(
                   children: [
-                    TextFormField(
-                      validator: Validatorless.multiple(
-                        validates,
-                      ),
-                      controller: passwordController,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Senha',
-                          helperText: ''),
+                    MyFormfield(
+                      labelTitle: 'Digite uma nova senha',
+                      listValidator: validates,
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      validator: Validatorless.multiple([
-                        ...validates,
-                        Validatorless.compare(
-                            passwordController, 'As senhas não são iguais!')
-                      ]),
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Confirmar senha',
-                          helperText: ''),
-                    ),
+                    MyFormfield(labelTitle: 'Confirmar Senha', listValidator: [
+                      ...validates,
+                      Validatorless.compare(passField.fieldController,
+                          'As senhas não são iguais!')
+                    ]),
                     const SizedBox(
                       height: 10,
                     ),
-                    ElevatedButton(
-                        onPressed: () {
+                    MyButton(
+                        callback: () {
                           if (formKey.currentState!.validate()) {
                             validate = true;
                             Navigator.pop(context);
                           }
                         },
-                        child: const Text('Registrar'))
+                        text: 'Registrar'),
                   ],
                 ),
               ),
@@ -400,6 +400,6 @@ class ZshowDialogs {
           );
         });
 
-    return [validate, passwordController.text];
+    return [validate, passField.fieldController.text];
   }
 }
