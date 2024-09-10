@@ -1,23 +1,25 @@
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MyDropdown extends StatefulWidget {
-  const MyDropdown({
-    super.key,
-    required this.optionsList,
-    required this.getItemSelected,
-    required this.labelText,
-  });
+  MyDropdown(
+      {super.key,
+      required this.optionsList,
+      required this.getItemSelected,
+      required this.labelText,
+      this.searchController});
   final String labelText;
-  final List<String> optionsList;
+  TextEditingController? searchController;
+  final List optionsList;
   final ValueChanged<String> getItemSelected;
   @override
   MyDropdownState createState() => MyDropdownState();
 }
 
 class MyDropdownState extends State<MyDropdown> {
-  TextEditingController searchController = TextEditingController();
+  // TextEditingController searchController = TextEditingController();
   List<String> filterList = [];
   List<String> visitedList = [];
 
@@ -38,7 +40,7 @@ class MyDropdownState extends State<MyDropdown> {
       return e.toLowerCase() == suggestion.toLowerCase();
     }).toList()[0];
 
-    searchController.text = visitor;
+    widget.searchController!.text = visitor;
     widget.getItemSelected(visitor);
   }
 
@@ -49,7 +51,7 @@ class MyDropdownState extends State<MyDropdown> {
       // ignore: avoid_types_as_parameter_names
       child: TypeAheadField(
         constraints: const BoxConstraints(maxHeight: 200),
-        controller: searchController,
+        controller: widget.searchController,
         emptyBuilder: (context) => const Padding(
           padding: EdgeInsets.all(10.0),
           child: Text('Nenhum resultado encontrado'),

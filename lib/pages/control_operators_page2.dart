@@ -1,13 +1,15 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
+import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:acesso_mp/widgets/my_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -20,6 +22,9 @@ class ControlOperatorsPage2 extends StatefulWidget {
 
 class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
   bool saveUpdate = true;
+  String location = '';
+  TextEditingController searchControler = TextEditingController();
+
   MyFormfield name = MyFormfield(
       labelText: 'Digite o nome',
       labelTitle: '  Nome',
@@ -37,37 +42,42 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
         Validatorless.required('Campo Obrigatório!'),
         Validatorless.email('Email inválido!')
       ]);
-  MyFormfield location = MyFormfield(
-      labelTitle: '  Lotação',
-      labelText: 'Escoha a lotação',
-      listValidator: [
-        Validatorless.required('Campo Obrigatório!'),
-      ]);
-
-  void loadFields(Map operator) {
-    name.fieldController.text = operator['name'];
-    cpfController.text = operator['cpf'].toString();
-    phoneController.text = operator['phone'].toString();
-    email.fieldController.text = operator['email'];
-    location.fieldController.text = operator['locations']['name'];
-    setState(() {});
-  }
-
-  void clearFields() {
-    name.fieldController.clear();
-    cpfController.clear();
-    phoneController.clear();
-    email.fieldController.clear();
-    location.fieldController.clear();
-    saveUpdate = true;
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     var supabase = Supabase.instance.client;
 
     List operators = [];
+    List locations = MyFunctons.getHive('locationsName');
+
+    MyDropdown dropdown = MyDropdown(
+        searchController: searchControler,
+        optionsList: locations,
+        getItemSelected: (itemSelected) {
+          location = itemSelected;
+        },
+        labelText: 'Selecione uma cidade');
+
+    void loadFields(Map operator) {
+      dropdown.searchController!.text = operator['locations']['name'];
+      name.fieldController.text = operator['name'];
+      cpfController.text = operator['cpf'].toString();
+      phoneController.text = operator['phone'].toString();
+      email.fieldController.text = operator['email'];
+      setState(() {});
+    }
+
+    void clearFields() {
+      name.fieldController.clear();
+      cpfController.clear();
+      phoneController.clear();
+      email.fieldController.clear();
+      dropdown.searchController!.clear();
+      location = '';
+      saveUpdate = true;
+      setState(() {});
+    }
+
     void updateProfile(Map data, int cpf) async {
       await supabase.from('operators').update(data).eq('cpf', cpf);
       setState(() {});
@@ -149,7 +159,7 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                         ],
                                       ),
                                       email,
-                                      location,
+                                      dropdown,
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
@@ -157,7 +167,8 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                           MyButton(
                                               callback: () {
                                                 if (formKey.currentState!
-                                                    .validate()) {}
+                                                        .validate() &&
+                                                    location.isNotEmpty) {}
                                               },
                                               text: saveUpdate
                                                   ? 'Cadastrar'

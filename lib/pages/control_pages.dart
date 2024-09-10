@@ -10,6 +10,7 @@ import 'package:acesso_mp/widgets/my_appbar.dart';
 import 'package:acesso_mp/widgets/my_list_tile_menu.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -109,8 +110,18 @@ class _ControlPagesState extends State<ControlPages> {
                     title: 'Controle de Atendentes',
                     icon: Icons.supervisor_account_outlined,
                     callMain: () {
-                      setState(() {
+                      setState(() async {
                         if (userProfile) {
+                          var box = Hive.box('db');
+
+                          await MyFunctons.getLocations().then((value) {
+                            List listFull = value.map((e) {
+                              return e['name'];
+                            }).toList();
+                            box.put('locationsName', listFull);
+                            box.put('locationsFull', value);
+                          });
+
                           loadPage = const ControlOperatorsPage2();
                         } else {
                           ZshowDialogs.alert(context, 'Acesso negado!');
