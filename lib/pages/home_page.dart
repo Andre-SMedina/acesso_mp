@@ -208,7 +208,8 @@ class _HomePageState extends State<HomePage> {
                                                             image:
                                                                 dataVisitor[5],
                                                           ),
-                                                          'save')
+                                                          'save',
+                                                          context)
                                                       .then((v) {
                                                     if (v == 'saved') {
                                                       ZshowDialogs.alert(
@@ -269,7 +270,8 @@ class _HomePageState extends State<HomePage> {
                                                             image:
                                                                 dataVisitor[5],
                                                           ),
-                                                          'update')
+                                                          'update',
+                                                          context)
                                                       .then((v) {
                                                     if (v == 'updated') {
                                                       ZshowDialogs.alert(
@@ -391,7 +393,7 @@ class _HomePageState extends State<HomePage> {
 
                                         bool success = false;
                                         await manageDate
-                                            .authorized()
+                                            .authorized(context)
                                             .then((v) => success = v);
 
                                         if (success) {

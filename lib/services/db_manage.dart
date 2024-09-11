@@ -2,7 +2,6 @@ import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -10,10 +9,7 @@ class DbManage {
   static final SupabaseClient supabase = Supabase.instance.client;
 
   static Future<bool> save(ModelVisitors data, List<String> auth) async {
-    var box = Hive.box('db');
-    Map profile = box.get('profile');
-
-    if (profile['name'] == 'adm') return true;
+    Map profile = MyFunctons.getHive('profile');
 
     String dateNow = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     String date = dateNow.split(' ')[0];
@@ -118,10 +114,8 @@ class DbManage {
       required String column,
       required String find,
       required String boxName}) async {
-    var box = Hive.box('db');
-
     if (boxName != '') {
-      var oldData = box.get(boxName);
+      var oldData = MyFunctons.getHive(boxName);
 
       if (!MyFunctons.getHive('profile')['adm']) {
         data['cpf'] = oldData['cpf'];

@@ -97,7 +97,7 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
       };
     }
 
-    void updateProfile(Map data, int cpf) async {
+    void updateProfile(Map data, String cpf) async {
       await supabase.from('operators').update(data).eq('cpf', cpf);
       setState(() {});
     }
@@ -214,6 +214,9 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                                   }
                                                   saveUpdate = true;
                                                   setState(() {});
+                                                } else {
+                                                  ZshowDialogs.alert(context,
+                                                      'Preencha todos os campos!');
                                                 }
                                               },
                                               text: 'Cadastrar'),
@@ -230,6 +233,9 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                                           data: dataFields(),
                                                           location:
                                                               selectedLocation);
+                                                } else {
+                                                  ZshowDialogs.alert(context,
+                                                      'Preencha todos os campos!');
                                                 }
                                               },
                                               text: 'Salvar Alterações'),

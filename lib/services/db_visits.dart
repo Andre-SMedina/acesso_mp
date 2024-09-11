@@ -1,5 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,9 +8,8 @@ class DbVisits {
   final Function alert;
   DbVisits({required this.alert, required this.alertVisited});
 
-  Future<bool> authorized() async {
-    var box = Hive.box('db');
-    var checked = box.get('visitor');
+  Future<bool> authorized(BuildContext context) async {
+    var checked = MyFunctons.getHive('visitor');
 
     if (checked != null && checked != '') {
       List<String> auth = await alertVisited();
@@ -25,8 +24,6 @@ class DbVisits {
 
       SupabaseClient supabase = Supabase.instance.client;
       Map profile = MyFunctons.getHive('profile');
-
-      if (profile['name'] == 'adm') return true;
 
       await supabase.from('visits').insert({
         'goal': auth[0],

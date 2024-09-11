@@ -5,7 +5,6 @@ import 'package:acesso_mp/services/db_manage.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_dropdown.dart';
-import 'package:acesso_mp/widgets/my_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -370,10 +369,7 @@ class ZshowDialogs {
                     const BoxConstraints(maxHeight: 260, minWidth: 300),
                 child: Column(
                   children: [
-                    MyFormfield(
-                      labelTitle: 'Digite uma nova senha',
-                      listValidator: validates,
-                    ),
+                    passField,
                     const SizedBox(
                       height: 10,
                     ),

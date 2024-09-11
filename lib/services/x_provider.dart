@@ -115,18 +115,6 @@ class XProvider with ChangeNotifier {
     ],
   );
 
-  // MyTextField name = MyTextField(
-  //   text: 'Nome',
-  //   listInputFormat: const [],
-  //   listValidator: [
-  //     Validatorless.required('Campo obrigatório!'),
-  //TODO: se colocar um nome e um espaço na hora de cadastrar o nome, dá erro
-  //     (v) => v!.split(' ').length >= 2
-  //         ? null
-  //         : 'O nome deve ter nome e sobrenome!',
-  //   ],
-  // );
-
   Widget cpfWidget() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,13 +165,6 @@ class XProvider with ChangeNotifier {
     ],
     listValidator: [Validatorless.required('Campo obrigatório!')],
   );
-  // MyTextField rg = MyTextField(
-  //   text: 'RG',
-  //   listInputFormat: [
-  //     FilteringTextInputFormatter.digitsOnly,
-  //   ],
-  //   listValidator: [Validatorless.required('Campo obrigatório!')],
-  // );
 
   Widget phoneWidget() {
     return Column(

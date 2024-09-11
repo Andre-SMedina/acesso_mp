@@ -24,7 +24,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget loadPage = ControlOperatorsPage2();
+  Widget loadPage = const HomePage2();
   bool userProfile = MyFunctons.getHive('profile')['adm'];
 
   void onSelect(int index) {

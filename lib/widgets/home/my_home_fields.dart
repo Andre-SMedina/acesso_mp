@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/main.dart';
@@ -94,6 +95,15 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
 
   @override
   Widget build(BuildContext context) {
+    bool admUser() {
+      if (MyFunctons.getHive('profile')['name'] == 'adm') {
+        ZshowDialogs.alert(context, 'Ação bloqueada para esse usuário!');
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     bool sizeValidate =
         (MediaQuery.sizeOf(context).width <= 1700) ? false : true;
 
@@ -107,13 +117,15 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
     Widget authButton = MyButton(
         icon: Icons.door_back_door_outlined,
         callback: () async {
+          if (admUser()) return;
+
           DbVisits manageDate = DbVisits(
             alert: alertAuth,
             alertVisited: alertVisited,
           );
 
           bool success = false;
-          await manageDate.authorized().then((v) => success = v);
+          await manageDate.authorized(context).then((v) => success = v);
 
           if (success) {
             clearFields();
@@ -211,6 +223,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                         MyButton(
                                             icon: Icons.cloud_upload_outlined,
                                             callback: () {
+                                              if (admUser()) return;
                                               functions.register();
                                             },
                                             text: 'Cadastrar Visitante'),

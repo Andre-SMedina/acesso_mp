@@ -21,7 +21,7 @@ class ControlOperatorsFunctions {
     validate = false;
 
     for (var item in cpfs) {
-      if (item['cpf'].toString() == data['cpf']) {
+      if (item['cpf'] == data['cpf']) {
         await ZshowDialogs.confirm(context, 'Salvar alterações?').then((e) {
           validate = e;
         });
@@ -59,9 +59,5 @@ class ControlOperatorsFunctions {
     } else {
       ZshowDialogs.alert(context, 'Operador não encontrado!');
     }
-  }
-
-  static save() {
-    //
   }
 }

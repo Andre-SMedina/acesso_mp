@@ -16,7 +16,6 @@ class LoginPage2 extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  // final FocusNode emailFocus = FocusNode();
 
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
@@ -87,7 +86,15 @@ class LoginPage2 extends StatelessWidget {
           debugPrint(err.toString());
         }
       }
-
+//TODO testar esse código após autenticar para ver seu muda a senha
+// final supabase = Supabase.instance.client;
+// await supabase.auth.updateUser(
+//   UserAttributes(
+//     data: {
+//       'password': newPassword, // new password to update
+//     },
+//   ),
+// );
       if (auth) {
         MyFunctons.getOperators().then((e) {
           MyFunctons.putHive('operators', e);
@@ -101,21 +108,6 @@ class LoginPage2 extends StatelessWidget {
       }
     }
   }
-
-  // @override
-  // void dispose() {
-  //   emailFocus.dispose();
-  //   super.dispose();
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // aguarda a montagem do widget para depois requisitar o foco
-  // WidgetsBinding.instance.addPostFrameCallback((_) {
-  // if (mounted) emailFocus.requestFocus();
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {

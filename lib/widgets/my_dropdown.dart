@@ -2,6 +2,7 @@ import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
+// ignore: must_be_immutable
 class MyDropdown extends StatefulWidget {
   MyDropdown(
       {super.key,
@@ -18,7 +19,6 @@ class MyDropdown extends StatefulWidget {
 }
 
 class MyDropdownState extends State<MyDropdown> {
-  // TextEditingController searchController = TextEditingController();
   List<String> filterList = [];
   List<String> visitedList = [];
 
