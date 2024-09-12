@@ -6,7 +6,6 @@ import 'package:acesso_mp/services/x_provider.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_formfield_login.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,104 +19,62 @@ class LoginPage2 extends StatelessWidget {
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
     final operators = await supabase.from('operators').select(
-        'id, name, userName, email, active, newUser, adm, change_password, locations(*)');
+        'id, name, userName, email, active, newUser, adm, change_password, password, locations(*)');
 
     if (_formKey.currentState!.validate()) {
-      if (userController.text == 'adm') {
-        await supabase.auth.signInWithPassword(
-            email: 'adm@adm.com', password: passwordController.text);
-      }
-      var box = Hive.box('db');
+      if (userController.text == 'adm') {}
       bool validate = false;
-      String email = '';
-      bool auth = false;
-      bool active = false;
-      bool newUser = false;
-      bool changePassword = false;
-      String userName = '';
-      String password = '';
+      String newPassword = '';
+      late Map user;
 
       for (var e in operators) {
         if (e.containsValue(userController.text)) {
-          email = e['email'];
-          active = e['active'];
-          newUser = e['newUser'];
           validate = true;
-          userName = e['userName'];
-          changePassword = e['change_password'];
-          box.put('profile', e);
+          MyFunctons.putHive('profile', e);
+          user = e;
         }
       }
 
       if (!validate) {
         return ZshowDialogs.alert(context, 'Usuário não encontrado!');
       }
-      if (newUser) {
+      if (user['newUser']) {
         await ZshowDialogs.updatePassword(context).then((e) {
           validate = e[0];
-          password = e[1];
+          newPassword = e[1];
         });
 
         if (validate) {
-          try {
-            await supabase.auth.signUp(
-              email: email,
-              password: password,
-            );
-            await supabase
-                .from('operators')
-                .update({'active': true, 'newUser': false}).eq('email', email);
-            await supabase.auth.updateUser(UserAttributes(data: {
-              'displayName': userName,
-            }));
-            auth = true;
-          } catch (err) {
-            debugPrint(err.toString());
-          }
-        }
-      } else {
-        if (!active) {
-          return ZshowDialogs.alert(context, 'Usuário desativado');
-        }
-        try {
-          await supabase.auth.signInWithPassword(
-              email: email, password: passwordController.text);
-
-          auth = true;
-        } catch (err) {
-          debugPrint(err.toString());
+          await supabase.from('operators').update({
+            'password': newPassword,
+            'active': true,
+            'newUser': false
+          }).eq('email', user['email']);
         }
       }
 
-      if (auth) {
-        if (changePassword) {
-          await ZshowDialogs.updatePassword(context).then((e) {
-            validate = e[0];
-            password = e[1];
-          });
+      if (user['change_password']) {
+        await ZshowDialogs.updatePassword(context).then((e) {
+          validate = e[0];
+          newPassword = e[1];
+        });
 
-          if (validate) {
-            try {
-              await supabase.auth.updateUser(UserAttributes(
-                password: password,
-              ));
-              await supabase
-                  .from('operators')
-                  .update({'change_password': false}).eq('email', email);
-            } catch (err) {
-              validate = false;
-              debugPrint(err.toString());
-            }
-
-            if (!validate) {
-              return ZshowDialogs.alert(
-                  context, 'A senha não pode ser igual a anterior!');
-            }
-          } else {
-            return ZshowDialogs.alert(
-                context, 'É necessário redefinir a senha!');
-          }
+        if (validate) {
+          await supabase
+              .from('operators')
+              .update({'change_password': false, 'password': newPassword}).eq(
+                  'email', user['email']);
+          user['password'] = newPassword;
+          passwordController.text = newPassword;
+        } else {
+          return ZshowDialogs.alert(context, 'É necessário redefinir a senha!');
         }
+      }
+
+      if (!user['active']) {
+        return ZshowDialogs.alert(context, 'Usuário desativado');
+      }
+      if (user['password'] == passwordController.text) {
         MyFunctons.getOperators().then((e) {
           MyFunctons.putHive('operators', e);
         });

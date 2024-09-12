@@ -327,7 +327,6 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                                   }, operators[index]['cpf']);
                                                 },
                                                 callIconPass: () {
-                                                  print('kkk');
                                                   updateProfile({
                                                     'change_password': true,
                                                   }, operators[index]['cpf']);

@@ -3,7 +3,6 @@ import 'package:acesso_mp/services/x_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 PreferredSizeWidget? myAppbar(BuildContext context, String title) {
   var box = Hive.box('db');
@@ -75,8 +74,6 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
               onPressed: () async {
                 context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/');
-                var supabase = Supabase.instance.client;
-                await supabase.auth.signOut();
               },
               child: const Text(
                 'Sair',
@@ -88,8 +85,6 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
                 onPressed: () async {
                   context.read<XProvider>().clearFields();
                   Navigator.pushReplacementNamed(context, '/');
-                  var supabase = Supabase.instance.client;
-                  await supabase.auth.signOut();
                 },
                 icon: const Icon(
                   Icons.logout,

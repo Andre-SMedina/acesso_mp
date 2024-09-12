@@ -12,7 +12,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ControlPages extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -35,124 +34,98 @@ class _ControlPagesState extends State<ControlPages> {
 
   @override
   Widget build(BuildContext context) {
-    if (Supabase.instance.client.auth.currentUser == null) {
-      return Scaffold(
-        body: Center(
-          child: SizedBox(
-            height: 100,
+    // changePage(const HomePage2());
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 10),
+            height: double.infinity,
+            width: 300,
+            color: StdValues.bkgGrey,
             child: Column(
               children: [
-                const Text(
-                  'Nenhum usuário logado no sistema',
-                  style: TextStyle(fontSize: 30),
+                MyListTile2(
+                  index: 0,
+                  selectedIndex: selectedIndex,
+                  onSelect: onSelect,
+                  title: 'Painel Principal',
+                  icon: Icons.home_outlined,
+                  callMain: () {
+                    MyFunctons.getOperators().then((e) {
+                      MyFunctons.putHive('operators', e);
+                    });
+                    context.read<XProvider>().clearFields();
+                    setState(() {
+                      loadPage = const HomePage2();
+                    });
+                  },
                 ),
-                const SizedBox(
-                  height: 15,
+                MyListTile2(
+                  index: 1,
+                  selectedIndex: selectedIndex,
+                  onSelect: onSelect,
+                  title: 'Histórico de Visita',
+                  icon: Icons.access_time,
+                  callMain: () {
+                    context.read<XProvider>().clearFields();
+                    setState(() {
+                      loadPage = const HistoryPage2();
+                    });
+                  },
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/');
-                    },
-                    child: const Text('Voltar para login'))
-              ],
-            ),
-          ),
-        ),
-      );
-    } else {
-      // changePage(const HomePage2());
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              height: double.infinity,
-              width: 300,
-              color: StdValues.bkgGrey,
-              child: Column(
-                children: [
-                  MyListTile2(
-                    index: 0,
-                    selectedIndex: selectedIndex,
-                    onSelect: onSelect,
-                    title: 'Painel Principal',
-                    icon: Icons.home_outlined,
-                    callMain: () {
-                      MyFunctons.getOperators().then((e) {
-                        MyFunctons.putHive('operators', e);
+                MyListTile2(
+                  index: 2,
+                  selectedIndex: selectedIndex,
+                  onSelect: onSelect,
+                  title: 'Controle de Atendentes',
+                  icon: Icons.supervisor_account_outlined,
+                  callMain: () async {
+                    if (userProfile) {
+                      var box = Hive.box('db');
+
+                      await MyFunctons.getLocations().then((value) {
+                        List listFull = value.map((e) {
+                          return e['name'];
+                        }).toList();
+                        box.put('locationsName', listFull);
+                        box.put('locationsFull', value);
                       });
-                      context.read<XProvider>().clearFields();
-                      setState(() {
-                        loadPage = const HomePage2();
-                      });
-                    },
-                  ),
-                  MyListTile2(
-                    index: 1,
-                    selectedIndex: selectedIndex,
-                    onSelect: onSelect,
-                    title: 'Histórico de Visita',
-                    icon: Icons.access_time,
-                    callMain: () {
-                      context.read<XProvider>().clearFields();
-                      setState(() {
-                        loadPage = const HistoryPage2();
-                      });
-                    },
-                  ),
-                  MyListTile2(
-                    index: 2,
-                    selectedIndex: selectedIndex,
-                    onSelect: onSelect,
-                    title: 'Controle de Atendentes',
-                    icon: Icons.supervisor_account_outlined,
-                    callMain: () async {
+
+                      loadPage = ControlOperatorsPage2();
+                    } else {
+                      ZshowDialogs.alert(context, 'Acesso negado!');
+                    }
+                    setState(() {});
+                  },
+                ),
+                MyListTile2(
+                  index: 3,
+                  selectedIndex: selectedIndex,
+                  onSelect: onSelect,
+                  title: 'Controle de Lotação',
+                  icon: Icons.maps_home_work_outlined,
+                  callMain: () {
+                    setState(() {
                       if (userProfile) {
-                        var box = Hive.box('db');
-
-                        await MyFunctons.getLocations().then((value) {
-                          List listFull = value.map((e) {
-                            return e['name'];
-                          }).toList();
-                          box.put('locationsName', listFull);
-                          box.put('locationsFull', value);
-                        });
-
-                        loadPage = ControlOperatorsPage2();
+                        loadPage = const ControlLocates2();
                       } else {
                         ZshowDialogs.alert(context, 'Acesso negado!');
                       }
-                      setState(() {});
-                    },
-                  ),
-                  MyListTile2(
-                    index: 3,
-                    selectedIndex: selectedIndex,
-                    onSelect: onSelect,
-                    title: 'Controle de Lotação',
-                    icon: Icons.maps_home_work_outlined,
-                    callMain: () {
-                      setState(() {
-                        if (userProfile) {
-                          loadPage = const ControlLocates2();
-                        } else {
-                          ZshowDialogs.alert(context, 'Acesso negado!');
-                        }
-                      });
-                    },
-                  ),
-                ],
-              ),
+                    });
+                  },
+                ),
+              ],
             ),
-            SingleChildScrollView(
-                child: Padding(
-                    padding: const EdgeInsets.only(top: 25), child: loadPage))
-          ],
-        ),
-      );
-    }
+          ),
+          SingleChildScrollView(
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 25), child: loadPage))
+        ],
+      ),
+    );
   }
 }
