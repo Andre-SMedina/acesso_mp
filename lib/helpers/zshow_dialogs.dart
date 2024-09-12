@@ -133,11 +133,14 @@ class ZshowDialogs {
               const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           actions: [
             Center(
-              child: ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: SizedBox(
+                width: 100,
+                child: MyButton(
+                  text: 'OK',
+                  callback: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ],

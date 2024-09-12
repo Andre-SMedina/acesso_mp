@@ -35,6 +35,9 @@ class MyFormfieldLogin extends StatelessWidget {
         border: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
+        focusedBorder: UnderlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 2, color: StdValues.bkgBlue)),
       ),
       onFieldSubmitted: call,
       validator: (value) {

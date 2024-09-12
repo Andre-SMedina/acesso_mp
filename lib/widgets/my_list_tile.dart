@@ -14,6 +14,7 @@ class MyListTile extends StatefulWidget {
   final VoidCallback callMain;
   final VoidCallback callIconBtn1;
   final VoidCallback callIconBtn2;
+  final VoidCallback? callIconPass;
   const MyListTile(
       {super.key,
       required this.title,
@@ -26,7 +27,8 @@ class MyListTile extends StatefulWidget {
       required this.callIconBtn1,
       required this.iconTip1,
       required this.iconTip2,
-      required this.actionBtn1});
+      required this.actionBtn1,
+      this.callIconPass});
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -64,7 +66,7 @@ class _MyListTileState extends State<MyListTile> {
             widget.iconBtn1,
             size: 35,
             color: (widget.iconBtn1 == Icons.admin_panel_settings)
-                ? const Color.fromARGB(255, 218, 165, 32)
+                ? const Color(0xFFDAA520)
                 : StdValues.btnBlue,
           ),
         ),
@@ -115,13 +117,37 @@ class _MyListTileState extends State<MyListTile> {
               color: isHover ? StdValues.bkgFieldGrey : null),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                (widget.callIconPass != null)
+                    ? Tooltip(
+                        message: 'Redefinir senha',
+                        child: IconButton(
+                            onPressed: (widget.callIconPass != null)
+                                ? () {
+                                    ZshowDialogs.confirm(context,
+                                            'Confirmar redefinição de senha?')
+                                        .then((e) {
+                                      if (e) widget.callIconPass!();
+                                    });
+                                  }
+                                : () {},
+                            icon: const Icon(
+                              Icons.vpn_key_outlined,
+                              color: Color(0xFFDAA520),
+                            )),
+                      )
+                    : const SizedBox(),
+              ],
             ),
           ),
         ),

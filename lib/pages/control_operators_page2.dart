@@ -326,6 +326,12 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                                         ['active']
                                                   }, operators[index]['cpf']);
                                                 },
+                                                callIconPass: () {
+                                                  print('kkk');
+                                                  updateProfile({
+                                                    'change_password': true,
+                                                  }, operators[index]['cpf']);
+                                                },
                                               ),
                                               if (index < operators.length)
                                                 const Divider()

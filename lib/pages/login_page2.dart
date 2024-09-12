@@ -20,7 +20,7 @@ class LoginPage2 extends StatelessWidget {
   void _login(BuildContext context) async {
     final supabase = Supabase.instance.client;
     final operators = await supabase.from('operators').select(
-        'id, name, userName, email, active, newUser, adm, locations(*)');
+        'id, name, userName, email, active, newUser, adm, change_password, locations(*)');
 
     if (_formKey.currentState!.validate()) {
       if (userController.text == 'adm') {
@@ -33,6 +33,7 @@ class LoginPage2 extends StatelessWidget {
       bool auth = false;
       bool active = false;
       bool newUser = false;
+      bool changePassword = false;
       String userName = '';
       String password = '';
 
@@ -43,6 +44,7 @@ class LoginPage2 extends StatelessWidget {
           newUser = e['newUser'];
           validate = true;
           userName = e['userName'];
+          changePassword = e['change_password'];
           box.put('profile', e);
         }
       }
@@ -86,16 +88,36 @@ class LoginPage2 extends StatelessWidget {
           debugPrint(err.toString());
         }
       }
-//TODO testar esse código após autenticar para ver seu muda a senha
-// final supabase = Supabase.instance.client;
-// await supabase.auth.updateUser(
-//   UserAttributes(
-//     data: {
-//       'password': newPassword, // new password to update
-//     },
-//   ),
-// );
+
       if (auth) {
+        if (changePassword) {
+          await ZshowDialogs.updatePassword(context).then((e) {
+            validate = e[0];
+            password = e[1];
+          });
+
+          if (validate) {
+            try {
+              await supabase.auth.updateUser(UserAttributes(
+                password: password,
+              ));
+              await supabase
+                  .from('operators')
+                  .update({'change_password': false}).eq('email', email);
+            } catch (err) {
+              validate = false;
+              debugPrint(err.toString());
+            }
+
+            if (!validate) {
+              return ZshowDialogs.alert(
+                  context, 'A senha não pode ser igual a anterior!');
+            }
+          } else {
+            return ZshowDialogs.alert(
+                context, 'É necessário redefinir a senha!');
+          }
+        }
         MyFunctons.getOperators().then((e) {
           MyFunctons.putHive('operators', e);
         });
