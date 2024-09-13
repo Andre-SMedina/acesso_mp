@@ -1,3 +1,4 @@
+import 'package:acesso_mp/helpers/std_values.dart';
 import 'package:acesso_mp/pages/control_pages.dart';
 import 'package:acesso_mp/pages/login_page2.dart';
 import 'package:acesso_mp/services/x_provider.dart';
@@ -58,18 +59,12 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
           backgroundColor: Color.fromARGB(255, 14, 0, 167),
         ),
-        // inputDecorationTheme: const InputDecorationTheme(
-        //     focusedBorder: UnderlineInputBorder(
-        //         borderSide: BorderSide(color: Color(0xFF053F63)))
-        // border: OutlineInputBorder(borderSide: BorderSide()),
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide:
-        //       BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
-        // ),
-        // ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateColor.resolveWith((context) {
+            return StdValues.btnBlue; // or any other color you want
+          }),
+          thickness: WidgetStateProperty.all(12),
+        ),
         textTheme: const TextTheme(
             headlineLarge:
                 TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
@@ -80,9 +75,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => ControlPages(
               cameras: cameras,
             ),
-        // '/history': (context) => const HistoryPage(),
-        // '/controlLocates': (context) => const ControlLocatesPage(),
-        // '/controlOperators': (context) => const ControlOperatorsPage(),
       },
     );
   }

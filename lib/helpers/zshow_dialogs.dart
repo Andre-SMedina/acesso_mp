@@ -21,6 +21,15 @@ class ZshowDialogs {
       var visitorHistoric = checked['visits'];
       List operators = MyFunctons.getHive('operators');
 
+      visitorHistoric.sort((a, b) {
+        DateTime dateA = DateTime.parse(a['date']);
+        DateTime dateB = DateTime.parse(b['date']);
+        if (dateA.isBefore(dateB)) return -1;
+        if (dateA.isAfter(dateB)) return 1;
+
+        return 0; // If both dates and times are equal
+      });
+
       await showDialog(
         // ignore: use_build_context_synchronously
         context: context,
