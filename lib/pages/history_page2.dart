@@ -7,6 +7,7 @@ import 'package:acesso_mp/widgets/home/my_home_container.dart';
 import 'package:acesso_mp/widgets/home/my_formfield.dart';
 import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:acesso_mp/widgets/my_divider.dart';
+import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -45,17 +46,31 @@ class _HistoryPage2State extends State<HistoryPage2> {
   }
 
   Future<void> selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null && picked != DateTime.now()) {
-      String date = Convert.formatDate(picked.toString().split(' ')[0]);
-      dateController.text = date;
+    String addZero(int date) {
+      if (date.toString().length < 2) return '0$date';
+      return date.toString();
     }
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: SizedBox(
+              height: 300,
+              width: 300,
+              child: DatePicker(
+                  centerLeadingDate: true,
+                  maxDate: DateTime(2101),
+                  minDate: DateTime(2000),
+                  initialDate: DateTime.now(),
+                  onDateSelected: (value) {
+                    dateController.text =
+                        "${addZero(value.day)}/${addZero(value.month)}/${value.year}";
+                    Navigator.pop(context);
+                  }),
+            ),
+          );
+        });
   }
 
   @override
@@ -159,7 +174,6 @@ class _HistoryPage2State extends State<HistoryPage2> {
                         },
                         suggestionsCallback: (search) {
                           List<String> filter = [];
-                          selectedLocation = false;
 
                           for (var i in locationsName) {
                             if (i
@@ -193,7 +207,6 @@ class _HistoryPage2State extends State<HistoryPage2> {
                     callback: () {
                       if (selectedLocation) {
                         loadLocation(dropController.text);
-                        selectedLocation = false;
                       } else {
                         ZshowDialogs.alert(context, 'Escolha uma Cidade!');
                       }
