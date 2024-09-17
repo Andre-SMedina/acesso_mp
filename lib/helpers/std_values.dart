@@ -16,10 +16,10 @@ class StdValues {
   static Color textGrey = const Color(0xFF7D7D7D);
   static Color shadowGrey = const Color.fromARGB(255, 178, 178, 178);
   //Sizes
-  static double imgHeight1 = 400;
-  static double imgHeight2 = 460;
-  static double imgWidth1 = 400;
-  static double imgWidth2 = 460;
+  static double imgHeight1 = 350;
+  static double imgHeight2 = 410;
+  static double imgWidth1 = 350;
+  static double imgWidth2 = 410;
   static TextStyle title =
       TextStyle(color: bkgBlue, fontSize: 20, fontWeight: FontWeight.bold);
   static TextStyle titleBox =

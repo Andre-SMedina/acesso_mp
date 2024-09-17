@@ -146,6 +146,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                       fontWeight: FontWeight.bold)),
               const MyDivider(),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
@@ -156,7 +157,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                         children: [
                           ConstrainedBox(
                             constraints: const BoxConstraints(
-                              maxHeight: 550,
+                              maxHeight: 500,
                             ),
                             child: Consumer<XProvider>(
                               builder: (context, provider, child) {
@@ -209,7 +210,7 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
                                       ],
                                     ),
                                     Divider(
-                                      height: sizeValidate ? 150 : 30,
+                                      height: sizeValidate ? 100 : 30,
                                       thickness: 2,
                                     ),
                                     const Spacer(flex: 1),

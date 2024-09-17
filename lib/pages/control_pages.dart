@@ -34,7 +34,6 @@ class _ControlPagesState extends State<ControlPages> {
 
   @override
   Widget build(BuildContext context) {
-    // changePage(const HomePage2());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: myAppbar(context, 'Controle de Acesso ao Ministério Público'),
