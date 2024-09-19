@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:acesso_mp/helpers/zshow_dialogs.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
@@ -41,9 +43,7 @@ class MyHomeFunctions {
                   job: dataVisitor[4],
                   image: dataVisitor[5],
                 ),
-                // ignore: use_build_context_synchronously
                 'update',
-                // ignore: use_build_context_synchronously
                 context)
             .then((v) {
           if (v == 'updated') {
@@ -53,7 +53,6 @@ class MyHomeFunctions {
           }
         });
       } else {
-        // ignore: use_build_context_synchronously
         ZshowDialogs.alert(context, 'Imagem não capturada!');
       }
     }

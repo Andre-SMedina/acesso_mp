@@ -89,7 +89,7 @@ class MyDropdownHomeState extends State<MyDropdownHome> {
                 ),
                 border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Digite o nome do visitante'),
+                hintText: 'Digite o nome do visitante'),
           );
         },
         itemBuilder: (context, suggestion) {

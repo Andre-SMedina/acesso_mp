@@ -58,18 +58,14 @@ class _MyListTile2State extends State<MyListTile2> {
               widget.callMain!();
             }
           },
-          leading: AnimatedScale(
-            duration: const Duration(milliseconds: 150),
-            scale: isHover ? 1.2 : 1,
-            child: Icon(
-              widget.icon,
-              color: (widget.selectedIndex == widget.index)
-                  ? Colors.white
-                  : (isHover)
-                      ? Colors.white
-                      : null,
-              size: 35,
-            ),
+          leading: Icon(
+            widget.icon,
+            color: (widget.selectedIndex == widget.index)
+                ? Colors.white
+                : (isHover)
+                    ? Colors.white
+                    : null,
+            size: 35,
           ),
           title: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 150),

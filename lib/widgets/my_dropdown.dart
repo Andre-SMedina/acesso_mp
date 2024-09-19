@@ -79,7 +79,7 @@ class MyDropdownState extends State<MyDropdown> {
                 ),
                 border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: widget.labelText),
+                hintText: widget.labelText),
           );
         },
         itemBuilder: (context, suggestion) {

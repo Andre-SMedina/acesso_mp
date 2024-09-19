@@ -60,6 +60,7 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
       ),
       actions: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             VerticalDivider(
               color: StdValues.dividerGrey,
@@ -67,29 +68,29 @@ PreferredSizeWidget? myAppbar(BuildContext context, String title) {
               indent: 20,
               thickness: 2,
             ),
-            const SizedBox(
-              width: 25,
-            ),
-            TextButton(
-              onPressed: () async {
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              hoverColor: StdValues.hoverGreyBtn,
+              onTap: () {
                 context.read<XProvider>().clearFields();
                 Navigator.pushReplacementNamed(context, '/');
               },
-              child: const Text(
-                'Sair',
-                style: TextStyle(color: Colors.white),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                child: Row(
+                  children: [
+                    Text('Sair', style: TextStyle(color: Colors.white)),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.logout)
+                  ],
+                ),
               ),
             ),
-            IconButton(
-                padding: const EdgeInsets.only(right: 30, left: 10),
-                onPressed: () async {
-                  context.read<XProvider>().clearFields();
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-                icon: const Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                ))
+            const SizedBox(
+              width: 10,
+            )
           ],
         )
       ]);
