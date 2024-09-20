@@ -20,9 +20,9 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController controller = TextEditingController();
   MyTextField locate = MyTextField(
-      text: 'Lotação',
-      listValidator: [Validatorless.required('Campo obrigatório')],
-      listInputFormat: const []);
+    text: 'Lotação',
+    listValidator: [Validatorless.required('Campo obrigatório')],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +30,9 @@ class _ControlLocatesPageState extends State<ControlLocatesPage> {
     TextStyle title =
         const TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
     MyTextField locateField = MyTextField(
-        text: 'Lotação',
-        listValidator: [Validatorless.required('Campo obrgatório!')],
-        listInputFormat: const []);
+      text: 'Lotação',
+      listValidator: [Validatorless.required('Campo obrgatório!')],
+    );
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     if (Supabase.instance.client.auth.currentUser == null) {

@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/widgets/home/image_border.dart';
+import 'package:acesso_mp/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:hive/hive.dart';
@@ -52,19 +55,14 @@ class CameraAppState extends State<CameraApp> {
       var box = Hive.box('db');
       box.put('image', base64Image);
 
-      // final prefs = await SharedPreferences.getInstance();
-      // await prefs.setString('capturedImage', base64Image);
-
       setState(() {
         capturedImage = bytes;
       });
 
-      // **Descartar o controlador após capturar a imagem**
       controller!.dispose();
       controller = null;
-    } catch (e) {
-      // ZshowDialogs.alert(context, 'A aplicação apresentou erro');
-      widget.alert();
+    } catch (err) {
+      debugPrint(err.toString());
     }
   }
 
@@ -74,34 +72,51 @@ class CameraAppState extends State<CameraApp> {
       child: Column(
         children: [
           if (controller != null && controller!.value.isInitialized)
-            SizedBox(
-              height: 300, // Definindo a altura explicitamente
-              width: 400, // Definindo a largura explicitamente
-              child: CameraPreview(controller!),
-            )
-          else
-            const SizedBox(),
-          if (capturedImage != null && controller == null)
-            SizedBox(
-              height: 300,
-              width: 400,
-              child: Image.memory(
-                capturedImage!,
-                fit: BoxFit.cover,
+            ImageBorder(
+                height: StdValues.imgHeight1,
+                width: StdValues.imgWidth1,
+                widget: SizedBox(
+                    height: StdValues.imgHeight1,
+                    width: StdValues.imgWidth1,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(35),
+                        child: CameraPreview(controller!)))),
+          if (capturedImage == null && controller == null)
+            ImageBorder(
+              height: StdValues.imgHeight1,
+              width: StdValues.imgWidth2,
+              widget: Container(
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage('assets/cam.png'),
+                )),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
-            child: ElevatedButton(
-              onPressed: () {
+          if (capturedImage != null && controller == null)
+            ImageBorder(
+              height: StdValues.imgHeight1,
+              width: StdValues.imgWidth1,
+              widget: ClipRRect(
+                borderRadius: BorderRadius.circular(35),
+                child: Image.memory(
+                  capturedImage!,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: (controller == null) ? 180 : 210,
+            child: MyButton(
+              icon: Icons.camera_alt_outlined,
+              callback: () {
                 if (controller == null) {
                   initializeCamera();
                 } else {
                   captureImage(context);
                 }
               },
-              child:
-                  Text(controller == null ? 'Ligar Câmera' : 'Capturar Imagem'),
+              text: controller == null ? 'Ligar Câmera' : 'Capturar Imagem',
             ),
           ),
         ],

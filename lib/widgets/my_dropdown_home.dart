@@ -1,56 +1,66 @@
 import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/services/convert.dart';
+import 'package:acesso_mp/services/db_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hive/hive.dart';
 
-// ignore: must_be_immutable
-class MyDropdown extends StatefulWidget {
-  MyDropdown(
-      {super.key,
-      required this.optionsList,
-      required this.getItemSelected,
-      required this.labelText,
-      this.searchController});
-  final String labelText;
-  TextEditingController? searchController;
-  final List optionsList;
-  final ValueChanged<String> getItemSelected;
+class MyDropdownHome extends StatefulWidget {
+  final VoidCallback loadData;
+  const MyDropdownHome({
+    super.key,
+    required this.loadData,
+  });
+
   @override
-  MyDropdownState createState() => MyDropdownState();
+  MyDropdownHomeState createState() => MyDropdownHomeState();
 }
 
-class MyDropdownState extends State<MyDropdown> {
+class MyDropdownHomeState extends State<MyDropdownHome> {
+  TextEditingController searchController = TextEditingController();
   List<String> filterList = [];
   List<String> visitedList = [];
+  List listVisitor = [];
 
-  List<dynamic> _getSuggestions(String query) {
-    // if (query.length < 3) {
-    //   return [];
-    // }
+  Future<List<dynamic>> _getSuggestions(String query) async {
+    if (query.length < 3) {
+      return [];
+    }
+    listVisitor = [];
 
-    List<dynamic> filterList = widget.optionsList
-        .where((e) => e.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    List<String> listDropdown = [];
+    await DbManage.getJoin(
+            table1: 'visitors',
+            table2: 'visits',
+            columnTb1: 'consult',
+            findTb1: query)
+        .then((e) {
+      for (var v in e) {
+        listDropdown.add(Convert.firstUpper(v['name']));
+        listVisitor.add(v);
+      }
+    });
 
-    return filterList;
+    return listDropdown;
   }
 
   void foundVisitor(String suggestion) async {
-    var visitor = widget.optionsList.where((e) {
-      return e.toLowerCase() == suggestion.toLowerCase();
+    var box = Hive.box('db');
+    var visitor = listVisitor.where((e) {
+      return e['name'].toLowerCase() == suggestion.toLowerCase();
     }).toList()[0];
 
-    widget.searchController!.text = visitor;
-    widget.getItemSelected(visitor);
+    await box.put('visitor', visitor);
+    searchController.text = '';
+    widget.loadData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 25),
-      // ignore: avoid_types_as_parameter_names
       child: TypeAheadField(
-        constraints: const BoxConstraints(maxHeight: 200),
-        controller: widget.searchController,
+        controller: searchController,
         emptyBuilder: (context) => const Padding(
           padding: EdgeInsets.all(10.0),
           child: Text('Nenhum resultado encontrado'),
@@ -79,7 +89,7 @@ class MyDropdownState extends State<MyDropdown> {
                 ),
                 border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                hintText: widget.labelText),
+                hintText: 'Digite o nome do visitante'),
           );
         },
         itemBuilder: (context, suggestion) {

@@ -10,8 +10,8 @@ import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/database.dart';
 import 'package:acesso_mp/services/db_visits.dart';
-import 'package:acesso_mp/widgets/camera.dart';
-import 'package:acesso_mp/widgets/my_dropdown.dart';
+import 'package:acesso_mp/widgets/home/camera.dart';
+import 'package:acesso_mp/widgets/my_dropdown_home.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 500),
-                        child: MyDropdown(
+                        child: MyDropdownHome(
                           loadData: () {
                             loadData();
                           },
@@ -208,7 +208,8 @@ class _HomePageState extends State<HomePage> {
                                                             image:
                                                                 dataVisitor[5],
                                                           ),
-                                                          'save')
+                                                          'save',
+                                                          context)
                                                       .then((v) {
                                                     if (v == 'saved') {
                                                       ZshowDialogs.alert(
@@ -269,7 +270,8 @@ class _HomePageState extends State<HomePage> {
                                                             image:
                                                                 dataVisitor[5],
                                                           ),
-                                                          'update')
+                                                          'update',
+                                                          context)
                                                       .then((v) {
                                                     if (v == 'updated') {
                                                       ZshowDialogs.alert(
@@ -391,7 +393,7 @@ class _HomePageState extends State<HomePage> {
 
                                         bool success = false;
                                         await manageDate
-                                            .authorized()
+                                            .authorized(context)
                                             .then((v) => success = v);
 
                                         if (success) {

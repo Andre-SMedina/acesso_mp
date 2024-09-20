@@ -1,7 +1,5 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/services/convert.dart';
-import 'package:acesso_mp/widgets/my_appbar.dart';
-import 'package:acesso_mp/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
@@ -53,7 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
     var visits = [];
     if (locationId == 0) {
       locationId = profile['locations']['id'];
-    } else {}
+    }
 
     if (Supabase.instance.client.auth.currentUser == null) {
       return Scaffold(
@@ -81,8 +79,8 @@ class _HistoryPageState extends State<HistoryPage> {
       );
     } else {
       return Scaffold(
-        drawer: const MyDrawer(),
-        appBar: myAppbar(context, 'Histórico de Visitas'),
+        // drawer: const MyDrawer(),
+        // appBar: myAppbar(context, 'Histórico de Visitas'),
         body: Container(
           height: double.infinity,
           width: double.infinity,

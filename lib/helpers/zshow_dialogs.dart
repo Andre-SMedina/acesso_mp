@@ -1,5 +1,10 @@
 import 'package:acesso_mp/helpers/my_functions.dart';
+import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/services/convert.dart';
 import 'package:acesso_mp/services/db_manage.dart';
+import 'package:acesso_mp/widgets/home/my_formfield.dart';
+import 'package:acesso_mp/widgets/my_button.dart';
+import 'package:acesso_mp/widgets/my_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -15,6 +20,15 @@ class ZshowDialogs {
     if (checked != null && checked != '') {
       var visitorHistoric = checked['visits'];
       List operators = MyFunctons.getHive('operators');
+
+      visitorHistoric.sort((a, b) {
+        DateTime dateA = DateTime.parse(a['date']);
+        DateTime dateB = DateTime.parse(b['date']);
+        if (dateA.isBefore(dateB)) return -1;
+        if (dateA.isAfter(dateB)) return 1;
+
+        return 0; // If both dates and times are equal
+      });
 
       await showDialog(
         // ignore: use_build_context_synchronously
@@ -61,16 +75,21 @@ class ZshowDialogs {
                           title: RichText(
                             text: TextSpan(
                               children: [
-                                myText('Operador'),
+                                myText('Atendente'),
                                 TextSpan(text: operator),
-                                myText('\nLocal'),
+                                myText('\nCidade'),
                                 TextSpan(text: location),
                                 myText('\nData'),
-                                TextSpan(text: visitorHistoric[index]['date']),
+                                TextSpan(
+                                    text: Convert.formatDate(
+                                        visitorHistoric[index]['date'])),
                                 myText('\nHora'),
                                 TextSpan(text: visitorHistoric[index]['time']),
                                 myText('\nFinalidade '),
                                 TextSpan(text: visitorHistoric[index]['goal']),
+                                myText('\nLocal '),
+                                TextSpan(
+                                    text: visitorHistoric[index]['sector']),
                                 myText('\nAutorizado por '),
                                 TextSpan(
                                     text: visitorHistoric[index]
@@ -88,9 +107,9 @@ class ZshowDialogs {
             ),
             actions: [
               Center(
-                child: ElevatedButton(
-                  child: const Text('OK'),
-                  onPressed: () {
+                child: MyButton(
+                  text: 'OK',
+                  callback: () {
                     Navigator.of(context).pop();
                   },
                 ),
@@ -123,11 +142,14 @@ class ZshowDialogs {
               const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           actions: [
             Center(
-              child: ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: SizedBox(
+                width: 100,
+                child: MyButton(
+                  text: 'OK',
+                  callback: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ],
@@ -137,72 +159,98 @@ class ZshowDialogs {
   }
 
   static Future<List<String>> visited(BuildContext context) async {
-    late TextEditingController textController1 = TextEditingController();
-    late TextEditingController textController2 = TextEditingController();
     FocusNode focusNode = FocusNode();
-    String goalText = '';
-    String whoAuth = '';
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    String sectorSelected = '';
+    String whoAuthSelected = '';
+    TextEditingController locateController = TextEditingController();
+    TextEditingController whoController = TextEditingController();
+
+    void submit() {
+      if (formKey.currentState!.validate() &&
+          sectorSelected.isNotEmpty &&
+          whoAuthSelected.isNotEmpty) {
+        Navigator.of(context).pop();
+      } else {
+        ZshowDialogs.alert(context, 'Preencha todos os campos!');
+      }
+    }
+
+    MyFormfield goal = MyFormfield(
+        focusNode: focusNode,
+        labelTitle: 'Finalidade',
+        listValidator: [Validatorless.required('Campo obrigatório!')]);
+    MyDropdown local = MyDropdown(
+      searchController: locateController,
+      labelText: 'Digite o nome do setor',
+      optionsList: const [
+        'ACEMA',
+        'RTSI',
+        'DMTI',
+        'COMUN',
+        '2prm',
+        '3prm',
+        '4prm',
+        '5prm',
+        '1proc',
+        '2proc',
+        '3proc',
+        '4proc'
+      ],
+      getItemSelected: (value) {
+        sectorSelected = value;
+      },
+    );
+    MyDropdown whoAuth = MyDropdown(
+      searchController: whoController,
+      labelText: 'Quem  autorizou',
+      optionsList: const [
+        'Maria do Rosário Fernandes',
+        'Camila Nazarena Sousa',
+        'Eduardo Pereira Junior',
+        'Sampaio dos Santos Silva',
+        'Carlos Moreira Costa',
+      ],
+      getItemSelected: (value) {
+        whoAuthSelected = value;
+      },
+    );
 
     await showDialog(
       context: context,
       builder: (context) {
         focusNode.requestFocus();
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Informações sobre o acesso.'),
           content: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 140),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: 250,
-                  child: TextField(
-                    maxLines: 2,
-                    decoration: const InputDecoration(labelText: 'Finalidade'),
-                    focusNode: focusNode,
-                    controller: textController1,
+            constraints: const BoxConstraints(maxHeight: 330, maxWidth: 400),
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    child: goal,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: 250,
-                  child: TextField(
-                    controller: textController2,
-                    onSubmitted: (v) {
-                      if (textController1.text != '') {
-                        whoAuth = textController2.text;
-                        goalText = textController1.text;
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Quem autorizou',
-                    ),
+                  SizedBox(
+                    child: local,
                   ),
-                )
-              ],
-            ),
-          ),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  if (textController1.text != '') {
-                    goalText = textController1.text;
-                    whoAuth = textController2.text;
-                    Navigator.of(context).pop();
-                  }
-                },
+                  SizedBox(
+                    child: whoAuth,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MyButton(callback: () => submit(), text: 'Registrar')
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );
 
-    return [goalText, whoAuth];
+    return [goal.fieldController.text, whoAuthSelected, sectorSelected];
   }
 
   static Future<bool> confirm(BuildContext context, String title) async {
@@ -304,64 +352,55 @@ class ZshowDialogs {
   static Future<List> updatePassword(BuildContext context) async {
     bool validate = false;
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController passwordController = TextEditingController();
+
     var validates = [
       Validatorless.required('Campo Obrigatório'),
       Validatorless.min(6, 'A senha não pode ter menos de 6 caracteres!'),
     ];
 
+    MyFormfield passField = MyFormfield(
+      labelTitle: 'Digite uma nova senha',
+      listValidator: validates,
+    );
+
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text(
+            backgroundColor: Colors.white,
+            title: Text(
               'Atualizar senha',
+              style: StdValues.title,
               textAlign: TextAlign.center,
             ),
             content: Form(
               key: formKey,
-              child: ConstrainedBox(
+              child: Container(
+                color: Colors.white,
                 constraints:
-                    const BoxConstraints(maxHeight: 200, minWidth: 300),
+                    const BoxConstraints(maxHeight: 260, minWidth: 300),
                 child: Column(
                   children: [
-                    TextFormField(
-                      validator: Validatorless.multiple(
-                        validates,
-                      ),
-                      controller: passwordController,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Senha',
-                          helperText: ''),
-                    ),
+                    passField,
                     const SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      validator: Validatorless.multiple([
-                        ...validates,
-                        Validatorless.compare(
-                            passwordController, 'As senhas não são iguais!')
-                      ]),
-                      decoration: const InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Confirmar senha',
-                          helperText: ''),
-                    ),
+                    MyFormfield(labelTitle: 'Confirmar Senha', listValidator: [
+                      ...validates,
+                      Validatorless.compare(passField.fieldController,
+                          'As senhas não são iguais!')
+                    ]),
                     const SizedBox(
                       height: 10,
                     ),
-                    ElevatedButton(
-                        onPressed: () {
+                    MyButton(
+                        callback: () {
                           if (formKey.currentState!.validate()) {
                             validate = true;
                             Navigator.pop(context);
                           }
                         },
-                        child: const Text('Registrar'))
+                        text: 'Registrar'),
                   ],
                 ),
               ),
@@ -369,6 +408,6 @@ class ZshowDialogs {
           );
         });
 
-    return [validate, passwordController.text];
+    return [validate, passField.fieldController.text];
   }
 }

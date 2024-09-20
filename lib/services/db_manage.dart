@@ -1,7 +1,7 @@
+import 'package:acesso_mp/helpers/my_functions.dart';
 import 'package:acesso_mp/models/model_visitors.dart';
 import 'package:acesso_mp/services/convert.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,14 +9,16 @@ class DbManage {
   static final SupabaseClient supabase = Supabase.instance.client;
 
   static Future<bool> save(ModelVisitors data, List<String> auth) async {
-    String dateNow = DateFormat('dd/MM/yyy HH:mm:ss').format(DateTime.now());
+    Map profile = MyFunctons.getHive('profile');
+
+    String dateNow = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     String date = dateNow.split(' ')[0];
     String time = dateNow.split(' ')[1];
     bool response = false;
 
     try {
       await supabase.from('visitors').insert({
-        'name': data.name,
+        'name': Convert.firstUpper(data.name),
         'consult': Convert.removeAccent(data.name).toLowerCase(),
         'cpf': data.cpf,
         'rg': data.rg,
@@ -34,14 +36,11 @@ class DbManage {
       //pega o registro atual no banco para ter acesso ao id e criar a foreing key
       var visitor =
           await supabase.from('visitors').select().eq('cpf', data.cpf);
-      var box = Hive.box('db');
-      Map profile = box.get('profile');
-
-      if (profile['name'] == 'adm') return true;
 
       await supabase.from('visits').insert({
         'goal': auth[0],
         'authorizedBy': auth[1],
+        'sector': auth[2],
         'date': date,
         'time': time,
         'id_visitor': visitor[0]['id'],
@@ -115,13 +114,13 @@ class DbManage {
       required String column,
       required String find,
       required String boxName}) async {
-    var box = Hive.box('db');
-
     if (boxName != '') {
-      var oldData = box.get(boxName);
+      var oldData = MyFunctons.getHive(boxName);
 
-      data['cpf'] = oldData['cpf'];
-      if (data['rg'] != null) data['rg'] = oldData['rg'];
+      if (!MyFunctons.getHive('profile')['adm']) {
+        data['cpf'] = oldData['cpf'];
+        if (data['rg'] != null) data['rg'] = oldData['rg'];
+      }
     }
     try {
       await supabase.from(table).update(data).eq(column, find);

@@ -1,11 +1,10 @@
-import 'package:acesso_mp/pages/history_page.dart';
-import 'package:acesso_mp/pages/login_page.dart';
+import 'package:acesso_mp/helpers/std_values.dart';
+import 'package:acesso_mp/pages/control_pages.dart';
+import 'package:acesso_mp/pages/login_page2.dart';
 import 'package:acesso_mp/services/x_provider.dart';
-import 'package:acesso_mp/pages/control_locates_page.dart';
-import 'package:acesso_mp/pages/control_operators_page.dart';
-import 'package:acesso_mp/pages/home_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,27 +48,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [
+        Locale('en', 'US'), // Inglês
+        Locale('pt', 'BR'), // Português
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       title: 'Acesso MP',
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-                side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                 elevation: 3,
-                textStyle: const TextStyle(color: Colors.black))),
+                textStyle: const TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255)))),
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
           backgroundColor: Color.fromARGB(255, 14, 0, 167),
         ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(borderSide: BorderSide()),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(width: 2, color: Color.fromARGB(255, 14, 0, 167)),
-          ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateColor.resolveWith((context) {
+            return StdValues.btnBlue; // or any other color you want
+          }),
+          thickness: WidgetStateProperty.all(12),
         ),
         textTheme: const TextTheme(
             headlineLarge:
@@ -77,13 +82,10 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
-        '/home': (context) => HomePage(
+        '/': (context) => LoginPage2(),
+        '/home': (context) => ControlPages(
               cameras: cameras,
             ),
-        '/history': (context) => const HistoryPage(),
-        '/controlLocates': (context) => const ControlLocatesPage(),
-        '/controlOperators': (context) => const ControlOperatorsPage(),
       },
     );
   }
