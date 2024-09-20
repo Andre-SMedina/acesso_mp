@@ -291,45 +291,38 @@ class ZshowDialogs {
 
   static Future<bool> updateLocate(BuildContext context, String oldName) async {
     bool validate = false;
-
-    TextEditingController fieldController =
-        TextEditingController(text: oldName);
     FocusNode focusNode = FocusNode();
+    MyFormfield locateName = MyFormfield(
+        focusNode: focusNode,
+        labelTitle: 'Novo nome',
+        listValidator: [Validatorless.required('Campo obrgatório!')]);
+    locateName.fieldController.text = oldName;
+
+    // TextEditingController fieldController =
+    //     TextEditingController(text: oldName);
     focusNode.requestFocus();
 
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
             title: const Text(
               'Alterar lotação',
               textAlign: TextAlign.center,
             ),
             content: SizedBox(
-              height: 130,
+              height: 150,
               width: 400,
               child: Column(
                 children: [
-                  TextFormField(
-                    validator: Validatorless.multiple(
-                        [Validatorless.required('Campo obrgatório!')]),
-                    controller: fieldController,
-                    focusNode: focusNode,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'Novo nome',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (fieldController.text.isNotEmpty) {
+                  locateName,
+                  MyButton(
+                      callback: () async {
+                        if (locateName.fieldController.text.isNotEmpty) {
                           await DbManage.update(
                               column: 'name',
-                              data: {'name': fieldController.text},
+                              data: {'name': locateName.fieldController.text},
                               table: 'locations',
                               find: oldName,
                               boxName: '');
@@ -339,7 +332,7 @@ class ZshowDialogs {
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       },
-                      child: const Text('Salvar alteração')),
+                      text: 'Salvar alterações'),
                 ],
               ),
             ),

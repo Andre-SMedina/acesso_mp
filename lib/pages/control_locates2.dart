@@ -14,7 +14,7 @@ import 'package:validatorless/validatorless.dart';
 
 // ignore: must_be_immutable
 class ControlLocates2 extends StatefulWidget {
-  ControlLocates2({super.key});
+  const ControlLocates2({super.key});
 
   @override
   State<ControlLocates2> createState() => _ControlLocates2State();
@@ -167,6 +167,11 @@ class _ControlLocates2State extends State<ControlLocates2> {
                                                                   ['name'])
                                                       .then((v) {
                                                     if (v) {
+                                                      MyFunctons.getLocations()
+                                                          .then((e) {
+                                                        MyFunctons.putHive(
+                                                            'locations', e);
+                                                      });
                                                       setState(() {});
                                                     }
                                                   });
