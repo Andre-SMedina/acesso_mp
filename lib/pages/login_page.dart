@@ -99,7 +99,7 @@ class LoginPageState extends State<LoginPage> {
         MyFunctons.getLocations().then((e) {
           MyFunctons.putHive('locations', e);
         });
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamed(context, '/home');
       } else {
         ZshowDialogs.alert(context, 'Email ou senha incorreto!');
       }
