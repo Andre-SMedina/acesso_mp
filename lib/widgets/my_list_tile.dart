@@ -9,8 +9,9 @@ class MyListTile extends StatefulWidget {
   final String iconTip2;
   final bool actionBtn1;
   final Color hoverColor;
-  final IconData iconBtn1;
+  final IconData? iconBtn1;
   final IconData? iconBtn2;
+  final Icon? icon;
   final VoidCallback callMain;
   final VoidCallback callIconBtn1;
   final VoidCallback callIconBtn2;
@@ -20,7 +21,7 @@ class MyListTile extends StatefulWidget {
       required this.title,
       this.subtitle,
       required this.hoverColor,
-      required this.iconBtn1,
+      this.iconBtn1,
       required this.callIconBtn2,
       this.iconBtn2,
       required this.callMain,
@@ -28,7 +29,8 @@ class MyListTile extends StatefulWidget {
       required this.iconTip1,
       required this.iconTip2,
       required this.actionBtn1,
-      this.callIconPass});
+      this.callIconPass,
+      this.icon});
 
   @override
   State<MyListTile> createState() => _MyListTileState();
@@ -47,29 +49,31 @@ class _MyListTileState extends State<MyListTile> {
         message: (widget.iconBtn1 == Icons.admin_panel_settings
             ? widget.iconTip1
             : widget.iconTip2),
-        child: IconButton(
-          onPressed: () {
-            if (widget.actionBtn1) {
-              ZshowDialogs.confirm(
-                      context,
-                      (widget.iconBtn1 == Icons.admin_panel_settings)
-                          ? 'Tornar usuário comum?'
-                          : 'Tornar Administrador?')
-                  .then((e) {
-                if (e) {
-                  widget.callIconBtn1();
-                }
-              });
-            }
-          },
-          icon: Icon(
-            widget.iconBtn1,
-            size: 35,
-            color: (widget.iconBtn1 == Icons.admin_panel_settings)
-                ? const Color(0xFFDAA520)
-                : StdValues.btnBlue,
-          ),
-        ),
+        child: (widget.iconBtn1 != null)
+            ? IconButton(
+                onPressed: () {
+                  if (widget.actionBtn1) {
+                    ZshowDialogs.confirm(
+                            context,
+                            (widget.iconBtn1 == Icons.admin_panel_settings)
+                                ? 'Tornar usuário comum?'
+                                : 'Tornar Administrador?')
+                        .then((e) {
+                      if (e) {
+                        widget.callIconBtn1();
+                      }
+                    });
+                  }
+                },
+                icon: Icon(
+                  widget.iconBtn1,
+                  size: 35,
+                  color: (widget.iconBtn1 == Icons.admin_panel_settings)
+                      ? const Color(0xFFDAA520)
+                      : StdValues.btnBlue,
+                ),
+              )
+            : widget.icon,
       ),
       trailing: widget.iconBtn2 != null
           ? Tooltip(
@@ -152,10 +156,12 @@ class _MyListTileState extends State<MyListTile> {
           ),
         ),
       ),
-      subtitle: Text(
-        widget.subtitle ?? '',
-        textAlign: TextAlign.center,
-      ),
+      subtitle: (widget.subtitle != null)
+          ? Text(
+              widget.subtitle!,
+              textAlign: TextAlign.center,
+            )
+          : null,
     );
   }
 }

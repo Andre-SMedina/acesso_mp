@@ -23,7 +23,7 @@ class ControlPages extends StatefulWidget {
 
 class _ControlPagesState extends State<ControlPages> {
   int selectedIndex = 0;
-  Widget loadPage = const HomePage2();
+  Widget loadPage = ControlLocates2();
   bool userProfile = MyFunctons.getHive('profile')['adm'];
 
   void onSelect(int index) {
@@ -110,7 +110,7 @@ class _ControlPagesState extends State<ControlPages> {
                   callMain: () {
                     setState(() {
                       if (userProfile) {
-                        loadPage = const ControlLocates2();
+                        loadPage = ControlLocates2();
                       } else {
                         ZshowDialogs.alert(context, 'Acesso negado!');
                       }
