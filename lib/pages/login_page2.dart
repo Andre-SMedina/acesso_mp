@@ -22,7 +22,6 @@ class LoginPage2 extends StatelessWidget {
         'id, name, userName, email, active, newUser, adm, change_password, password, locations(*)');
 
     if (_formKey.currentState!.validate()) {
-      if (userController.text == 'adm') {}
       bool validate = false;
       String newPassword = '';
       late Map user;

@@ -96,7 +96,8 @@ class _MyHomeFieldsState extends State<MyHomeFields> {
   @override
   Widget build(BuildContext context) {
     bool admUser() {
-      if (MyFunctons.getHive('profile')['name'] == 'adm') {
+      if (MyFunctons.getHive('profile')['name'] == 'adm' ||
+          MyFunctons.getHive('profile')['name'] == 'teste') {
         ZshowDialogs.alert(context, 'Ação bloqueada para esse usuário!');
         return true;
       } else {

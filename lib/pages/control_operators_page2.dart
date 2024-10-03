@@ -284,7 +284,9 @@ class _ControlOperatorsPage2State extends State<ControlOperatorsPage2> {
                                         itemCount: operators.length,
                                         itemBuilder: (contex, index) {
                                           if (operators[index]['name'] ==
-                                              'adm') {
+                                                  'adm' ||
+                                              operators[index]['name'] ==
+                                                  'teste') {
                                             return const Padding(
                                                 padding: EdgeInsets.zero);
                                           }
